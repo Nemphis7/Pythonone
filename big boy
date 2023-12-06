@@ -1,1 +1,162 @@
-Wer das liest ist blöd
+class HaushaltsApp:
+    def __init__(self, benutzername):
+        self.benutzername = benutzername
+        self.verdienst = 0
+        self.cash_position = 0
+        self.schulden = {}
+        self.ausgaben = {}
+        self.aktien = {}
+        self.immobilien = {}
+        self.andere_anlagen = {}
+
+    def begruessung(self):
+        print(f"Willkommen, {self.benutzername}! Das ist deine interaktive Haushaltsapp.")
+
+    def benutzer_input(self):
+        self.verdienst = self.eingabe_fuer_finanzdaten("Gib deinen Verdienst ein: ")
+        self.cash_position = self.eingabe_fuer_finanzdaten("Gib deine Cash-Position ein: ")
+
+        anzahl_schulden = int(input("Wie viele Schulden möchtest du hinzufügen? "))
+        for _ in range(anzahl_schulden):
+            schuldenname = input("Name der Schuld: ")
+            betrag = self.eingabe_fuer_finanzdaten("Betrag der Schuld: ")
+            zinsen = self.eingabe_fuer_finanzdaten("Zinssatz der Schuld (in Prozent): ")
+            self.schulden_hinzufuegen(schuldenname, betrag, zinsen)
+
+        anzahl_ausgaben = int(input("Wie viele Ausgaben möchtest du hinzufügen? "))
+        for _ in range(anzahl_ausgaben):
+            ausgabename = input("Name der Ausgabe: ")
+            betrag = self.eingabe_fuer_finanzdaten("Betrag der Ausgabe: ")
+            kategorie = input("Kategorie der Ausgabe: ")
+            datum = input("Datum der Ausgabe (z.B. 2023-01-01): ")
+            self.ausgabe_hinzufuegen(ausgabename, betrag, kategorie, datum)
+
+        anzahl_aktien = int(input("Wie viele Aktien möchtest du hinzufügen? "))
+        for _ in range(anzahl_aktien):
+            name = input("Name der Aktie: ")
+            anzahl = self.eingabe_fuer_finanzdaten("Anzahl der Aktien: ")
+            wert_pro_aktie = self.eingabe_fuer_finanzdaten("Wert pro Aktie: ")
+            self.aktien_hinzufuegen(name, anzahl, wert_pro_aktie)
+
+        anzahl_immobilien = int(input("Wie viele Immobilien möchtest du hinzufügen? "))
+        for _ in range(anzahl_immobilien):
+            adresse = input("Adresse der Immobilie: ")
+            wert = self.eingabe_fuer_finanzdaten("Wert der Immobilie: ")
+            self.immobilien_hinzufuegen(adresse, wert)
+
+        anzahl_andere_anlagen = int(input("Wie viele andere Anlagen möchtest du hinzufügen? "))
+        for _ in range(anzahl_andere_anlagen):
+            name = input("Name der Anlage: ")
+            wert = self.eingabe_fuer_finanzdaten("Wert der Anlage: ")
+            self.andere_anlagen_hinzufuegen(name, wert)
+
+    def eingabe_fuer_finanzdaten(self, nachricht):
+        while True:
+            try:
+                eingabe = float(input(nachricht))
+                return eingabe
+            except ValueError:
+                print("Bitte gib eine gültige Zahl ein.")
+
+    def schulden_hinzufuegen(self, schuldenname, betrag, zinsen):
+        self.schulden[schuldenname] = {
+            'betrag': betrag,
+            'zinsen': zinsen
+        }
+
+    def ausgabe_hinzufuegen(self, ausgabename, betrag, kategorie, datum):
+        if ausgabename not in self.ausgaben:
+            self.ausgaben[ausgabename] = []
+        self.ausgaben[ausgabename].append({
+            'betrag': betrag,
+            'kategorie': kategorie,
+            'datum': datum
+        })
+
+    def aktien_hinzufuegen(self, name, anzahl, wert_pro_aktie):
+        self.aktien[name] = {
+            'anzahl': anzahl,
+            'wert_pro_aktie': wert_pro_aktie
+        }
+
+    def immobilien_hinzufuegen(self, adresse, wert):
+        self.immobilien[adresse] = {
+            'wert': wert
+        }
+
+    def andere_anlagen_hinzufuegen(self, name, wert):
+        self.andere_anlagen[name] = {
+            'wert': wert
+        }
+
+    def alle_schulden_anzeigen(self):
+        print("\nSchulden:")
+        for schuldenname, details in self.schulden.items():
+            print(f"{schuldenname}: Betrag - {details['betrag']}, Zinssatz - {details['zinsen']}%")
+
+    def alle_ausgaben_anzeigen(self):
+        for ausgabename, ausgaben in self.ausgaben.items():
+            for ausgabe in ausgaben:
+                print(f"{ausgabename} ({ausgabe['datum']}) - {ausgabe['kategorie']}: {ausgabe['betrag']}")
+
+    def gesamtausgaben_anzeigen(self):
+        gesamtbetrag_ausgaben = sum(ausgabe['betrag'] for ausgaben in self.ausgaben.values() for ausgabe in ausgaben)
+        print(f"Gesamtausgaben: {gesamtbetrag_ausgaben}")
+
+    def gesamtschulden_anzeigen(self):
+        gesamtbetrag_schulden = sum(details['betrag'] for details in self.schulden.values())
+        print(f"Gesamtschulden: {gesamtbetrag_schulden}")
+
+    def gesamtuebersicht_anzeigen(self):
+        print(f"Verdienst: {self.verdienst}")
+        print(f"Cash-Position: {self.cash_position}")
+        self.gesamtausgaben_anzeigen()
+        self.gesamtschulden_anzeigen()
+
+        print("\nAktien:")
+        for aktie, details in self.aktien.items():
+            print(f"{aktie}: Anzahl - {details['anzahl']}, Wert pro Aktie - {details['wert_pro_aktie']}")
+
+        print("\nImmobilien:")
+        for immobilie, details in self.immobilien.items():
+            print(f"{immobilie}: Wert - {details['wert']}")
+
+        print("\nAndere Anlagen:")
+        for anlage, details in self.andere_anlagen.items():
+            print(f"{anlage}: Wert - {details['wert']}")
+
+    def dashboard_anzeigen(self):
+        print("\n=== Finanzdashboard ===")
+        print(f"Verdienst: {self.verdienst}")
+        print(f"Cash-Position: {self.cash_position}")
+        print(f"Gesamtausgaben: {sum(ausgabe['betrag'] for ausgaben in self.ausgaben.values() for ausgabe in ausgaben)}")
+        print(f"Gesamtschulden: {sum(details['betrag'] for details in self.schulden.values())}")
+
+    def start(self):
+        while True:
+            print("\n=== HaushaltsApp Hauptmenü ===")
+            print("1. Daten eingeben")
+            print("2. Gesamtübersicht anzeigen")
+            print("3. Finanzdashboard anzeigen")
+            print("4. Exit")
+            auswahl = input("Bitte wähle eine Option (1-4): ")
+
+            if auswahl == '1':
+                self.benutzer_input()
+            elif auswahl == '2':
+                self.gesamtuebersicht_anzeigen()
+            elif auswahl == '3':
+                self.dashboard_anzeigen()
+            elif auswahl == '4':
+                print("Programm wird beendet.")
+                break
+            else:
+                print("Ungültige Eingabe. Bitte wähle eine Option von 1 bis 4.")
+
+# Beispiel-Nutzung der interaktiven HaushaltsApp
+benutzername = input("Bitte gib deinen Namen ein: ")
+haushalts_app = HaushaltsApp(benutzername)
+haushalts_app.begruessung()
+
+# Starte die HaushaltsApp
+haushalts_app.start()
