@@ -1,0 +1,42 @@
+import pandas as pd
+
+# Load data from an Excel file
+excel_file_path = "D:\Downloads x86\Python DB.xlsx"
+df = pd.read_excel(excel_file_path)
+
+# Function to input new data for a "New Person"
+def new_person():
+    name = input("Enter the name of the new person: ")
+    age = input("Enter the age of the new person: ")
+    # Add more fields as needed
+    new_data = pd.DataFrame({"Name": [name], "Age": [age]})  # Adjust column names accordingly
+    df = df.append(new_data, ignore_index=True)
+    df.to_excel(excel_file_path, index=False)  # Save updated data to Excel file
+    print(f"Data for {name} has been added to the Excel file.")
+
+# Function to perform analysis based on a name
+def my_analysis():
+    name_to_search = input("Enter the name to search for: ")
+    matching_data = df[df["Name"] == name_to_search]
+    if not matching_data.empty:
+        print(f"Data for {name_to_search}:\n{matching_data}")
+    else:
+        print(f"No data found for {name_to_search}.")
+
+if __name__ == "__main__":
+    while True:
+        print("\nOptions:")
+        print("1. New Person")
+        print("2. My Analysis")
+        print("3. Exit")
+        choice = input("Select an option: ")
+
+        if choice == "1":
+            new_person()
+        elif choice == "2":
+            my_analysis()
+        elif choice == "3":
+            print("Exiting the program.")
+            break
+        else:
+            print("Invalid choice. Please select a valid option.")
