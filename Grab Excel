@@ -1,42 +1,80 @@
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 
-# Load data from an Excel file
-excel_file_path = "D:\Downloads x86\Python DB.xlsx"
-df = pd.read_excel(excel_file_path)
+def load_data(file_path):
+    try:
+        df = pd.read_excel(file_path, names=['Date', 'Name', 'Amount'])
+        return df
+    except Exception as e:
+        print(f"Error reading the file: {e}")
+        return None
 
-# Function to input new data for a "New Person"
-def new_person():
-    name = input("Enter the name of the new person: ")
-    age = input("Enter the age of the new person: ")
-    # Add more fields as needed
-    new_data = pd.DataFrame({"Name": [name], "Age": [age]})  # Adjust column names accordingly
-    df = df.append(new_data, ignore_index=True)
-    df.to_excel(excel_file_path, index=False)  # Save updated data to Excel file
-    print(f"Data for {name} has been added to the Excel file.")
+def process_data(df, date_format=None):
+    df['Amount'] = pd.to_numeric(df['Amount'], errors='coerce')
+    df['Date'] = pd.to_datetime(df['Date'], format=date_format, errors='coerce')
+    df['YearMonth'] = df['Date'].dt.to_period('M')
+    df = df.dropna(subset=['Amount', 'YearMonth'])
+    df.loc[:, 'Category'] = df['Amount'].apply(lambda x: 'Expense' if x < 0 else 'Income')
+    return df
 
-# Function to perform analysis based on a name
-def my_analysis():
-    name_to_search = input("Enter the name to search for: ")
-    matching_data = df[df["Name"] == name_to_search]
-    if not matching_data.empty:
-        print(f"Data for {name_to_search}:\n{matching_data}")
-    else:
-        print(f"No data found for {name_to_search}.")
+def get_user_input(prompt, input_type=int):
+    while True:
+        try:
+            return input_type(input(prompt))
+        except ValueError:
+            print("Invalid input, please try again.")
+
+def plot_financials(financial_data):
+    sns.set(style="whitegrid")
+
+    # Bar chart for expenses and income
+    financial_data[['Total Expenses', 'Total Income']].plot(kind='bar', stacked=True)
+    plt.title('Monthly Expenses and Income')
+    plt.xlabel('Month')
+    plt.ylabel('Amount')
+    plt.show()
+
+    # Line graph for net savings
+    financial_data['Net Savings'].plot(kind='line', marker='o')
+    plt.title('Net Savings Over Time')
+    plt.xlabel('Month')
+    plt.ylabel('Net Savings')
+    plt.show()
+
+def main():
+    file_path = '/Users/constantinkoster/Downloads/Mappe1.xlsx'
+    df = load_data(file_path)
+    
+    if df is not None:
+        df = process_data(df)
+
+        age = get_user_input("Please enter your age: ")
+        investment_ratio = (100 - age) / 100
+
+        # Preparing a table to display financial data
+        table_data = []
+        print("\n{:<10} {:<15} {:<15} {:<15} {:<15} {:<15}".format('Month', 'Total Expenses', 'Total Income', 'Net Savings', 'Invest Stocks', 'Invest Bonds'))
+
+        for name, group in df.groupby('YearMonth'):
+            total_expenses = group[group['Category'] == 'Expense']['Amount'].sum()
+            total_income = group[group['Category'] == 'Income']['Amount'].sum()
+            difference = total_income + total_expenses
+
+            invest_in_stocks = invest_in_bonds = 0
+            if difference > 0:
+                invest_in_stocks = difference * investment_ratio
+                invest_in_bonds = difference - invest_in_stocks
+
+            table_data.append([str(name), total_expenses, total_income, difference, invest_in_stocks, invest_in_bonds])
+
+        for row in table_data:
+            print("{:<10} {:<15.2f} {:<15.2f} {:<15.2f} {:<15.2f} {:<15.2f}".format(row[0], row[1], row[2], row[3], row[4], row[5]))
+
+        financial_df = pd.DataFrame(table_data, columns=['Month', 'Total Expenses', 'Total Income', 'Net Savings', 'Invest Stocks', 'Invest Bonds'])
+        financial_df.set_index('Month', inplace=True)
+
+        plot_financials(financial_df)
 
 if __name__ == "__main__":
-    while True:
-        print("\nOptions:")
-        print("1. New Person")
-        print("2. My Analysis")
-        print("3. Exit")
-        choice = input("Select an option: ")
-
-        if choice == "1":
-            new_person()
-        elif choice == "2":
-            my_analysis()
-        elif choice == "3":
-            print("Exiting the program.")
-            break
-        else:
-            print("Invalid choice. Please select a valid option.")
+    main()
