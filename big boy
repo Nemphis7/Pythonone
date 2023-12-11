@@ -1,162 +1,127 @@
-class HaushaltsApp:
-    def __init__(self, benutzername):
-        self.benutzername = benutzername
-        self.verdienst = 0
-        self.cash_position = 0
-        self.schulden = {}
-        self.ausgaben = {}
-        self.aktien = {}
-        self.immobilien = {}
-        self.andere_anlagen = {}
+import streamlit as st
+import pandas as pd
+import matplotlib.pyplot as plt
 
-    def begruessung(self):
-        print(f"Willkommen, {self.benutzername}! Das ist deine interaktive Haushaltsapp.")
+# Function to load data
+def load_data():
+    try:
+        df = pd.read_excel('/Users/constantinkoster/Downloads/Mappe1.xlsx', names=['Date', 'Name', 'Amount'])
+        return df
+    except Exception as e:
+        st.error(f"Error reading the file: {e}")
+        return None
 
-    def benutzer_input(self):
-        self.verdienst = self.eingabe_fuer_finanzdaten("Gib deinen Verdienst ein: ")
-        self.cash_position = self.eingabe_fuer_finanzdaten("Gib deine Cash-Position ein: ")
+# Function to process data
+def process_data(df):
+    df['Amount'] = pd.to_numeric(df['Amount'], errors='coerce')
+    df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
+    df['YearMonth'] = df['Date'].dt.to_period('M')
+    df = df.dropna(subset=['Amount', 'YearMonth'])
+    df.loc[:, 'Category'] = df['Amount'].apply(lambda x: 'Expense' if x < 0 else 'Income')
+    return df
 
-        anzahl_schulden = int(input("Wie viele Schulden möchtest du hinzufügen? "))
-        for _ in range(anzahl_schulden):
-            schuldenname = input("Name der Schuld: ")
-            betrag = self.eingabe_fuer_finanzdaten("Betrag der Schuld: ")
-            zinsen = self.eingabe_fuer_finanzdaten("Zinssatz der Schuld (in Prozent): ")
-            self.schulden_hinzufuegen(schuldenname, betrag, zinsen)
+# Function to plot financials
+def plot_financials(financial_df):
+    plt.figure(figsize=(10, 6))
+    # Adjust expenses to positive for visualization
+    financial_df['AdjustedAmount'] = financial_df.apply(lambda x: -x['Amount'] if x['Category'] == 'Expense' else x['Amount'], axis=1)
+    for category in financial_df['Category'].unique():
+        category_df = financial_df[financial_df['Category'] == category]
+        plt.plot(category_df['YearMonth'].dt.to_timestamp(), category_df['AdjustedAmount'], marker='o', label=category)
+    # Plotting Net Savings
+    net_savings = financial_df.groupby('YearMonth')['AdjustedAmount'].sum()
+    plt.plot(net_savings.index.to_timestamp(), net_savings.values, marker='o', label='Net Savings')
+    
+    plt.title('Monthly Financial Overview')
+    plt.xlabel('Month')
+    plt.ylabel('Amount')
+    plt.legend()
+    plt.grid(True)
+    st.pyplot(plt)
 
-        anzahl_ausgaben = int(input("Wie viele Ausgaben möchtest du hinzufügen? "))
-        for _ in range(anzahl_ausgaben):
-            ausgabename = input("Name der Ausgabe: ")
-            betrag = self.eingabe_fuer_finanzdaten("Betrag der Ausgabe: ")
-            kategorie = input("Kategorie der Ausgabe: ")
-            datum = input("Datum der Ausgabe (z.B. 2023-01-01): ")
-            self.ausgabe_hinzufuegen(ausgabename, betrag, kategorie, datum)
+# Function to plot investment distribution
+def plot_investment_distribution(investment_data):
+    plt.figure(figsize=(6, 6))
+    plt.pie(investment_data, labels=investment_data.index, autopct='%1.1f%%')
+    plt.title('Investment Distribution')
+    st.pyplot(plt)
 
-        anzahl_aktien = int(input("Wie viele Aktien möchtest du hinzufügen? "))
-        for _ in range(anzahl_aktien):
-            name = input("Name der Aktie: ")
-            anzahl = self.eingabe_fuer_finanzdaten("Anzahl der Aktien: ")
-            wert_pro_aktie = self.eingabe_fuer_finanzdaten("Wert pro Aktie: ")
-            self.aktien_hinzufuegen(name, anzahl, wert_pro_aktie)
+# Page: Kontenübersicht
+def kontenubersicht(df):
+    st.title("Kontenübersicht")
+    if df is not None:
+        total_expenses = -df[df['Category'] == 'Expense']['Amount'].sum()
+        total_income = df[df['Category'] == 'Income']['Amount'].sum()
 
-        anzahl_immobilien = int(input("Wie viele Immobilien möchtest du hinzufügen? "))
-        for _ in range(anzahl_immobilien):
-            adresse = input("Adresse der Immobilie: ")
-            wert = self.eingabe_fuer_finanzdaten("Wert der Immobilie: ")
-            self.immobilien_hinzufuegen(adresse, wert)
+        kontostand = total_income - total_expenses  # Account balance
 
-        anzahl_andere_anlagen = int(input("Wie viele andere Anlagen möchtest du hinzufügen? "))
-        for _ in range(anzahl_andere_anlagen):
-            name = input("Name der Anlage: ")
-            wert = self.eingabe_fuer_finanzdaten("Wert der Anlage: ")
-            self.andere_anlagen_hinzufuegen(name, wert)
+        st.subheader("Kontostand: ")
+        st.write(kontostand)
 
-    def eingabe_fuer_finanzdaten(self, nachricht):
-        while True:
-            try:
-                eingabe = float(input(nachricht))
-                return eingabe
-            except ValueError:
-                print("Bitte gib eine gültige Zahl ein.")
+        # Monthly average of net savings
+        monthly_net_savings = df.groupby('YearMonth')['Amount'].sum().mean()
+        st.subheader("Monthly Average of Net Savings: ")
+        st.write(monthly_net_savings)
 
-    def schulden_hinzufuegen(self, schuldenname, betrag, zinsen):
-        self.schulden[schuldenname] = {
-            'betrag': betrag,
-            'zinsen': zinsen
-        }
+# Page: Analyse
+def analyse(df):
+    st.title("Analyse")
+    if df is not None:
+        financial_df = df.groupby(['YearMonth', 'Category'])['Amount'].sum().reset_index()
+        plot_financials(financial_df)
 
-    def ausgabe_hinzufuegen(self, ausgabename, betrag, kategorie, datum):
-        if ausgabename not in self.ausgaben:
-            self.ausgaben[ausgabename] = []
-        self.ausgaben[ausgabename].append({
-            'betrag': betrag,
-            'kategorie': kategorie,
-            'datum': datum
+        # Calculate investment data
+        investment_data = pd.Series({
+            'Invest Stocks': financial_df[financial_df['Category'] == 'Income']['Amount'].sum() * 0.5,  # Example calculation
+            'Invest Bonds': financial_df[financial_df['Category'] == 'Income']['Amount'].sum() * 0.5   # Example calculation
         })
+        plot_investment_distribution(investment_data)
 
-    def aktien_hinzufuegen(self, name, anzahl, wert_pro_aktie):
-        self.aktien[name] = {
-            'anzahl': anzahl,
-            'wert_pro_aktie': wert_pro_aktie
-        }
+# Page: Empfehlung
+def empfehlung(df):
+    st.title("Empfehlung")
+    st.write("Based on your financial data, here are some personalized recommendations:")
 
-    def immobilien_hinzufuegen(self, adresse, wert):
-        self.immobilien[adresse] = {
-            'wert': wert
-        }
+    if df is not None:
+        monthly_net_savings = df.groupby('YearMonth')['Amount'].sum().mean()
+        st.subheader("Budgeting Tips")
+        st.write("Review your monthly expenses and identify areas where you can reduce spending.")
 
-    def andere_anlagen_hinzufuegen(self, name, wert):
-        self.andere_anlagen[name] = {
-            'wert': wert
-        }
+        st.subheader("Savings Goals")
+        st.write(f"Based on your average monthly net savings of {monthly_net_savings:.2f}, consider setting aside a portion for short-term and long-term savings goals.")
 
-    def alle_schulden_anzeigen(self):
-        print("\nSchulden:")
-        for schuldenname, details in self.schulden.items():
-            print(f"{schuldenname}: Betrag - {details['betrag']}, Zinssatz - {details['zinsen']}%")
+        st.subheader("Investment Suggestions")
+        st.write("Consider diversifying your investments to balance risk and returns. Stocks can offer growth potential while bonds can provide stability.")
 
-    def alle_ausgaben_anzeigen(self):
-        for ausgabename, ausgaben in self.ausgaben.items():
-            for ausgabe in ausgaben:
-                print(f"{ausgabename} ({ausgabe['datum']}) - {ausgabe['kategorie']}: {ausgabe['betrag']}")
+        st.subheader("Emergency Fund")
+        st.write("Aim to build an emergency fund that covers 3-6 months of living expenses.")
 
-    def gesamtausgaben_anzeigen(self):
-        gesamtbetrag_ausgaben = sum(ausgabe['betrag'] for ausgaben in self.ausgaben.values() for ausgabe in ausgaben)
-        print(f"Gesamtausgaben: {gesamtbetrag_ausgaben}")
+        st.subheader("Debt Management")
+        st.write("If you have high-interest debt, consider strategies to pay it off as soon as possible.")
 
-    def gesamtschulden_anzeigen(self):
-        gesamtbetrag_schulden = sum(details['betrag'] for details in self.schulden.values())
-        print(f"Gesamtschulden: {gesamtbetrag_schulden}")
+        st.subheader("Retirement Planning")
+        st.write("It's never too early to start saving for retirement. Consider contributing to a retirement savings plan.")
 
-    def gesamtuebersicht_anzeigen(self):
-        print(f"Verdienst: {self.verdienst}")
-        print(f"Cash-Position: {self.cash_position}")
-        self.gesamtausgaben_anzeigen()
-        self.gesamtschulden_anzeigen()
+        st.subheader("Learn More")
+        st.markdown("[Financial Education Resources](https://www.example.com)")
 
-        print("\nAktien:")
-        for aktie, details in self.aktien.items():
-            print(f"{aktie}: Anzahl - {details['anzahl']}, Wert pro Aktie - {details['wert_pro_aktie']}")
+def main():
+    st.sidebar.title("Navigation")
+    page = st.sidebar.radio("Choose a page:", ["Kontenübersicht", "Analyse", "Empfehlung"])
 
-        print("\nImmobilien:")
-        for immobilie, details in self.immobilien.items():
-            print(f"{immobilie}: Wert - {details['wert']}")
+    st.title("Financial Data Analysis App")
 
-        print("\nAndere Anlagen:")
-        for anlage, details in self.andere_anlagen.items():
-            print(f"{anlage}: Wert - {details['wert']}")
+    # Load and process data
+    df = load_data()
+    if df is not None:
+        df = process_data(df)
 
-    def dashboard_anzeigen(self):
-        print("\n=== Finanzdashboard ===")
-        print(f"Verdienst: {self.verdienst}")
-        print(f"Cash-Position: {self.cash_position}")
-        print(f"Gesamtausgaben: {sum(ausgabe['betrag'] for ausgaben in self.ausgaben.values() for ausgabe in ausgaben)}")
-        print(f"Gesamtschulden: {sum(details['betrag'] for details in self.schulden.values())}")
+    if page == "Kontenübersicht":
+        kontenubersicht(df)
+    elif page == "Analyse":
+        analyse(df)
+    elif page == "Empfehlung":
+        empfehlung(df)
 
-    def start(self):
-        while True:
-            print("\n=== HaushaltsApp Hauptmenü ===")
-            print("1. Daten eingeben")
-            print("2. Gesamtübersicht anzeigen")
-            print("3. Finanzdashboard anzeigen")
-            print("4. Exit")
-            auswahl = input("Bitte wähle eine Option (1-4): ")
-
-            if auswahl == '1':
-                self.benutzer_input()
-            elif auswahl == '2':
-                self.gesamtuebersicht_anzeigen()
-            elif auswahl == '3':
-                self.dashboard_anzeigen()
-            elif auswahl == '4':
-                print("Programm wird beendet.")
-                break
-            else:
-                print("Ungültige Eingabe. Bitte wähle eine Option von 1 bis 4.")
-
-# Beispiel-Nutzung der interaktiven HaushaltsApp
-benutzername = input("Bitte gib deinen Namen ein: ")
-haushalts_app = HaushaltsApp(benutzername)
-haushalts_app.begruessung()
-
-# Starte die HaushaltsApp
-haushalts_app.start()
+if __name__ == "__main__":
+    main()
