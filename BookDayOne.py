@@ -8,13 +8,17 @@ import os
 import requests
 import io  # Importing 'io' for reading Excel files from BytesIO
 
-def get_stock_data(ticker):
-    stock = yf.Ticker(ticker)
-    data = stock.history(period="1d")
-    if not data.empty:
-        return data['Close'].iloc[-1]  # Gibt den letzten Schlusskurs zurück
-    else:
-        return None  # Keine Daten gefunden
+if 'Datum' in df.columns:
+            df['Datum'] = pd.to_datetime(df['Datum'], format='%d.%m.%Y', errors='coerce')
+            df = df.dropna(subset=['Datum'])  # Drop rows where conversion failed
+        else:
+            st.error("Column 'Datum' not found in the data")
+            return None
+
+        return df
+    except Exception as e:
+        st.error(f"Fehler beim Lesen der Finanzdatendatei: {e}")
+        return None
 
 # Hilfsfunktion zur Formatierung der Währungswerte
 def custom_format(value):
@@ -102,11 +106,14 @@ def plot_portfolio_history(stock_df):
 
 # Funktion zum Verarbeiten der Daten
 def process_data(df):
-    df['Betrag'] = pd.to_numeric(df['Betrag'], errors='coerce')
-    # 'Date' Spalte wird zu 'YearMonth' konvertiert.
-    df['YearMonth'] = df['Datum'].dt.to_period('M')
-    df.dropna(subset=['Betrag', 'YearMonth'], inplace=True)
-    return df
+    if df is not None and 'Datum' in df.columns and pd.api.types.is_datetime64_any_dtype(df['Datum']):
+        df['Betrag'] = pd.to_numeric(df['Betrag'], errors='coerce')
+        df['YearMonth'] = df['Datum'].dt.to_period('M')
+        df.dropna(subset=['Betrag', 'YearMonth'], inplace=True)
+        return df
+    else:
+        st.error("Invalid or missing 'Datum' column in DataFrame")
+        return None
 
 
 
