@@ -263,6 +263,7 @@ def get_stock_data(ticker):
     except Exception as e:
         print(f"Fehler beim Abrufen der Daten für {ticker}: {e}")
         return None
+
 def plot_stock_data(ticker):
     try:
         stock = yf.Ticker(ticker)
@@ -274,9 +275,7 @@ def plot_stock_data(ticker):
         plt.ylabel('Price')
         plt.legend()
         st.pyplot(plt)
-    except Exception as e:
-        st.error(f"Ein Fehler ist aufgetreten beim Abrufen der Daten für {ticker}: {e}")
-
+        
 
 # Section for displaying stock information
 def aktienkurse():
@@ -288,7 +287,7 @@ def aktienkurse():
             kurs = get_stock_data(aktien_name)
             if kurs is not None:
                 display_fundamental_data(aktien_name, kurs)
-                plot_stock_history(aktien_name)
+                plot_stock_data(aktien_name)  # Changed from plot_stock_history to plot_stock_data
             else:
                 st.error("Aktienkurs konnte nicht abgerufen werden. Stellen Sie sicher, dass das Tickersymbol korrekt ist.")
         except Exception as e:
