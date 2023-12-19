@@ -8,19 +8,7 @@ import os
 import requests
 import io  # Importing 'io' for reading Excel files from BytesIO
 
-if 'Datum' in df.columns:
-            df['Datum'] = pd.to_datetime(df['Datum'], format='%d.%m.%Y', errors='coerce')
-            df = df.dropna(subset=['Datum'])  # Drop rows where conversion failed
-        else:
-            st.error("Column 'Datum' not found in the data")
-            return None
-
-        return df
-    except Exception as e:
-        st.error(f"Fehler beim Lesen der Finanzdatendatei: {e}")
-        return None
-
-# Hilfsfunktion zur Formatierung der Währungswerte
+# Utility function to format currency values
 def custom_format(value):
     if pd.isna(value):
         return None
@@ -29,12 +17,31 @@ def custom_format(value):
         value_str = value_str.replace(',', 'X').replace('.', ',').replace('X', '.')
         return value_str
 
+# Function to fetch current stock price
+def fetch_current_price(ticker):
+    try:
+        stock = yf.Ticker(ticker)
+        price = stock.history(period="1d")['Close'][-1]
+        return price
+    except Exception as e:
+        print(f"Fehler beim Abrufen der Daten für {ticker}: {e}")
+        return 0
+
+# Function to get fundamental data of a stock
+def get_fundamental_data(ticker):
+    stock = yf.Ticker(ticker)
+    info = stock.info
+    kgv = float(info.get('trailingPE', 'N/A')) if 'trailingPE' in info else 'N/A'
+    market_cap = float(info.get('marketCap', 'N/A')) if 'marketCap' in info else 'N/A'
+    dividend_yield = float(info.get('dividendYield', 'N/A')) if 'dividendYield' in info else 'N/A'
+    return kgv, market_cap, dividend_yield
+
+# Function to load financial data from GitHub
 def load_data():
     try:
-    
-        token = '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'  # Replace with a valid token
+        token = 'YOUR_GITHUB_TOKEN'  # Replace with a valid token
         repo = 'Nemphis7/Pythonone'
-        path = 'Mappe1.xlsx'  # Removed 'blob/main/' from the path
+        path = 'Mappe1.xlsx'
         url = f'https://api.github.com/repos/{repo}/contents/{path}'
 
         headers = {'Authorization': f'token {token}'}
@@ -49,7 +56,18 @@ def load_data():
         st.error(f"Fehler beim Lesen der Finanzdatendatei: {e}")
         return None
 
+# Function to process data
+def process_data(df):
+    if df is not None and 'Datum' in df.columns and pd.api.types.is_datetime64_any_dtype(df['Datum']):
+        df['Betrag'] = pd.to_numeric(df['Betrag'], errors='coerce')
+        df['YearMonth'] = df['Datum'].dt.to_period('M')
+        df.dropna(subset=['Betrag', 'YearMonth'], inplace=True)
+        return df
+    else:
+        st.error("Invalid or missing 'Datum' column in DataFrame")
+        return None
 
+# Function to load and update stock portfolio data
 def load_stock_portfolio():
     try:
         url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/StockPortfolio.xlsx'
@@ -63,10 +81,7 @@ def load_stock_portfolio():
         return stock_df
     except Exception as e:
         st.error(f"Fehler beim Verarbeiten der Aktienportfolio-Datei: {e}")
-        return None
-
-
-# Function to fetch current stock price
+        return None# Function to fetch current stock price
 def fetch_current_price(ticker):
     try:
         stock = yf.Ticker(ticker)
