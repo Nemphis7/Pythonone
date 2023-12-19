@@ -31,7 +31,7 @@ def custom_format(value):
 def load_data():
     try:
         # Stellen Sie sicher, dass die Namen der Spalten korrekt sind.
-      url = 'https://raw.githubusercontent.com/your_username/your_repository/main/Mappe1.xlsx'
+      url = 'https://github.com/Nemphis7/Pythonone/blob/main/Mappe1.xlsx'
         df = pd.read_excel(url, names=['Datum', 'Name', 'Betrag'])
         df['Datum'] = pd.to_datetime(df['Datum'], format='%d.%m.%Y', errors='coerce')
         df = df.dropna(subset=['Datum'])
