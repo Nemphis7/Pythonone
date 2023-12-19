@@ -36,23 +36,27 @@ def get_fundamental_data(ticker):
     return kgv, market_cap, dividend_yield
 
 # Function to load financial data from GitHub
-def load_data():
+def load_stock_portfolio():
     try:
-        # Directly use the raw GitHub URL
-        url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/Mappe1.xlsx'
-        df = pd.read_excel(url, names=['Datum', 'Name', 'Betrag'])
-        return df
+        url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/StockPortfolio.xlsx'
+        stock_df = pd.read_excel(url, names=['Ticker', 'Quantity'])
+        # ... further processing of stock_df
+        return stock_df
     except Exception as e:
-        st.error(f"Fehler beim Lesen der Finanzdatendatei: {e}")
+        st.error(f"Fehler beim Verarbeiten der Aktienportfolio-Datei: {e}")
         return None
+
 
 def load_stock_portfolio():
     try:
-        # Directly use the raw GitHub URL for the stock portfolio
         url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/StockPortfolio.xlsx'
         stock_df = pd.read_excel(url, names=['Ticker', 'Quantity'])
-        # Continue processing stock_df as before
-        # ...
+        # ... further processing of stock_df
+        return stock_df
+    except Exception as e:
+        st.error(f"Fehler beim Verarbeiten der Aktienportfolio-Datei: {e}")
+        return None
+
     except Exception as e:
         st.error(f"Fehler beim Verarbeiten der Aktienportfolio-Datei: {e}")
         return None
