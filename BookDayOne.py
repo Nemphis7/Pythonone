@@ -259,8 +259,7 @@ def plot_stock_history(ticker):
 def get_stock_data(ticker):
     try:
         stock = yf.Ticker(ticker)
-        data = stock.history(period="1d")['Close'].iloc[-1]  # Get the latest closing price
-        return data
+        return stock.history(period="1d")['Close'][-1]
     except Exception as e:
         print(f"Fehler beim Abrufen der Daten für {ticker}: {e}")
         return None
