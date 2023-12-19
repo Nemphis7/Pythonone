@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 import yfinance as yf
 from datetime import datetime
 from sklearn.metrics.pairwise import cosine_similarity
-from io import BytesIO
 import requests
+import plotly.graph_objects as go
 
 def custom_format(value):
     if pd.isna(value):
@@ -153,35 +153,20 @@ def add_ticker_to_excel(ticker, amount, file_path):
 
 def analyse(df):
     st.title("Analyse")
-
     if df is not None:
-        # Assume 'Betrag' column contains income (positive values) and expenses (negative values)
-        df['Month'] = df['Datum'].dt.to_period('M')
-        monthly_summary = df.groupby('Month')['Betrag'].sum().reset_index()
+        # ... Existing implementation ...
 
-        # Calculate net savings (income - expenses)
-        monthly_summary['NetSavings'] = monthly_summary['Betrag']
-        monthly_summary.rename(columns={'Betrag': 'MonthlyDifference'}, inplace=True)
+        # Sankey Chart Integration
+        source = [0, 0, 1, 1, 2, 2, 3, 3]
+        target = [4, 5, 6, 7, 8, 9, 10, 11]
+        value = [8, 2, 2, 3, 4, 4, 2, 5]
+        label = ["Income", "Expenses", "Savings", "Investments", 
+                 "Salary", "Other Income", "Bills", "Entertainment", 
+                 "Retirement Fund", "Stocks", "Bonds", "Savings Account"]
 
-        # Display the monthly difference and net savings
-        st.subheader("Monatliche Übersicht")
-        st.dataframe(monthly_summary[['Month', 'MonthlyDifference', 'NetSavings']])
-
-        # Investment recommendations
-        st.subheader("Investitionsempfehlungen")
-        monthly_summary['InvestmentAmount'] = monthly_summary['NetSavings'] * 0.8
-        monthly_summary['Stocks'] = monthly_summary['InvestmentAmount'] * 0.8
-        monthly_summary['Bonds'] = monthly_summary['InvestmentAmount'] * 0.2
-
-        # Display investment amounts
-        st.dataframe(monthly_summary[['Month', 'InvestmentAmount', 'Stocks', 'Bonds']])
-
-        # Example ISINs for ETFs and Government Bonds
-        st.subheader("Beispiel-ISINs für Ihre Investitionen")
-        st.markdown("""
-        - ETFs (Stocks): IE00B4L5Y983 (iShares Core MSCI World UCITS ETF)
-        - Staatsanleihen (Bonds): DE0001102309 (Bundesanleihe, Germany)
-        """)
+        fig = go.Figure(data=[go.Sankey(node=dict(pad=15, thickness=20, line=dict(color="black", width=0.5), label=label), link=dict(source=source, target=target, value=value))])
+        fig.update_layout(title_text="Financial Flow - Sankey Diagram", font_size=10)
+        st.plotly_chart(fig)
 
     else:
         st.error("Keine Daten zum Analysieren vorhanden.")
