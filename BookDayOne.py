@@ -30,10 +30,19 @@ def custom_format(value):
 # Funktion zum Laden der Finanzdaten
 def load_data():
     try:
-        url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/Mappe1.xlsx'
-        df = pd.read_excel(url, names=['Datum', 'Name', 'Betrag'])
-        df['Datum'] = pd.to_datetime(df['Datum'], format='%d.%m.%Y', errors='coerce')
-        df = df.dropna(subset=['Datum'])
+        # Replace with your personal access token, repo, and file path
+        token = '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'
+        repo = 'Nemphis7/Pythonone'
+        path = 'blob/main/Mappe1.xlsx'
+        url = f'https://api.github.com/repos/{repo}/contents/{path}'
+
+        headers = {'Authorization': f'token {token}'}
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()  # Ensure we notice bad responses
+
+        download_url = response.json()['download_url']
+        data = requests.get(download_url).content
+        df = pd.read_excel(io.BytesIO(data), names=['Datum', 'Name', 'Betrag'])
         return df
     except Exception as e:
         st.error(f"Fehler beim Lesen der Finanzdatendatei: {e}")
