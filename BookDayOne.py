@@ -4,9 +4,7 @@ import matplotlib.pyplot as plt
 import yfinance as yf
 from datetime import datetime
 from sklearn.metrics.pairwise import cosine_similarity
-import os
 import requests
-import io  # Importing 'io' for reading Excel files from BytesIO
 
 # Utility function to format currency values
 def custom_format(value):
@@ -46,11 +44,11 @@ def load_data():
 
         headers = {'Authorization': f'token {token}'}
         response = requests.get(url, headers=headers)
-        response.raise_for_status()  # Ensure we notice bad responses
+        response.raise_for_status()
 
         download_url = response.json()['download_url']
         data = requests.get(download_url).content
-        df = pd.read_excel(io.BytesIO(data), names=['Datum', 'Name', 'Betrag'])
+        df = pd.read_excel(pd.BytesIO(data), names=['Datum', 'Name', 'Betrag'])
         return df
     except Exception as e:
         st.error(f"Fehler beim Lesen der Finanzdatendatei: {e}")
@@ -58,8 +56,10 @@ def load_data():
 
 # Function to process data
 def process_data(df):
-    if df is not None and 'Datum' in df.columns and pd.api.types.is_datetime64_any_dtype(df['Datum']):
+    if df is not None and 'Datum' in df.columns:
         df['Betrag'] = pd.to_numeric(df['Betrag'], errors='coerce')
+        df['Datum'] = pd.to_datetime(df['Datum'], errors='coerce')
+        df = df.dropna(subset=['Datum'])
         df['YearMonth'] = df['Datum'].dt.to_period('M')
         df.dropna(subset=['Betrag', 'YearMonth'], inplace=True)
         return df
@@ -72,18 +72,17 @@ def load_stock_portfolio():
     try:
         token = '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'  # Replace with a valid token
         repo = 'Nemphis7/Pythonone'
-        path = 'StockPortfolio.xlsx'  # Path to the stock portfolio file in the repo
+        path = 'StockPortfolio.xlsx'
         url = f'https://api.github.com/repos/{repo}/contents/{path}'
 
         headers = {'Authorization': f'token {token}'}
         response = requests.get(url, headers=headers)
-        response.raise_for_status()  # Ensure we notice bad responses
+        response.raise_for_status()
 
         download_url = response.json()['download_url']
         data = requests.get(download_url).content
-        stock_df = pd.read_excel(pd.ExcelFile(data), names=['Ticker', 'Quantity'])
+        stock_df = pd.read_excel(pd.BytesIO(data), names=['Ticker', 'Quantity'])
 
-        # Continue with the processing of stock_df as before
         stock_df['CurrentPrice'] = stock_df['Ticker'].apply(fetch_current_price)
         stock_df.dropna(subset=['CurrentPrice'], inplace=True)
         stock_df = stock_df[stock_df['CurrentPrice'] != 0]
@@ -95,6 +94,7 @@ def load_stock_portfolio():
     except Exception as e:
         st.error(f"Fehler beim Verarbeiten der Aktienportfolio-Datei: {e}")
         return None
+
 def fetch_current_price(ticker):
     try:
         stock = yf.Ticker(ticker)
