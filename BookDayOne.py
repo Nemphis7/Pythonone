@@ -167,7 +167,7 @@ def show_add_ticker_form():
         if submit_button:
             # Rest des Codes bleibt unverändert
 
-          'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/StockPortfolio.xlsx'  # Ersetze dies mit dem tatsächlichen Pfad
+         url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/StockPortfolio.xlsx'  # Ersetze dies mit dem tatsächlichen Pfad
             add_ticker_to_excel(ticker, amount, file_path)
 
 
