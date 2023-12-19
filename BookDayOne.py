@@ -70,18 +70,31 @@ def process_data(df):
 # Function to load and update stock portfolio data
 def load_stock_portfolio():
     try:
-        url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/StockPortfolio.xlsx'
-        stock_df = pd.read_excel(url, names=['Ticker', 'Quantity'])
+        token = 'YOUR_GITHUB_TOKEN'  # Replace with a valid token
+        repo = 'Nemphis7/Pythonone'
+        path = 'StockPortfolio.xlsx'  # Path to the stock portfolio file in the repo
+        url = f'https://api.github.com/repos/{repo}/contents/{path}'
+
+        headers = {'Authorization': f'token {token}'}
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()  # Ensure we notice bad responses
+
+        download_url = response.json()['download_url']
+        data = requests.get(download_url).content
+        stock_df = pd.read_excel(io.BytesIO(data), names=['Ticker', 'Quantity'])
+
+        # Continue with the processing of stock_df as before
         stock_df['CurrentPrice'] = stock_df['Ticker'].apply(fetch_current_price)
         stock_df.dropna(subset=['CurrentPrice'], inplace=True)
         stock_df = stock_df[stock_df['CurrentPrice'] != 0]
         stock_df['TotalValue'] = stock_df['Quantity'] * stock_df['CurrentPrice']
         stock_df['CurrentPrice'] = stock_df['CurrentPrice'].round(2).apply(custom_format)
         stock_df['TotalValue'] = stock_df['TotalValue'].round(2).apply(custom_format)
+
         return stock_df
     except Exception as e:
         st.error(f"Fehler beim Verarbeiten der Aktienportfolio-Datei: {e}")
-        return None# Function to fetch current stock price
+        return None
 def fetch_current_price(ticker):
     try:
         stock = yf.Ticker(ticker)
