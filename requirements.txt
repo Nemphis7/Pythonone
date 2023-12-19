@@ -5,5 +5,3 @@ scikit-learn
 openpyxl
 datetime
 requests
-os
-io
