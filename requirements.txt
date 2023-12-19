@@ -4,5 +4,4 @@ yfinance
 scikit-learn
 openpyxl
 datetime
-io
 requests
