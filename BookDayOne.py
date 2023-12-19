@@ -31,11 +31,14 @@ def custom_format(value):
 def load_data():
     try:
         # Stellen Sie sicher, dass die Namen der Spalten korrekt sind.
-        df = pd.read_excel('/Users/constantinkoster/Desktop/Financial Economics with Python/Mappe1.xlsx', names=['Datum', 'Name', 'Betrag'])
-        # Konvertieren Sie das 'Datum' im deutschen Format in ein Datetime-Objekt.
+      url = 'https://raw.githubusercontent.com/your_username/your_repository/main/Mappe1.xlsx'
+        df = pd.read_excel(url, names=['Datum', 'Name', 'Betrag'])
         df['Datum'] = pd.to_datetime(df['Datum'], format='%d.%m.%Y', errors='coerce')
-        # Entfernen Sie alle Zeilen mit NaN im 'Datum' nach der Konvertierung.
         df = df.dropna(subset=['Datum'])
+        return df
+    except Exception as e:
+        st.error(f"Fehler beim Lesen der Finanzdatendatei: {e}")
+        return None
         return df
     except Exception as e:
         st.error(f"Fehler beim Lesen der Finanzdatendatei: {e}")
@@ -55,16 +58,18 @@ def fetch_current_price(ticker):
 # Function to load and update stock portfolio data
 def load_stock_portfolio():
     try:
-        stock_df = pd.read_excel('/Users/constantinkoster/Desktop/Financial Economics with Python/StockPortfolio.xlsx', names=['Ticker', 'Quantity'])
+         url = 'https://raw.githubusercontent.com/your_username/your_repository/main/StockPortfolio.xlsx'
+        stock_df = pd.read_excel(url, names=['Ticker', 'Quantity'])
         stock_df['CurrentPrice'] = stock_df['Ticker'].apply(fetch_current_price)
-        # Entfernen von Zeilen, wo 'CurrentPrice' None oder 0 ist
         stock_df.dropna(subset=['CurrentPrice'], inplace=True)
         stock_df = stock_df[stock_df['CurrentPrice'] != 0]
         stock_df['TotalValue'] = stock_df['Quantity'] * stock_df['CurrentPrice']
-        
-        # Runden Sie 'CurrentPrice' und 'TotalValue' auf zwei Nachkommastellen und formatieren Sie sie
         stock_df['CurrentPrice'] = stock_df['CurrentPrice'].round(2).apply(custom_format)
         stock_df['TotalValue'] = stock_df['TotalValue'].round(2).apply(custom_format)
+        return stock_df
+    except Exception as e:
+        st.error(f"Fehler beim Verarbeiten der Aktienportfolio-Datei: {e}")
+        return None
         
         return stock_df
     except Exception as e:
