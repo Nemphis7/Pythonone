@@ -30,7 +30,7 @@ def custom_format(value):
 # Funktion zum Laden der Finanzdaten
 def load_data():
     try:
-        url = 'https://github.com/Nemphis7/Pythonone/blob/main/Mappe1.xlsx'
+        url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/Mappe1.xlsx'
         df = pd.read_excel(url, names=['Datum', 'Name', 'Betrag'])
         df['Datum'] = pd.to_datetime(df['Datum'], format='%d.%m.%Y', errors='coerce')
         df = df.dropna(subset=['Datum'])
@@ -41,7 +41,7 @@ def load_data():
 
 def load_stock_portfolio():
     try:
-        url = 'https://github.com/Nemphis7/Pythonone/blob/main/StockPortfolio.xlsx'
+        url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/StockPortfolio.xlsx'
         stock_df = pd.read_excel(url, names=['Ticker', 'Quantity'])
         stock_df['CurrentPrice'] = stock_df['Ticker'].apply(fetch_current_price)
         stock_df.dropna(subset=['CurrentPrice'], inplace=True)
