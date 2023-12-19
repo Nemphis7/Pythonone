@@ -31,7 +31,7 @@ def custom_format(value):
 def load_data():
     try:
         # Stellen Sie sicher, dass die Namen der Spalten korrekt sind.
-        df = pd.read_excel('/Users/moritzmahler/Documents/Uni/6. Semester/Financial Economics with Python/FIEP Projekt/Mappe1.xlsx', names=['Datum', 'Name', 'Betrag'])
+        df = pd.read_excel('/Users/constantinkoster/Desktop/Financial Economics with Python/Mappe1.xlsx', names=['Datum', 'Name', 'Betrag'])
         # Konvertieren Sie das 'Datum' im deutschen Format in ein Datetime-Objekt.
         df['Datum'] = pd.to_datetime(df['Datum'], format='%d.%m.%Y', errors='coerce')
         # Entfernen Sie alle Zeilen mit NaN im 'Datum' nach der Konvertierung.
@@ -55,7 +55,7 @@ def fetch_current_price(ticker):
 # Function to load and update stock portfolio data
 def load_stock_portfolio():
     try:
-        stock_df = pd.read_excel('/Users/moritzmahler/Documents/Uni/6. Semester/Financial Economics with Python/FIEP Projekt/StockPortfolio.xlsx', names=['Ticker', 'Quantity'])
+        stock_df = pd.read_excel('/Users/constantinkoster/Desktop/Financial Economics with Python/StockPortfolio.xlsx', names=['Ticker', 'Quantity'])
         stock_df['CurrentPrice'] = stock_df['Ticker'].apply(fetch_current_price)
         # Entfernen von Zeilen, wo 'CurrentPrice' None oder 0 ist
         stock_df.dropna(subset=['CurrentPrice'], inplace=True)
@@ -166,7 +166,7 @@ def show_add_ticker_form():
         if submit_button:
             # Rest des Codes bleibt unverändert
 
-            file_path = '/Users/moritzmahler/Documents/Uni/6. Semester/Financial Economics with Python/FIEP Projekt/StockPortfolio.xlsx'  # Ersetze dies mit dem tatsächlichen Pfad
+            file_path = '/Users/constantinkoster/Desktop/Financial Economics with Python/StockPortfolio.xlsx'  # Ersetze dies mit dem tatsächlichen Pfad
             add_ticker_to_excel(ticker, amount, file_path)
 
 
@@ -293,7 +293,7 @@ def show_new_entry_form(df):
         amount = st.number_input("Betrag", step=1.0)
         submitted = st.form_submit_button("Eintrag hinzufügen")
         if submitted:
-            file_path = '/Users/moritzmahler/Documents/Uni/6. Semester/Financial Economics with Python/FIEP Projekt/Mappe1.xlsx'
+            file_path = '/Users/constantinkoster/Desktop/Financial Economics with Python/Mappe1.xlsx'
             add_entry_to_excel(date, name, amount, file_path)
             st.success("Buchung erfolgreich hinzugefügt.")
             # Cache leeren, wenn Sie @st.cache verwenden
