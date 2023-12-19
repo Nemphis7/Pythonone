@@ -5,6 +5,7 @@ import yfinance as yf
 from datetime import datetime
 from sklearn.metrics.pairwise import cosine_similarity
 import os
+import requests
 
 def get_stock_data(ticker):
     stock = yf.Ticker(ticker)
