@@ -58,7 +58,7 @@ def fetch_current_price(ticker):
 # Function to load and update stock portfolio data
 def load_stock_portfolio():
     try:
-         url = 'https://raw.githubusercontent.com/your_username/your_repository/main/StockPortfolio.xlsx'
+         url = 'https://github.com/Nemphis7/Pythonone/blob/main/StockPortfolio.xlsx'
         stock_df = pd.read_excel(url, names=['Ticker', 'Quantity'])
         stock_df['CurrentPrice'] = stock_df['Ticker'].apply(fetch_current_price)
         stock_df.dropna(subset=['CurrentPrice'], inplace=True)
