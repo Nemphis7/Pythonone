@@ -30,8 +30,7 @@ def custom_format(value):
 # Funktion zum Laden der Finanzdaten
 def load_data():
     try:
-        # Stellen Sie sicher, dass die Namen der Spalten korrekt sind.
-      url = 'https://github.com/Nemphis7/Pythonone/blob/main/Mappe1.xlsx'
+        url = 'https://github.com/Nemphis7/Pythonone/blob/main/Mappe1.xlsx'
         df = pd.read_excel(url, names=['Datum', 'Name', 'Betrag'])
         df['Datum'] = pd.to_datetime(df['Datum'], format='%d.%m.%Y', errors='coerce')
         df = df.dropna(subset=['Datum'])
@@ -39,9 +38,20 @@ def load_data():
     except Exception as e:
         st.error(f"Fehler beim Lesen der Finanzdatendatei: {e}")
         return None
-        return df
+
+def load_stock_portfolio():
+    try:
+        url = 'https://github.com/Nemphis7/Pythonone/blob/main/StockPortfolio.xlsx'
+        stock_df = pd.read_excel(url, names=['Ticker', 'Quantity'])
+        stock_df['CurrentPrice'] = stock_df['Ticker'].apply(fetch_current_price)
+        stock_df.dropna(subset=['CurrentPrice'], inplace=True)
+        stock_df = stock_df[stock_df['CurrentPrice'] != 0]
+        stock_df['TotalValue'] = stock_df['Quantity'] * stock_df['CurrentPrice']
+        stock_df['CurrentPrice'] = stock_df['CurrentPrice'].round(2).apply(custom_format)
+        stock_df['TotalValue'] = stock_df['TotalValue'].round(2).apply(custom_format)
+        return stock_df
     except Exception as e:
-        st.error(f"Fehler beim Lesen der Finanzdatendatei: {e}")
+        st.error(f"Fehler beim Verarbeiten der Aktienportfolio-Datei: {e}")
         return None
 
 
@@ -56,20 +66,6 @@ def fetch_current_price(ticker):
         return 0  # oder einen anderen Fallback-Wert, der für Ihre Anwendung sinnvoll ist
 
 # Function to load and update stock portfolio data
-def load_stock_portfolio():
-    try:
-         url = 'https://github.com/Nemphis7/Pythonone/blob/main/StockPortfolio.xlsx'
-        stock_df = pd.read_excel(url, names=['Ticker', 'Quantity'])
-        stock_df['CurrentPrice'] = stock_df['Ticker'].apply(fetch_current_price)
-        stock_df.dropna(subset=['CurrentPrice'], inplace=True)
-        stock_df = stock_df[stock_df['CurrentPrice'] != 0]
-        stock_df['TotalValue'] = stock_df['Quantity'] * stock_df['CurrentPrice']
-        stock_df['CurrentPrice'] = stock_df['CurrentPrice'].round(2).apply(custom_format)
-        stock_df['TotalValue'] = stock_df['TotalValue'].round(2).apply(custom_format)
-        return stock_df
-    except Exception as e:
-        st.error(f"Fehler beim Verarbeiten der Aktienportfolio-Datei: {e}")
-        return None
         
         return stock_df
     except Exception as e:
