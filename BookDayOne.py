@@ -153,9 +153,39 @@ def add_ticker_to_excel(ticker, amount, file_path):
 
 def analyse(df):
     st.title("Analyse")
+
     if df is not None:
-        financial_df = df.groupby(['YearMonth', 'Category'])['Amount'].sum().reset_index()
-        plot_financials(financial_df)
+        # Assume 'Betrag' column contains income (positive values) and expenses (negative values)
+        df['Month'] = df['Datum'].dt.to_period('M')
+        monthly_summary = df.groupby('Month')['Betrag'].sum().reset_index()
+
+        # Calculate net savings (income - expenses)
+        monthly_summary['NetSavings'] = monthly_summary['Betrag']
+        monthly_summary.rename(columns={'Betrag': 'MonthlyDifference'}, inplace=True)
+
+        # Display the monthly difference and net savings
+        st.subheader("Monatliche Übersicht")
+        st.dataframe(monthly_summary[['Month', 'MonthlyDifference', 'NetSavings']])
+
+        # Investment recommendations
+        st.subheader("Investitionsempfehlungen")
+        monthly_summary['InvestmentAmount'] = monthly_summary['NetSavings'] * 0.8
+        monthly_summary['Stocks'] = monthly_summary['InvestmentAmount'] * 0.8
+        monthly_summary['Bonds'] = monthly_summary['InvestmentAmount'] * 0.2
+
+        # Display investment amounts
+        st.dataframe(monthly_summary[['Month', 'InvestmentAmount', 'Stocks', 'Bonds']])
+
+        # Example ISINs for ETFs and Government Bonds
+        st.subheader("Beispiel-ISINs für Ihre Investitionen")
+        st.markdown("""
+        - ETFs (Stocks): IE00B4L5Y983 (iShares Core MSCI World UCITS ETF)
+        - Staatsanleihen (Bonds): DE0001102309 (Bundesanleihe, Germany)
+        """)
+
+    else:
+        st.error("Keine Daten zum Analysieren vorhanden.")
+
 
 def make_recommendations(user_portfolio, asset_data):
     user_portfolio_df = pd.DataFrame(list(user_portfolio.items()), columns=['Ticker', 'Quantity'])
