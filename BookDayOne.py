@@ -259,14 +259,17 @@ def plot_stock_history(ticker):
 def get_stock_data(ticker):
     try:
         stock = yf.Ticker(ticker)
-        data = stock.history(period="1d")
+        data = stock.history(period="1d")['Close'].iloc[-1]  # Get the latest closing price
         return data
     except Exception as e:
         print(f"Fehler beim Abrufen der Daten für {ticker}: {e}")
         return None
+
+# Section for displaying stock information
 def aktienkurse():
     st.title("Aktienkurse")
     aktien_name = st.text_input("Aktienname oder Tickersymbol eingeben:", "")
+    
     if aktien_name:
         try:
             kurs = get_stock_data(aktien_name)
