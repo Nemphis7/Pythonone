@@ -6,6 +6,7 @@ from datetime import datetime
 from sklearn.metrics.pairwise import cosine_similarity
 import os
 import requests
+import io  # Importing 'io' for reading Excel files from BytesIO
 
 def get_stock_data(ticker):
     stock = yf.Ticker(ticker)
@@ -15,26 +16,21 @@ def get_stock_data(ticker):
     else:
         return None  # Keine Daten gefunden
 
-
 # Hilfsfunktion zur Formatierung der Währungswerte
 def custom_format(value):
     if pd.isna(value):
         return None
     else:
-        # Zuerst in einen String mit zwei Nachkommastellen umwandeln
         value_str = f"{value:,.2f}"
-        # Ersetze Punkte durch Kommas und Kommas durch Punkte
         value_str = value_str.replace(',', 'X').replace('.', ',').replace('X', '.')
         return value_str
 
-
-# Funktion zum Laden der Finanzdaten
 def load_data():
     try:
-        # Replace with your personal access token, repo, and file path
-        token = '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'
+    
+        token = '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'  # Replace with a valid token
         repo = 'Nemphis7/Pythonone'
-        path = 'blob/main/Mappe1.xlsx'
+        path = 'Mappe1.xlsx'  # Removed 'blob/main/' from the path
         url = f'https://api.github.com/repos/{repo}/contents/{path}'
 
         headers = {'Authorization': f'token {token}'}
@@ -48,6 +44,7 @@ def load_data():
     except Exception as e:
         st.error(f"Fehler beim Lesen der Finanzdatendatei: {e}")
         return None
+
 
 def load_stock_portfolio():
     try:
