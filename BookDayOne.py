@@ -263,6 +263,20 @@ def get_stock_data(ticker):
     except Exception as e:
         print(f"Fehler beim Abrufen der Daten für {ticker}: {e}")
         return None
+def plot_stock_data(ticker):
+    try:
+        stock = yf.Ticker(ticker)
+        data = stock.history(period="5y")
+        plt.figure(figsize=(10, 5))
+        plt.plot(data.index, data['Close'], label='Close Price')
+        plt.title(f"5-Year Stock Price History for {ticker}")
+        plt.xlabel('Date')
+        plt.ylabel('Price')
+        plt.legend()
+        st.pyplot(plt)
+    except Exception as e:
+        st.error(f"Ein Fehler ist aufgetreten beim Abrufen der Daten für {ticker}: {e}")
+
 
 # Section for displaying stock information
 def aktienkurse():
