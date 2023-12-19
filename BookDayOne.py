@@ -37,23 +37,12 @@ def get_fundamental_data(ticker):
 # Function to load financial data from GitHub
 def load_data():
     try:
-        token = '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'  # Replace with a valid token
-        repo = 'Nemphis7/Pythonone'
-        path = 'Mappe1.xlsx'
-        url = f'https://api.github.com/repos/{repo}/contents/{path}'
-
-        headers = {'Authorization': f'token {token}'}
-        response = requests.get(url, headers=headers)
-        response.raise_for_status()
-
-        download_url = response.json()['download_url']
-        data = requests.get(download_url).content
-        df = pd.read_excel(pd.BytesIO(data), names=['Datum', 'Name', 'Betrag'])
+        url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/Mappe1.xlsx'
+        df = pd.read_excel(url, names=['Datum', 'Name', 'Betrag'])
         return df
     except Exception as e:
         st.error(f"Fehler beim Lesen der Finanzdatendatei: {e}")
         return None
-
 # Function to process data
 def process_data(df):
     if df is not None and 'Datum' in df.columns:
@@ -70,27 +59,9 @@ def process_data(df):
 # Function to load and update stock portfolio data
 def load_stock_portfolio():
     try:
-        token = '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'  # Replace with a valid token
-        repo = 'Nemphis7/Pythonone'
-        path = 'StockPortfolio.xlsx'
-        url = f'https://api.github.com/repos/{repo}/contents/{path}'
-
-        headers = {'Authorization': f'token {token}'}
-        response = requests.get(url, headers=headers)
-        response.raise_for_status()
-
-        download_url = response.json()['download_url']
-        data = requests.get(download_url).content
-        stock_df = pd.read_excel(pd.BytesIO(data), names=['Ticker', 'Quantity'])
-
-        stock_df['CurrentPrice'] = stock_df['Ticker'].apply(fetch_current_price)
-        stock_df.dropna(subset=['CurrentPrice'], inplace=True)
-        stock_df = stock_df[stock_df['CurrentPrice'] != 0]
-        stock_df['TotalValue'] = stock_df['Quantity'] * stock_df['CurrentPrice']
-        stock_df['CurrentPrice'] = stock_df['CurrentPrice'].round(2).apply(custom_format)
-        stock_df['TotalValue'] = stock_df['TotalValue'].round(2).apply(custom_format)
-
-        return stock_df
+        url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/StockPortfolio.xlsx'
+        stock_df = pd.read_excel(url, names=['Ticker', 'Quantity'])
+        # ... continue processing stock_df as before ...
     except Exception as e:
         st.error(f"Fehler beim Verarbeiten der Aktienportfolio-Datei: {e}")
         return None
