@@ -38,11 +38,23 @@ def get_fundamental_data(ticker):
 # Function to load financial data from GitHub
 def load_data():
     try:
+        # Directly use the raw GitHub URL
         url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/Mappe1.xlsx'
         df = pd.read_excel(url, names=['Datum', 'Name', 'Betrag'])
         return df
     except Exception as e:
         st.error(f"Fehler beim Lesen der Finanzdatendatei: {e}")
+        return None
+
+def load_stock_portfolio():
+    try:
+        # Directly use the raw GitHub URL for the stock portfolio
+        url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/StockPortfolio.xlsx'
+        stock_df = pd.read_excel(url, names=['Ticker', 'Quantity'])
+        # Continue processing stock_df as before
+        # ...
+    except Exception as e:
+        st.error(f"Fehler beim Verarbeiten der Aktienportfolio-Datei: {e}")
         return None
 # Function to process data
 def process_data(df):
@@ -56,17 +68,6 @@ def process_data(df):
     else:
         st.error("Invalid or missing 'Datum' column in DataFrame")
         return None
-
-# Function to load and update stock portfolio data
-def load_stock_portfolio():
-    try:
-        url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/StockPortfolio.xlsx'
-        stock_df = pd.read_excel(url, names=['Ticker', 'Quantity'])
-        # ... continue processing stock_df as before ...
-    except Exception as e:
-        st.error(f"Fehler beim Verarbeiten der Aktienportfolio-Datei: {e}")
-        return None
-
 def fetch_current_price(ticker):
     try:
         stock = yf.Ticker(ticker)
