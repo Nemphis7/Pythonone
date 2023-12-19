@@ -39,7 +39,7 @@ def get_fundamental_data(ticker):
 # Function to load financial data from GitHub
 def load_data():
     try:
-        token = 'YOUR_GITHUB_TOKEN'  # Replace with a valid token
+        token = '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'  # Replace with a valid token
         repo = 'Nemphis7/Pythonone'
         path = 'Mappe1.xlsx'
         url = f'https://api.github.com/repos/{repo}/contents/{path}'
@@ -70,7 +70,7 @@ def process_data(df):
 # Function to load and update stock portfolio data
 def load_stock_portfolio():
     try:
-        token = 'YOUR_GITHUB_TOKEN'  # Replace with a valid token
+        token = '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'  # Replace with a valid token
         repo = 'Nemphis7/Pythonone'
         path = 'StockPortfolio.xlsx'  # Path to the stock portfolio file in the repo
         url = f'https://api.github.com/repos/{repo}/contents/{path}'
@@ -81,7 +81,7 @@ def load_stock_portfolio():
 
         download_url = response.json()['download_url']
         data = requests.get(download_url).content
-        stock_df = pd.read_excel(io.BytesIO(data), names=['Ticker', 'Quantity'])
+        stock_df = pd.read_excel(pd.ExcelFile(data), names=['Ticker', 'Quantity'])
 
         # Continue with the processing of stock_df as before
         stock_df['CurrentPrice'] = stock_df['Ticker'].apply(fetch_current_price)
