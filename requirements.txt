@@ -3,3 +3,7 @@ matplotlib
 yfinance
 scikit-learn
 openpyxl
+datetime
+os
+io
+requests
