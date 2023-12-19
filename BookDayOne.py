@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import yfinance as yf
 from datetime import datetime
 from sklearn.metrics.pairwise import cosine_similarity
+from io import BytesIO
 import requests
 
 # Utility function to format currency values
