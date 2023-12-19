@@ -167,7 +167,7 @@ def show_add_ticker_form():
         if submit_button:
             # Rest des Codes bleibt unverändert
 
-            file_path = '/Users/constantinkoster/Desktop/Financial Economics with Python/StockPortfolio.xlsx'  # Ersetze dies mit dem tatsächlichen Pfad
+          'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/StockPortfolio.xlsx'  # Ersetze dies mit dem tatsächlichen Pfad
             add_ticker_to_excel(ticker, amount, file_path)
 
 
@@ -294,7 +294,7 @@ def show_new_entry_form(df):
         amount = st.number_input("Betrag", step=1.0)
         submitted = st.form_submit_button("Eintrag hinzufügen")
         if submitted:
-            file_path = '/Users/constantinkoster/Desktop/Financial Economics with Python/Mappe1.xlsx'
+            url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/Mappe1.xlsx'
             add_entry_to_excel(date, name, amount, file_path)
             st.success("Buchung erfolgreich hinzugefügt.")
             # Cache leeren, wenn Sie @st.cache verwenden
