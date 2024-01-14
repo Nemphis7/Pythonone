@@ -301,18 +301,11 @@ def plot_stock_data(ticker):
 def aktienkurse():
     st.title("Aktienkurse")
     aktien_name = st.text_input("Aktienname oder Tickersymbol eingeben:", "")
-    
     if aktien_name:
         try:
             kurs = get_stock_data(aktien_name)
             if kurs is not None:
-                display_fundamental_data(aktien_name, kurs)
-                plot_stock_data(aktien_name)  # Changed from plot_stock_history to plot_stock_data
-            else:
-                st.error("Aktienkurs konnte nicht abgerufen werden. Stellen Sie sicher, dass das Tickersymbol korrekt ist.")
-        except Exception as e:
-            st.error(f"Ein Fehler ist aufgetreten: {e}")
-
+                display_f
 def main():
     st.sidebar.title("Navigation")
     page = st.sidebar.radio("Wähle eine Seite", ["Kontenübersicht", "Analyse", "Empfehlung", "Aktienkurse"])
