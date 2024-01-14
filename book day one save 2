@@ -10,35 +10,45 @@ import plotly.graph_objects as go
 import pandas as pd
 import streamlit as st
 
-def check_login(username, password):
-    # Load user credentials from a CSV file
-    try:
-        users_df = pd.read_csv('users.csv')
-    except FileNotFoundError:
-        st.error("User database not found.")
-        return False
+import streamlit as st
 
-    # Check if the user exists and password matches
-    user = users_df[(users_df['username'] == username) & (users_df['password'] == password)]
-    return not user.empty
+# Function to check the login credentials
+def check_login(username, password):
+    # Replace these with your actual methods for credential verification
+    valid_username = "admin"
+    valid_password = "password123"
+
+    return username == valid_username and password == valid_password
+
+def display_login():
+    st.sidebar.title("Login")
+    username = st.sidebar.text_input("Username")
+    password = st.sidebar.text_input("Password", type="password")
+    login_button = st.sidebar.button("Login")
+    return login_button, username, password
 
 def main():
-    # Check if the user is logged in
+    # Initialize session state
     if 'logged_in' not in st.session_state:
         st.session_state['logged_in'] = False
 
-    # Login Section
+    # Display login form if the user is not logged in
     if not st.session_state['logged_in']:
-        st.sidebar.title("Login")
-        username = st.sidebar.text_input("Username")
-        password = st.sidebar.text_input("Password", type="password")
-        if st.sidebar.button("Login"):
+        login_button, username, password = display_login()
+        if login_button:
             if check_login(username, password):
                 st.session_state['logged_in'] = True
                 st.success("Successfully logged in.")
             else:
                 st.error("Incorrect username or password.")
-        return  # Stop execution if not logged in
+    else:
+        # Display main app if the user is logged in
+        st.title("Welcome to the App")
+        # Place the main components of your app here
+
+if __name__ == "__main__":
+    main()
+
 
     # Your existing app goes here
     st.sidebar.title("Navigation")
