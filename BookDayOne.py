@@ -295,9 +295,7 @@ def plot_stock_data(ticker):
         plt.ylabel('Price')
         plt.legend()
         st.pyplot(plt)
-        
-
-# Section for displaying stock information
+        # Section for displaying stock information
 def aktienkurse():
     st.title("Aktienkurse")
     aktien_name = st.text_input("Aktienname oder Tickersymbol eingeben:", "")
