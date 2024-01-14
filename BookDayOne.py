@@ -295,6 +295,8 @@ def plot_stock_data(ticker):
         plt.ylabel('Price')
         plt.legend()
         st.pyplot(plt)
+    except: 
+        print("Stop"
         # Section for displaying stock information
 def aktienkurse():
     st.title("Aktienkurse")
