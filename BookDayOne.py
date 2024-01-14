@@ -21,16 +21,15 @@ def fetch_current_price(ticker):
         price = stock.history(period="1d")['Close'][-1]
         return price
     except Exception as e:
-        print(f"Fehler beim Abrufen der Daten für {ticker}: {e}")
-        return 0
+        raise Exception(f"Fehler beim Abrufen der Daten für {ticker}: {e}")
 
 def get_fundamental_data(ticker):
     stock = yf.Ticker(ticker)
     info = stock.info
-    kgv = float(info.get('trailingPE', 'N/A')) if 'trailingPE' in info else 'N/A'
-    market_cap = float(info.get('marketCap', 'N/A')) if 'marketCap' in info else 'N/A'
-    dividend_yield = float(info.get('dividendYield', 'N/A')) if 'dividendYield' in info else 'N/A'
-    return kgv, market_cap, dividend_yield
+    kgv = float(info.get('trailingPE')) if 'trailingPE' in info else None
+    market_cap = float(info.get('marketCap')) if 'marketCap' in info else None
+    dividend_yield = float(info.get('dividendYield')) if 'dividendYield' in info else None
+    return
 
 def load_data():
     try:
@@ -150,6 +149,24 @@ def add_ticker_to_excel(ticker, amount, file_path):
         st.success("Die Daten wurden erfolgreich in Excel hinzugefügt.")
     except Exception as e:
         st.error(f"Es gab einen Fehler beim Schreiben in Excel: {e}")
+
+def add_entry_to_excel(date, name, amount, file_path):
+    date_str = date.strftime('%d.%m.%Y')
+    new_entry = pd.DataFrame({
+        'Datum': [date_str], 
+        'Name': [name], 
+        'Betrag': [amount]
+    })
+    try:
+        df = pd.read_excel(file_path)
+        df['Datum'] = pd.to_datetime(df['Datum'], format='%d.%m.%Y', errors='coerce')
+        df = df.dropna(subset=['Datum'])
+        df['Datum'] = df['Datum'].dt.strftime('%d.%m.%Y')
+    except FileNotFoundError:
+        df = pd.DataFrame(columns=['Datum', 'Name', 'Betrag'])
+    df = pd.concat([df, new_entry], ignore_index=True)
+    df.to_excel(file_path, index=False)
+
 
 def analyse(df):
     st.title("Analyse")
