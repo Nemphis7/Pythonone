@@ -136,19 +136,22 @@ def show_add_ticker_form():
 
 def add_ticker_to_excel(ticker, amount, file_path):
     try:
-        if os.path.exists(file_path):
-            df = pd.read_excel(file_path)
-        else:
-            df = pd.DataFrame(columns=['Ticker', 'Amount'])
-        if ticker in df['Ticker'].values:
-            df.loc[df['Ticker'] == ticker, 'Amount'] += amount
-        else:
-            new_row = pd.DataFrame({'Ticker': [ticker], 'Amount': [amount]})
-            df = pd.concat([df, new_row], ignore_index=True)
+        df = pd.read_excel(file_path)
+    except FileNotFoundError:
+        df = pd.DataFrame(columns=['Ticker', 'Amount'])
+
+    if ticker in df['Ticker'].values:
+        df.loc[df['Ticker'] == ticker, 'Amount'] += amount
+    else:
+        new_row = pd.DataFrame({'Ticker': [ticker], 'Amount': [amount]})
+        df = pd.concat([df, new_row], ignore_index=True)
+
+    try:
         df.to_excel(file_path, index=False)
         st.success("Die Daten wurden erfolgreich in Excel hinzugefügt.")
     except Exception as e:
         st.error(f"Es gab einen Fehler beim Schreiben in Excel: {e}")
+
 
 def add_entry_to_excel(date, name, amount, file_path):
     date_str = date.strftime('%d.%m.%Y')
