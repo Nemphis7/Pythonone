@@ -306,6 +306,8 @@ def aktienkurse():
             kurs = get_stock_data(aktien_name)
             if kurs is not None:
                 display_f
+        except:
+            print("Nö")
 def main():
     st.sidebar.title("Navigation")
     page = st.sidebar.radio("Wähle eine Seite", ["Kontenübersicht", "Analyse", "Empfehlung", "Aktienkurse"])
