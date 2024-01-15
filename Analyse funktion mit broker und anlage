@@ -1,23 +1,11 @@
 import streamlit as st
 import pandas as pd
 
-def analyse(df):
-    st.title("Analyse")
-
-    if df is not None:
-        # Einkommensbasierte Empfehlungen
-        df['Empfohlener Broker'] = df['Einkommen'].apply(empfehle_broker)
-        df['Broker Link'] = df['Empfohlener Broker'].apply(broker_link)
-        df['Empfohlene Anlage'] = df['Einkommen'].apply(empfehle_anlage)
-        df['Anlageprodukt Link'] = df['Empfohlene Anlage'].apply(anlageprodukt_link)
-
-        # Anzeigen der Ergebnisse
-        st.write(df)
-
-def empfehle_broker(einkommen):
-    if einkommen <= 3000:
+def empfehle_broker(einkommen, vermögen):
+    # Hier können Sie eine komplexere Logik basierend auf Einkommen und Vermögen einfügen
+    if einkommen <= 3000 or vermögen <= 10000:
         return "Broker A"
-    elif 3000 < einkommen <= 10000:
+    elif 3000 < einkommen <= 10000 or 10000 < vermögen <= 50000:
         return "Broker B"
     else:
         return "Broker C"
@@ -30,26 +18,68 @@ def broker_link(broker):
     }
     return links.get(broker, "Kein Link verfügbar")
 
-def empfehle_anlage(einkommen):
-    if einkommen <= 3000:
-        return "Anlageprodukt X (risikoarm)"
-    elif 3000 < einkommen <= 10000:
-        return "Anlageprodukt Y (ausgewogen)"
+def run():
+    st.title("Broker-Empfehlungstool")
+
+    # Eingabefelder für Einkommen und Vermögen
+    einkommen = st.number_input("Geben Sie Ihr Einkommen ein", min_value=0)
+    vermögen = st.number_input("Geben Sie Ihr Vermögen ein", min_value=0)
+
+    if st.button("Empfehlung erhalten"):
+        empfohlener_broker = empfehle_broker(einkommen, vermögen)
+        link = broker_link(empfohlener_broker)
+
+        st.write(f"Empfohlener Broker: {empfohlener_broker}")
+        st.markdown(f"[Link zum Broker]({link})")
+
+import streamlit as st
+
+def empfehle_anlageprodukt(einkommen, vermögen):
+    # Anlageprodukt-Empfehlungslogik
+    if einkommen <= 3000 or vermögen <= 10000:
+        return "ETF"
+    elif 3000 < einkommen <= 10000 or 10000 < vermögen <= 50000:
+        return "Gold"
     else:
-        return "Anlageprodukt Z (risikoreich)"
+        return "Anleihen"
 
 def anlageprodukt_link(anlageprodukt):
+    # Anlageprodukt-Links
     links = {
-        "Anlageprodukt X (risikoarm)": "https://link-zu-etf-x.com",
-        "Anlageprodukt Y (ausgewogen)": "https://link-zu-etf-y.com",
-        "Anlageprodukt Z (risikoreich)": "https://link-zu-etf-z.com"
+        "ETF": "https://link-zu-etf.com",
+        "Gold": "https://link-zu-gold.com",
+        "Anleihen": "https://link-zu-anleihen.com"
     }
     return links.get(anlageprodukt, "Kein Link verfügbar")
 
-# Beispiel-Daten
-data = {'Einkommen': [1000, 3000, 5000, 10000, 50000]}
-df = pd.DataFrame(data)
+def run():
+    st.title("Broker- und Anlageprodukt-Empfehlungstool")
 
-# Ausführen der Analyse
-analyse(df)
+    # Eingabefelder für Einkommen und Vermögen
+    einkommen = st.number_input("Geben Sie Ihr Einkommen ein", min_value=0)
+    vermögen = st.number_input("Geben Sie Ihr Vermögen ein", min_value=0)
 
+    if st.button("Empfehlung erhalten"):
+        # Broker-Empfehlung
+        empfohlener_broker = empfehle_broker(einkommen, vermögen)
+        broker_link_url = broker_link(empfohlener_broker)
+        st.write(f"Empfohlener Broker: {empfohlener_broker}")
+        st.markdown(f"[Link zum Broker]({broker_link_url})")
+
+        # Anlageprodukt-Empfehlung
+        empfohlenes_anlageprodukt = empfehle_anlageprodukt(einkommen, vermögen)
+        anlageprodukt_link_url = anlageprodukt_link(empfohlenes_anlageprodukt)
+        st.write(f"Empfohlenes Anlageprodukt: {empfohlenes_anlageprodukt}")
+        st.markdown(f"[Link zum Anlageprodukt]({anlageprodukt_link_url})")
+
+# Bestehende Funktionen
+def empfehle_broker(einkommen, vermögen):
+    # Broker-Empfehlungslogik
+    # ...
+
+def broker_link(broker):
+    # Broker-Links
+    # ...
+
+if __name__ == "__main__":
+    run()
