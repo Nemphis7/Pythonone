@@ -1,8 +1,7 @@
 import streamlit as st
-import pandas as pd
 
 def empfehle_broker(einkommen, vermögen):
-    # Hier können Sie eine komplexere Logik basierend auf Einkommen und Vermögen einfügen
+    # Broker-Empfehlungslogik
     if einkommen <= 3000 or vermögen <= 10000:
         return "Broker A"
     elif 3000 < einkommen <= 10000 or 10000 < vermögen <= 50000:
@@ -11,28 +10,13 @@ def empfehle_broker(einkommen, vermögen):
         return "Broker C"
 
 def broker_link(broker):
+    # Broker-Links
     links = {
         "Broker A": "https://link-zu-broker-a.com",
         "Broker B": "https://link-zu-broker-b.com",
         "Broker C": "https://link-zu-broker-c.com"
     }
     return links.get(broker, "Kein Link verfügbar")
-
-def run():
-    st.title("Broker-Empfehlungstool")
-
-    # Eingabefelder für Einkommen und Vermögen
-    einkommen = st.number_input("Geben Sie Ihr Einkommen ein", min_value=0)
-    vermögen = st.number_input("Geben Sie Ihr Vermögen ein", min_value=0)
-
-    if st.button("Empfehlung erhalten"):
-        empfohlener_broker = empfehle_broker(einkommen, vermögen)
-        link = broker_link(empfohlener_broker)
-
-        st.write(f"Empfohlener Broker: {empfohlener_broker}")
-        st.markdown(f"[Link zum Broker]({link})")
-
-import streamlit as st
 
 def empfehle_anlageprodukt(einkommen, vermögen):
     # Anlageprodukt-Empfehlungslogik
@@ -71,15 +55,6 @@ def run():
         anlageprodukt_link_url = anlageprodukt_link(empfohlenes_anlageprodukt)
         st.write(f"Empfohlenes Anlageprodukt: {empfohlenes_anlageprodukt}")
         st.markdown(f"[Link zum Anlageprodukt]({anlageprodukt_link_url})")
-
-# Bestehende Funktionen
-def empfehle_broker(einkommen, vermögen):
-    # Broker-Empfehlungslogik
-    # ...
-
-def broker_link(broker):
-    # Broker-Links
-    # ...
 
 if __name__ == "__main__":
     run()
