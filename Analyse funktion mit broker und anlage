@@ -1,1 +1,55 @@
+import streamlit as st
+import pandas as pd
+
+def analyse(df):
+    st.title("Analyse")
+
+    if df is not None:
+        # Einkommensbasierte Empfehlungen
+        df['Empfohlener Broker'] = df['Einkommen'].apply(empfehle_broker)
+        df['Broker Link'] = df['Empfohlener Broker'].apply(broker_link)
+        df['Empfohlene Anlage'] = df['Einkommen'].apply(empfehle_anlage)
+        df['Anlageprodukt Link'] = df['Empfohlene Anlage'].apply(anlageprodukt_link)
+
+        # Anzeigen der Ergebnisse
+        st.write(df)
+
+def empfehle_broker(einkommen):
+    if einkommen <= 3000:
+        return "Broker A"
+    elif 3000 < einkommen <= 10000:
+        return "Broker B"
+    else:
+        return "Broker C"
+
+def broker_link(broker):
+    links = {
+        "Broker A": "https://link-zu-broker-a.com",
+        "Broker B": "https://link-zu-broker-b.com",
+        "Broker C": "https://link-zu-broker-c.com"
+    }
+    return links.get(broker, "Kein Link verfügbar")
+
+def empfehle_anlage(einkommen):
+    if einkommen <= 3000:
+        return "Anlageprodukt X (risikoarm)"
+    elif 3000 < einkommen <= 10000:
+        return "Anlageprodukt Y (ausgewogen)"
+    else:
+        return "Anlageprodukt Z (risikoreich)"
+
+def anlageprodukt_link(anlageprodukt):
+    links = {
+        "Anlageprodukt X (risikoarm)": "https://link-zu-etf-x.com",
+        "Anlageprodukt Y (ausgewogen)": "https://link-zu-etf-y.com",
+        "Anlageprodukt Z (risikoreich)": "https://link-zu-etf-z.com"
+    }
+    return links.get(anlageprodukt, "Kein Link verfügbar")
+
+# Beispiel-Daten
+data = {'Einkommen': [1000, 3000, 5000, 10000, 50000]}
+df = pd.DataFrame(data)
+
+# Ausführen der Analyse
+analyse(df)
 
