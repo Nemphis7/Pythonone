@@ -298,16 +298,12 @@ def plot_stock_data(ticker):
     except: 
         print("Stop")
         # Section for displaying stock information
-def aktienkurse():
+def aktienkurse_app():
     st.title("Aktienkurse")
-    aktien_name = st.text_input("Aktienname oder Tickersymbol eingeben:", "")
-    if aktien_name:
-        try:
-            kurs = get_stock_data(aktien_name)
-            if kurs is not None:
-                display_f
-        except:
-            print("Nö")
+    aktien_ticker = st.text_input("Aktienticker eingeben:", "")
+    if aktien_ticker:
+        display_stock_data(aktien_ticker)
+
 def main():
     st.sidebar.title("Navigation")
     page = st.sidebar.radio("Wähle eine Seite", ["Kontenübersicht", "Analyse", "Empfehlung", "Aktienkurse"])
