@@ -225,8 +225,64 @@ def add_entry_to_excel(date, name, amount, file_path):
 
 def analyse(df):
     st.title("Analyse")
-    if df is not None:
-        # ... Existing implementation ...
+    # ... [existing imports and functions] ...
+
+def empfehle_broker(einkommen, vermögen):
+    # Broker-Empfehlungslogik
+    if einkommen <= 3000 or vermögen <= 10000:
+        return "Broker A"
+    elif 3000 < einkommen <= 10000 or 10000 < vermögen <= 50000:
+        return "Broker B"
+    else:
+        return "Broker C"
+
+def broker_link(broker):
+    # Broker-Links
+    links = {
+        "Broker A": "https://link-zu-broker-a.com",
+        "Broker B": "https://link-zu-broker-b.com",
+        "Broker C": "https://link-zu-broker-c.com"
+    }
+    return links.get(broker, "Kein Link verfügbar")
+
+def anlageprodukt_link(anlageprodukt_typ):
+    # Anlageprodukt-Links
+    links = {
+        "ETFs": "https://link-zu-etfs.com",
+        "Gold": "https://link-zu-gold.com",
+        "Anleihen": "https://link-zu-anleihen.com",
+        "Einzelaktien": "https://link-zu-einzelaktien.com"
+    }
+    return links.get(anlageprodukt_typ, "Kein Link verfügbar")
+
+def analyse(df):
+    st.title("Analyse und Empfehlungen")
+
+    # Eingabefelder für Einkommen und Vermögen
+    einkommen = st.number_input("Geben Sie Ihr Einkommen ein", min_value=0)
+    vermögen = st.number_input("Geben Sie Ihr Vermögen ein", min_value=0)
+
+    # Auswahlfeld für Anlageprodukttyp
+    anlageprodukt_typ = st.selectbox("Wählen Sie den Typ des Anlageprodukts, das Sie interessiert", 
+                                     ["ETFs", "Gold", "Anleihen", "Einzelaktien"])
+
+    if st.button("Empfehlung erhalten"):
+        # Broker-Empfehlung
+        empfohlener_broker = empfehle_broker(einkommen, vermögen)
+        broker_link_url = broker_link(empfohlener_broker)
+        st.write(f"Empfohlener Broker: {empfohlener_broker}")
+        st.markdown(f"[Link zum Broker]({broker_link_url})")
+
+        # Anlageprodukt-Link
+        anlageprodukt_link_url = anlageprodukt_link(anlageprodukt_typ)
+        st.write(f"Empfohlenes Anlageprodukt: {anlageprodukt_typ}")
+        st.markdown(f"[Link zum Anlageprodukt]({anlageprodukt_link_url})")
+
+# ... [rest of your Streamlit app code] ...
+
+if __name__ == "__main__":
+    main()
+
 
         # Sankey Chart Integration
         source = [0, 0, 1, 1, 2, 2, 3, 3]
