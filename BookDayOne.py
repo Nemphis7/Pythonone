@@ -285,24 +285,31 @@ def get_stock_data(ticker):
         return None
 
 def plot_stock_data(ticker):
+    """Zeichnet den Kursverlauf der Aktie über die letzten 5 Jahre."""
     try:
         stock = yf.Ticker(ticker)
         data = stock.history(period="5y")
+        if data.empty:
+            st.error("Keine historischen Daten für diesen Ticker gefunden.")
+            return
+
         plt.figure(figsize=(10, 5))
-        plt.plot(data.index, data['Close'], label='Close Price')
-        plt.title(f"5-Year Stock Price History for {ticker}")
-        plt.xlabel('Date')
-        plt.ylabel('Price')
+        plt.plot(data.index, data['Close'], label='Schlusskurs')
+        plt.title(f"Aktienkursverlauf der letzten 5 Jahre: {ticker}")
+        plt.xlabel('Datum')
+        plt.ylabel('Kurs')
         plt.legend()
+        plt.grid(True)
         st.pyplot(plt)
-    except: 
-        print("Stop")
-        # Section for displaying stock information
+    except Exception as e:
+        st.error(f"Fehler beim Abrufen der Daten für {ticker}: {e}")
+
 def aktienkurse_app():
+    """Streamlit App für die Anzeige der Aktienkurse."""
     st.title("Aktienkurse")
     aktien_ticker = st.text_input("Aktienticker eingeben:", "")
     if aktien_ticker:
-        display_stock_data(aktien_ticker)
+        plot_stock_data(aktien_ticker)
 
 def main():
     st.sidebar.title("Navigation")
