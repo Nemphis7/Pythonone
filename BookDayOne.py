@@ -184,7 +184,7 @@ def analyse(df):
                  "Salary", "Other Income", "Bills", "Entertainment", 
                  "Retirement Fund", "Stocks", "Bonds", "Savings Account"]
 
-        fig = go.Figure(data=[go.Sankey(node=dict(pad=15, thickness=20, line=dict(color="black", width=0.5), label=label), link=dict(source=source, target=target, value=value))])
+        fig = go.Figure(data=[go.Sankey(node=dict(pad=10, thickness=10, line=dict(color="black", width=0.5), label=label), link=dict(source=source, target=target, value=value))])
         fig.update_layout(title_text="Financial Flow - Sankey Diagram", font_size=10)
         st.plotly_chart(fig)
 
