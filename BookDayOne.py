@@ -237,13 +237,6 @@ st.title("Empfehlung")
     else:
         st.write("Bitte geben Sie Ihr aktuelles Alter und das geplante Rentenalter ein, um Empfehlungen zu erhalten.")
 
-def empfehlung(df, stock_portfolio_df):
-    st.title("Empfehlung")
-    user_portfolio = dict(zip(stock_portfolio_df['Ticker'], stock_portfolio_df['Quantity']))
-    asset_data = pd.read_excel('path_to_asset_data.xlsx')
-    recommendations = make_recommendations(user_portfolio, asset_data)
-    st.subheader("Investment Recommendations:")
-    st.dataframe(recommendations)
 
 def add_entry_to_excel(date, name, amount, file_path):
     date_str = date.strftime('%d.%m.%Y')
