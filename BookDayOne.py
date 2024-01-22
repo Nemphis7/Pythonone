@@ -339,14 +339,14 @@ def aktienkurse_app():
 
 def main():
     st.sidebar.title("Navigation")
-    page = st.sidebar.radio("Wähle eine Seite", ["Account Overview", "Analysis", "Financial Recommendation", "Platzhalter"])
+    page = st.sidebar.radio(["Account Overview", "Analysis", "Financial Recommendation", "Platzhalter"])
     st.title("You-Finance")
     if 'dataframe' not in st.session_state or page == "Account Overview":
         st.session_state.dataframe = load_data()
     df = st.session_state.dataframe
     if df is not None:
         df = process_data(df)
-    if page == "Kontenübersicht":
+    if page == "Account Overview":
         kontenubersicht(df)
         df = show_new_entry_form(df)
         show_add_ticker_form()
