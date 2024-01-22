@@ -173,28 +173,38 @@ def add_entry_to_excel(date, name, amount, file_path):
 
 def analyse(df):
     st.title("Analyse")
-    if df is not None:
-        # Ensure 'Betrag' is numeric and 'Datum' is a datetime
+    if df is not None and 'Betrag' in df.columns and 'Datum' in df.columns:
+        # Debug: Show initial data
+        st.write("Initial Data Sample:", df.head())
+
         df['Betrag'] = pd.to_numeric(df['Betrag'], errors='coerce')
         df['Datum'] = pd.to_datetime(df['Datum'], errors='coerce')
         df.dropna(subset=['Betrag', 'Datum'], inplace=True)
 
-        # Extract year and month for grouping
         df['YearMonth'] = df['Datum'].dt.to_period('M')
 
-        # Calculate monthly income and expenses
         monthly_data = df.groupby('YearMonth')['Betrag'].sum().reset_index()
         monthly_income = monthly_data[monthly_data['Betrag'] > 0]['Betrag'].mean()
         monthly_expenses = monthly_data[monthly_data['Betrag'] < 0]['Betrag'].mean()
-        average_savings = monthly_income + monthly_expenses  # Expenses are negative
+        average_savings = monthly_income + monthly_expenses
 
-        # Display the calculated averages
-        st.subheader("Durchschnittliche monatliche Finanzen")
-        st.write(f"Durchschnittliches monatliches Einkommen: {custom_format(monthly_income)}")
-        st.write(f"Durchschnittliche monatliche Ausgaben: {custom_format(monthly_expenses)}")
-        st.write(f"Durchschnittliche monatliche Ersparnisse: {custom_format(average_savings)}")
+        # Debug: Show computed values
+        st.write("Computed Monthly Data:", monthly_data)
+        st.write("Average Monthly Income:", monthly_income)
+        st.write("Average Monthly Expenses:", monthly_expenses)
+        st.write("Average Monthly Savings:", average_savings)
 
-        # ... Existing implementation for Sankey Chart and other analyses ...
+        # Sankey Chart Integration
+        source = [0, 0, 1, 1, 2, 2, 3, 3]
+        target = [4, 5, 6, 7, 8, 9, 10, 11]
+        value = [8, 2, 2, 3, 4, 4, 2, 5]
+        label = ["Income", "Expenses", "Savings", "Investments", 
+                 "Salary", "Other Income", "Bills", "Entertainment", 
+                 "Retirement Fund", "Stocks", "Bonds", "Savings Account"]
+
+        fig = go.Figure(data=[go.Sankey(node=dict(pad=10, thickness=10, line=dict(color="black", width=0.5), label=label), link=dict(source=source, target=target, value=value))])
+        fig.update_layout(title_text="Financial Flow - Sankey Diagram", font_size=10)
+        st.plotly_chart(fig)
     else:
         st.error("Keine Daten zum Analysieren vorhanden.")
 
