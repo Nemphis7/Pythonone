@@ -217,8 +217,8 @@ def generate_financial_recommendations(investment_period, stock_portfolio_df):
     return f"Recommended investment strategy for an investment period of {investment_period} years."
 
 def empfehlung(df, stock_portfolio_df):
-
     st.title("Empfehlung")
+
     # Inputs for age and retirement date
     current_age = st.number_input("Dein aktuelles Alter", min_value=18, max_value=100, step=1)
     retirement_age = st.number_input("Geplantes Rentenalter", min_value=current_age, max_value=100, step=1)
