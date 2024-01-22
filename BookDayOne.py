@@ -340,7 +340,7 @@ def aktienkurse_app():
 
 def main():
     st.sidebar.title("Navigation")
-    page = st.sidebar.radio("Wähle eine Seite", ["Kontenübersicht", "Analyse", "Empfehlung", "Aktienkurse"])
+    page = st.sidebar.radio("Wähle eine Seite", ["Account Overview", "Analysis", "Financial Recommendation", "Platzhalter"])
     st.title("Finanzdaten Analyse-App")
     if 'dataframe' not in st.session_state or page == "Kontenübersicht":
         st.session_state.dataframe = load_data()
