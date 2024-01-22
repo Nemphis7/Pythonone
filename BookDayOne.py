@@ -3,8 +3,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import yfinance as yf
 from datetime import datetime
-from sklearn.metrics.pairwise import cosine_similarity
-import requests
 import plotly.graph_objects as go
 from datetime import date
 
@@ -22,7 +20,7 @@ def fetch_current_price(ticker):
         price = stock.history(period="1d")['Close'][-1]
         return price
     except Exception as e:
-        raise Exception(f"Fehler beim Abrufen der Daten für {ticker}: {e}")
+        raise Exception(f"Error fetching data for {ticker}: {e}")
 
 def get_fundamental_data(ticker):
     stock = yf.Ticker(ticker)
@@ -35,10 +33,10 @@ def get_fundamental_data(ticker):
 def load_data():
     try:
         url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/Mappe1.xlsx'
-        df = pd.read_excel(url, names=['Datum', 'Name', 'Betrag'])
+        df = pd.read_excel(url, names=['Date', 'Name', 'Amount'])
         return df
     except Exception as e:
-        st.error(f"Fehler beim Lesen der Finanzdatendatei: {e}")
+        st.error(f"Error reading financial data file: {e}")
         return None
 
 def load_stock_portfolio():
@@ -53,19 +51,19 @@ def load_stock_portfolio():
         stock_df['TotalValue'] = stock_df['TotalValue'].round(2).apply(custom_format)
         return stock_df
     except Exception as e:
-        st.error(f"Fehler beim Verarbeiten der Aktienportfolio-Datei: {e}")
+        st.error(f"Error processing stock portfolio file: {e}")
         return None
 
 def process_data(df):
-    if df is not None and 'Datum' in df.columns:
-        df['Betrag'] = pd.to_numeric(df['Betrag'], errors='coerce')
-        df['Datum'] = pd.to_datetime(df['Datum'], errors='coerce')
-        df = df.dropna(subset=['Datum'])
-        df['YearMonth'] = df['Datum'].dt.to_period('M')
-        df.dropna(subset=['Betrag', 'YearMonth'], inplace=True)
+    if df is not None and 'Date' in df.columns:
+        df['Amount'] = pd.to_numeric(df['Amount'], errors='coerce')
+        df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
+        df = df.dropna(subset=['Date'])
+        df['YearMonth'] = df['Date'].dt.to_period('M')
+        df.dropna(subset=['Amount', 'YearMonth'], inplace=True)
         return df
     else:
-        st.error("Invalid or missing 'Datum' column in DataFrame")
+        st.error("Invalid or missing 'Date' column in DataFrame")
         return None
 
 def plot_portfolio_history(stock_df):
@@ -100,46 +98,46 @@ def plot_financials(financial_df):
     plt.grid(True)
     st.pyplot(plt)
 
-def kontenubersicht(df):
-    st.title("Finanzdaten Analyse-App")
-    aktueller_monat = datetime.now().strftime('%Y-%m')
-    aktueller_monat_periode = pd.Period(aktueller_monat)
+def account_overview(df):
+    st.title("Financial Data Analysis App")
+    current_month = datetime.now().strftime('%Y-%m')
+    current_month_period = pd.Period(current_month)
     if df is not None:
-        df_sorted = df.sort_values(by='Datum', ascending=False)
-        aktuelle_monatsdaten = df[df['Datum'].dt.to_period('M') == aktueller_monat_periode]
-        aktuelle_monatsausgaben = aktuelle_monatsdaten[aktuelle_monatsdaten['Betrag'] < 0]['Betrag'].sum()
-        aktuelle_monatseinnahmen = aktuelle_monatsdaten[aktuelle_monatsdaten['Betrag'] > 0]['Betrag'].sum()
-        st.subheader(f"Ausgaben in {aktueller_monat}:")
-        st.write(aktuelle_monatsausgaben)
-        with st.expander("Letzte 10 Ausgaben anzeigen"):
-            last_expenses = df_sorted[df_sorted['Betrag'] < 0].head(10)
-            st.dataframe(last_expenses[['Datum', 'Name', 'Betrag']])
-        st.subheader(f"Einnahmen in {aktueller_monat}:")
-        st.write(aktuelle_monatseinnahmen)
-        with st.expander("Letzte 10 Einnahmen anzeigen"):
-            last_incomes = df_sorted[df_sorted['Betrag'] > 0].head(10)
-            st.dataframe(last_incomes[['Datum', 'Name', 'Betrag']])
-        gesamtausgaben = aktuelle_monatsdaten[aktuelle_monatsdaten['Betrag'] < 0]['Betrag'].sum()
-        gesamteinnahmen = aktuelle_monatsdaten[aktuelle_monatsdaten['Betrag'] > 0]['Betrag'].sum()
-        kontostand = gesamteinnahmen + gesamtausgaben
-        st.subheader("Gesamtkontostand:")
-        st.write(kontostand)
+        df_sorted = df.sort_values(by='Date', ascending=False)
+        current_month_data = df[df['Date'].dt.to_period('M') == current_month_period]
+        current_month_expenses = current_month_data[current_month_data['Amount'] < 0]['Amount'].sum()
+        current_month_income = current_month_data[current_month_data['Amount'] > 0]['Amount'].sum()
+        st.subheader(f"Expenses in {current_month}:")
+        st.write(current_month_expenses)
+        with st.expander("Show last 10 expenses"):
+            last_expenses = df_sorted[df_sorted['Amount'] < 0].head(10)
+            st.dataframe(last_expenses[['Date', 'Name', 'Amount']])
+        st.subheader(f"Income in {current_month}:")
+        st.write(current_month_income)
+        with st.expander("Show last 10 incomes"):
+            last_incomes = df_sorted[df_sorted['Amount'] > 0].head(10)
+            st.dataframe(last_incomes[['Date', 'Name', 'Amount']])
+        total_expenses = current_month_data[current_month_data['Amount'] < 0]['Amount'].sum()
+        total_income = current_month_data[current_month_data['Amount'] > 0]['Amount'].sum()
+        account_balance = total_income + total_expenses
+        st.subheader("Total account balance:")
+        st.write(account_balance)
 
 def show_add_ticker_form():
     with st.form("add_ticker_form"):
-        st.subheader("Neue Aktie hinzufügen")
+        st.subheader("Add new stock")
         ticker = st.text_input("Ticker")
-        amount = st.number_input("Anzahl", min_value=1, step=1)
-        submit_button = st.form_submit_button("Hinzufügen")
+        quantity = st.number_input("Quantity", min_value=1, step=1)
+        submit_button = st.form_submit_button("Add")
         if submit_button:
             url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/StockPortfolio.xlsx'
-            add_ticker_to_excel(ticker, amount, "path_to_your_excel_file.xlsx")
+            add_ticker_to_excel(ticker, quantity, "path_to_your_excel_file.xlsx")
 
-def add_ticker_to_excel(ticker, amount, file_path):
+def add_ticker_to_excel(ticker, quantity, file_path):
     try:
         df = pd.read_excel(file_path)
     except FileNotFoundError:
-        df = pd.DataFrame(columns=['Ticker', 'Amount'])
+        df = pd.DataFrame
 
     if ticker in df['Ticker'].values:
         df.loc[df['Ticker'] == ticker, 'Amount'] += amount
@@ -219,7 +217,8 @@ def generate_financial_recommendations(investment_period, stock_portfolio_df):
     return f"Recommended investment strategy for an investment period of {investment_period} years."
 
 def empfehlung(df, stock_portfolio_df):
-    st.title("Empfehlung")
+
+st.title("Empfehlung")
 
     # Inputs for age and retirement date
     current_age = st.number_input("Dein aktuelles Alter", min_value=18, max_value=100, step=1)
