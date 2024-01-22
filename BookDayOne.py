@@ -367,5 +367,5 @@ def main():
             # Calculating the total portfolio value
             total_portfolio_value = sum(stock_portfolio_df['TotalValue'].str.replace('.', '').str.replace(',', '.').astype
 
-if __name__ == "__main__":
-                                        main()
+    if __name__ == "__main__":
+        main()
