@@ -6,6 +6,7 @@ from datetime import datetime
 from sklearn.metrics.pairwise import cosine_similarity
 import requests
 import plotly.graph_objects as go
+from datetime import date
 
 def custom_format(value):
     if pd.isna(value):
@@ -208,15 +209,33 @@ def analyse(df):
     else:
         st.error("Keine Daten zum Analysieren vorhanden.")
 
+def calculate_investment_period(current_age, retirement_age):
+    return retirement_age - current_age
 
-def make_recommendations(user_portfolio, asset_data):
-    user_portfolio_df = pd.DataFrame(list(user_portfolio.items()), columns=['Ticker', 'Quantity'])
-    merged_data = pd.merge(user_portfolio_df, asset_data, on='Ticker', how='left')
-    asset_similarity = cosine_similarity(merged_data.drop(['Ticker', 'Quantity'], axis=1))
-    weighted_scores = asset_similarity.dot(merged_data['Quantity'])
-    recommendations = pd.DataFrame({'Ticker': asset_data['Ticker'], 'Score': weighted_scores})
-    recommendations = recommendations.sort_values(by='Score', ascending=False)
-    return recommendations
+def generate_financial_recommendations(investment_period, stock_portfolio_df):
+    # This is where you'd implement the logic for financial recommendations.
+    # For example, you might adjust the stock/bond ratio based on the investment period.
+    # This is just a placeholder:
+    return f"Recommended investment strategy for an investment period of {investment_period} years."
+
+def empfehlung(df, stock_portfolio_df):
+
+st.title("Empfehlung")
+
+    # Inputs for age and retirement date
+    current_age = st.number_input("Dein aktuelles Alter", min_value=18, max_value=100, step=1)
+    retirement_age = st.number_input("Geplantes Rentenalter", min_value=current_age, max_value=100, step=1)
+
+    if current_age and retirement_age:
+        # Calculate the investment period
+        investment_period = calculate_investment_period(current_age, retirement_age)
+
+        # Generate and display financial recommendations
+        recommendations = generate_financial_recommendations(investment_period, stock_portfolio_df)
+        st.subheader("Personalisierte finanzielle Empfehlungen:")
+        st.write(recommendations)
+    else:
+        st.write("Bitte geben Sie Ihr aktuelles Alter und das geplante Rentenalter ein, um Empfehlungen zu erhalten.")
 
 def empfehlung(df, stock_portfolio_df):
     st.title("Empfehlung")
