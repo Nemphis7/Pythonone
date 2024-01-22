@@ -358,11 +358,11 @@ def main():
             st.write(f"Gesamtwert des Portfolios: {custom_format(total_portfolio_value)}")
             plot_portfolio_history(stock_portfolio_df)
         st.session_state.dataframe = df
-    elif page == "Analyse":
+    elif page == "Analysis":
         analyse(df)
-    elif page == "Empfehlung":
+    elif page == "Financial Recommendation":
         empfehlung(df, load_stock_portfolio())
-    elif page == "Aktienkurse":
+    elif page == "Platzhalter":
         aktienkurse()
 
 if __name__ == "__main__":
