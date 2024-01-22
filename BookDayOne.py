@@ -339,31 +339,33 @@ def aktienkurse_app():
 
 def main():
     st.sidebar.title("Navigation")
-    page = st.sidebar.radio(["Account Overview", "Analysis", "Financial Recommendation", "Platzhalter"])
-    st.title("You-Finance")
+    # Ensure the page titles here match the ones in the if-else conditions
+    page = st.sidebar.radio("Choose a page", ["Account Overview", "Analysis", "Recommendation", "Stock Prices"])
+
+    st.title("Finance Data Analysis App")
+
+    # Load data when the app starts or when "Account Overview" is selected
     if 'dataframe' not in st.session_state or page == "Account Overview":
         st.session_state.dataframe = load_data()
+
     df = st.session_state.dataframe
+
+    # Process data if it's not None
     if df is not None:
         df = process_data(df)
+
     if page == "Account Overview":
-        kontenubersicht(df)
+        account_overview(df)
         df = show_new_entry_form(df)
         show_add_ticker_form()
         stock_portfolio_df = load_stock_portfolio()
+
         if stock_portfolio_df is not None:
-            st.subheader("Mein Aktienportfolio")
+            st.subheader("My Stock Portfolio")
             st.dataframe(stock_portfolio_df)
-            total_portfolio_value = sum(stock_portfolio_df['TotalValue'].str.replace('.', '').str.replace(',', '.').astype(float))
-            st.write(f"Gesamtwert des Portfolios: {custom_format(total_portfolio_value)}")
-            plot_portfolio_history(stock_portfolio_df)
-        st.session_state.dataframe = df
-    elif page == "Analysis":
-        analyse(df)
-    elif page == "Financial Recommendation":
-        empfehlung(df, load_stock_portfolio())
-    elif page == "Platzhalter":
-        aktienkurse()
+
+            # Calculating the total portfolio value
+            total_portfolio_value = sum(stock_portfolio_df['TotalValue'].str.replace('.', '').str.replace(',', '.').astype
 
 if __name__ == "__main__":
     main()
