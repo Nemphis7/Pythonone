@@ -312,15 +312,10 @@ def get_historical_data(stock_df, period="1y"):
     return historical_data
 
 def plot_stock_performance(historical_data):
-    # Diese Funktion plottet die Performance der Aktien im Portfolio
-    plt.figure(figsize=(10, 5))
+    # Verwenden Sie Streamlits integrierte Funktion, um den Graphen zu plotten
     for ticker, data in historical_data.items():
-        plt.plot(data.index, data, label=ticker)
-    plt.title('Stock Performance Over Time')
-    plt.xlabel('Date')
-    plt.ylabel('Price')
-    plt.legend()
-    st.pyplot(plt)
+        st.line_chart(data, width=0, height=0, use_container_width=True)
+
 
 def main():
     st.sidebar.title("Navigation")
