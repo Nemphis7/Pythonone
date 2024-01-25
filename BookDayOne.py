@@ -98,15 +98,16 @@ def plot_financials(financial_df):
     plt.grid(True)
     st.pyplot(plt)
 
-def account_overview(df):
+def account_overview(df, stock_df):
     st.title("Financial Data Analysis App")
     current_month = datetime.now().strftime('%Y-%m')
     current_month_period = pd.Period(current_month)
-    historical_data = get_historical_data(stock_df, period="1y")  # Sie können den Zeitraum nach Bedarf anpassen
-    
+
     # Zeichnen Sie den Performance-Graphen der Aktien
-    plot_stock_performance(historical_data)
-    
+    if stock_df is not None:
+        historical_data = get_historical_data(stock_df, period="1y")  # Sie können den Zeitraum nach Bedarf anpassen
+        plot_stock_performance(historical_data)
+
     if df is not None:
         df_sorted = df.sort_values(by='Date', ascending=False)
         current_month_data = df[df['Date'].dt.to_period('M') == current_month_period]
@@ -131,6 +132,7 @@ def account_overview(df):
         
         st.subheader("Total account balance:")
         st.write(account_balance)
+
 
 
 def analyse(df):
@@ -322,7 +324,6 @@ def plot_stock_performance(historical_data):
 
 def main():
     st.sidebar.title("Navigation")
-    # Stellen Sie sicher, dass die Seitentitel hier mit denen in den if-else-Bedingungen übereinstimmen
     page = st.sidebar.radio("Choose a page", ["Account Overview", "Analysis", "Recommendation", "Stock Prices"])
 
     st.title("Finance Data Analysis App")
@@ -330,39 +331,22 @@ def main():
     # Daten laden, wenn die App startet oder wenn "Account Overview" ausgewählt wird
     if 'dataframe' not in st.session_state or page == "Account Overview":
         st.session_state.dataframe = load_data()
+        st.session_state.stock_df = load_stock_portfolio()
 
     df = st.session_state.dataframe
+    stock_df = st.session_state.stock_df
 
-    # Daten verarbeiten, wenn df nicht None ist
-    if df is not None:
-        df = process_data(df)
-
-   if page == "Account Overview":
-    df = load_data()
-    stock_df = load_stock_portfolio()
-    account_overview(df, stock_df)
-
-        if stock_portfolio_df is not None:
-            st.subheader("My Stock Portfolio")
-            st.dataframe(stock_portfolio_df)
-
-            # Berechnen des Gesamtwerts des Portfolios
-            total_portfolio_value = sum(stock_portfolio_df['TotalValue'].str.replace('.', '').str.replace(',', '.').astype(float))
-            st.write(f"Total Portfolio Value: {total_portfolio_value}")
+    if page == "Account Overview":
+        account_overview(df, stock_df)
 
     elif page == "Analysis":
         analyse(df)
 
     elif page == "Recommendation":
-        # Stellen Sie sicher, dass die stock_portfolio_df vor der Verwendung geladen wird
-        if 'stock_portfolio_df' not in locals():
-            stock_portfolio_df = load_stock_portfolio()
-        empfehlung(df, stock_portfolio_df)
+        empfehlung(df, stock_df)
 
     elif page == "Stock Prices":
         aktienkurse_app()
 
-# Die __name__-Überprüfung, um sicherzustellen, dass das Skript direkt ausgeführt wird
 if __name__ == "__main__":
     main()
-
