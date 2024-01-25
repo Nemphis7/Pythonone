@@ -25,10 +25,13 @@ def fetch_current_price(ticker):
 def get_fundamental_data(ticker):
     stock = yf.Ticker(ticker)
     info = stock.info
-    kgv = float(info.get('trailingPE')) if 'trailingPE' in info else None
-    market_cap = float(info.get('marketCap')) if 'marketCap' in info else None
-    dividend_yield = float(info.get('dividendYield')) if 'dividendYield' in info else None
-    return
+    return {
+        'kgv': info.get('trailingPE', 'N/A'),
+        'market_cap': info.get('marketCap', 'N/A'),
+        'dividend_yield': info.get('dividendYield', 'N/A'),
+        # Sie können hier weitere Daten hinzufügen, die Sie anzeigen möchten
+    }
+
 
 def load_data():
     try:
@@ -319,26 +322,23 @@ def plot_stock_data(ticker):
         st.error(f"Fehler beim Abrufen der Daten für {ticker}: {e}")
 
 def aktienkurse_app():
-    """Streamlit App für die Anzeige der Aktienkurse und wichtiger Aktieninformationen."""
     st.title("Aktienkurse")
     aktien_ticker = st.text_input("Aktienticker eingeben:", "")
     if aktien_ticker:
         # Zeigen Sie die Aktienkurse an
         plot_stock_data(aktien_ticker)
         
-        # Holen Sie sich die fundamentalen Daten und den aktuellen Preis
+        # Holen Sie sich die fundamentalen Daten
         fundamental_data = get_fundamental_data(aktien_ticker)
-        current_price = fetch_current_price(aktien_ticker)
         
-        # Anzeige der fundamentalen Daten und des aktuellen Preises
+        # Anzeige der fundamentalen Daten
         st.subheader(f"Aktuelle Informationen für: {aktien_ticker}")
-        st.write(f"Aktueller Preis: {current_price}")
-        
         if fundamental_data:
-            st.write("Fundamentaldaten:")
-            st.write(f"Kurs-Gewinn-Verhältnis (KGV): {fundamental_data.get('kgv', 'Nicht verfügbar')}")
-            st.write(f"Marktkapitalisierung: {fundamental_data.get('market_cap', 'Nicht verfügbar')}")
-            st.write(f"Dividendenrendite: {fundamental_data.get('dividend_yield', 'Nicht verfügbar')}")
+            st.write(f"Kurs-Gewinn-Verhältnis (KGV): {fundamental_data['kgv']}")
+            st.write(f"Marktkapitalisierung: {fundamental_data['market_cap']}")
+            st.write(f"Dividendenrendite: {fundamental_data['dividend_yield']}")
+            # Hier können Sie weitere Informationen hinzufügen, die Sie anzeigen möchten
+
 
 def get_combined_historical_data(stock_df, period="1y"):
     # Holt die kombinierten historischen Daten für das Gesamtportfolio
