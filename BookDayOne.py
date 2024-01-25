@@ -102,6 +102,10 @@ def account_overview(df):
     st.title("Financial Data Analysis App")
     current_month = datetime.now().strftime('%Y-%m')
     current_month_period = pd.Period(current_month)
+    historical_data = get_historical_data(stock_df, period="1y")  # Sie können den Zeitraum nach Bedarf anpassen
+    
+    # Zeichnen Sie den Performance-Graphen der Aktien
+    plot_stock_performance(historical_data)
     
     if df is not None:
         df_sorted = df.sort_values(by='Date', ascending=False)
@@ -296,6 +300,26 @@ def aktienkurse_app():
     if aktien_ticker:
         plot_stock_data(aktien_ticker)
 
+def get_historical_data(stock_df, period="1y"):
+    # Diese Funktion holt die historischen Daten für die Aktien im Portfolio
+    historical_data = {}
+    for index, row in stock_df.iterrows():
+        ticker = row['Ticker']
+        stock = yf.Ticker(ticker)
+        historical_data[ticker] = stock.history(period=period)['Close']
+    return historical_data
+
+def plot_stock_performance(historical_data):
+    # Diese Funktion plottet die Performance der Aktien im Portfolio
+    plt.figure(figsize=(10, 5))
+    for ticker, data in historical_data.items():
+        plt.plot(data.index, data, label=ticker)
+    plt.title('Stock Performance Over Time')
+    plt.xlabel('Date')
+    plt.ylabel('Price')
+    plt.legend()
+    st.pyplot(plt)
+
 def main():
     st.sidebar.title("Navigation")
     # Stellen Sie sicher, dass die Seitentitel hier mit denen in den if-else-Bedingungen übereinstimmen
@@ -313,9 +337,10 @@ def main():
     if df is not None:
         df = process_data(df)
 
-    if page == "Account Overview":
-        account_overview(df)
-        stock_portfolio_df = load_stock_portfolio()
+   if page == "Account Overview":
+    df = load_data()
+    stock_df = load_stock_portfolio()
+    account_overview(df, stock_df)
 
         if stock_portfolio_df is not None:
             st.subheader("My Stock Portfolio")
