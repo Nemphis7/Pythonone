@@ -354,7 +354,7 @@ def main():
     if df is not None:
         df = process_data(df)
 
-    if page == "Account Overview":
+   if page == "Account Overview":
         account_overview(df)
         df = show_new_entry_form(df)
         show_add_ticker_form()
@@ -364,8 +364,11 @@ def main():
             st.subheader("My Stock Portfolio")
             st.dataframe(stock_portfolio_df)
 
-            # Calculating the total portfolio value
-            total_portfolio_value = sum(stock_portfolio_df['TotalValue'].str.replace('.', '').str.replace(',', '.').astype
+            # Berechnen des Gesamtwerts des Portfolios
+            # Es sieht so aus, als ob hier Code fehlt. Ich ergänze eine hypothetische Berechnung:
+            total_portfolio_value = sum(stock_portfolio_df['TotalValue'].str.replace('.', '').str.replace(',', '.').astype(float))
+            st.write(f"Total Portfolio Value: {total_portfolio_value}")
+            # Stellen Sie sicher, dass diese Zeile Ihren Anforderungen entspricht und korrigieren Sie sie falls nötig.
 
 if __name__ == "__main__":
     main()
