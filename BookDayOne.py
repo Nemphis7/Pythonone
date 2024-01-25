@@ -32,7 +32,7 @@ def get_fundamental_data(ticker):
 
 def load_data():
     try:
-        url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/Mappe2.xlsx'
+        url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/Mappe1.xlsx'
         df = pd.read_excel(url, names=['Date', 'Name', 'Amount'])
         return df
     except Exception as e:
