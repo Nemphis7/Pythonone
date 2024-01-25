@@ -102,12 +102,7 @@ def account_overview(df, stock_df):
     st.title("Financial Data Analysis App")
     current_month = datetime.now().strftime('%Y-%m')
     current_month_period = pd.Period(current_month)
-
-    # Zeichnen Sie den Performance-Graphen der Aktien
-    if stock_df is not None:
-        historical_data = get_historical_data(stock_df, period="1y")  # Sie können den Zeitraum nach Bedarf anpassen
-        plot_stock_performance(historical_data)
-
+    
     if df is not None:
         df_sorted = df.sort_values(by='Date', ascending=False)
         current_month_data = df[df['Date'].dt.to_period('M') == current_month_period]
@@ -133,6 +128,10 @@ def account_overview(df, stock_df):
         st.subheader("Total account balance:")
         st.write(account_balance)
 
+    # Nun rufen Sie die Plotfunktion auf, um sicherzustellen, dass sie am Ende angezeigt wird.
+    if stock_df is not None:
+        historical_data = get_historical_data(stock_df, period="1y")  # Sie können den Zeitraum nach Bedarf anpassen
+        plot_stock_performance(historical_data)
 
 
 def analyse(df):
