@@ -54,6 +54,21 @@ def load_stock_portfolio():
         st.error(f"Error processing stock portfolio file: {e}")
         return None
 
+def get_combined_historical_data(stock_df, period="1y"):
+    # Diese Funktion holt die kombinierten historischen Daten für das Gesamtportfolio
+    portfolio_history = pd.DataFrame()
+    
+    for index, row in stock_df.iterrows():
+        ticker = row['Ticker']
+        quantity = row['Quantity']
+        stock = yf.Ticker(ticker)
+        hist = stock.history(period=period)['Close']
+        portfolio_history[ticker] = hist * quantity
+    
+    # Summieren Sie die Werte aller Aktien für jeden Tag, um den Gesamtwert des Portfolios zu erhalten
+    portfolio_history['Total'] = portfolio_history.sum(axis=1)
+    return portfolio_history['Total']
+
 def process_data(df):
     if df is not None and 'Date' in df.columns:
         df['Amount'] = pd.to_numeric(df['Amount'], errors='coerce')
@@ -65,6 +80,16 @@ def process_data(df):
     else:
         st.error("Invalid or missing 'Date' column in DataFrame")
         return None
+
+def plot_portfolio_performance(total_portfolio_history):
+    # Diese Funktion plottet die Gesamtperformance des Portfolios
+    plt.figure(figsize=(10, 5))
+    plt.plot(total_portfolio_history.index, total_portfolio_history, label='Total Portfolio Value')
+    plt.title('Total Portfolio Performance Over Time')
+    plt.xlabel('Date')
+    plt.ylabel('Total Value')
+    plt.legend()
+    st.pyplot(plt)
 
 def plot_portfolio_history(stock_df):
     end = datetime.now()
@@ -128,11 +153,10 @@ def account_overview(df, stock_df):
         st.subheader("Total account balance:")
         st.write(account_balance)
 
-    # Nun rufen Sie die Plotfunktion auf, um sicherzustellen, dass sie am Ende angezeigt wird.
+    # Plot der Gesamtperformance am Ende der Account Overview
     if stock_df is not None:
-        historical_data = get_historical_data(stock_df, period="1y")  # Sie können den Zeitraum nach Bedarf anpassen
-        plot_stock_performance(historical_data)
-
+        total_portfolio_history = get_combined_historical_data(stock_df, period="1y")
+        plot_portfolio_performance(total_portfolio_history)
 
 def analyse(df):
     st.title("Analyse")
@@ -301,20 +325,30 @@ def aktienkurse_app():
     if aktien_ticker:
         plot_stock_data(aktien_ticker)
 
-def get_historical_data(stock_df, period="1y"):
-    # Diese Funktion holt die historischen Daten für die Aktien im Portfolio
-    historical_data = {}
+def get_combined_historical_data(stock_df, period="1y"):
+    # Holt die kombinierten historischen Daten für das Gesamtportfolio
+    portfolio_history = pd.DataFrame()
+    
     for index, row in stock_df.iterrows():
         ticker = row['Ticker']
+        quantity = row['Quantity']
         stock = yf.Ticker(ticker)
-        historical_data[ticker] = stock.history(period=period)['Close']
-    return historical_data
+        hist = stock.history(period=period)['Close']
+        portfolio_history[ticker] = hist * quantity
+    
+    # Summiere die Werte aller Aktien für jeden Tag
+    portfolio_history['Total'] = portfolio_history.sum(axis=1)
+    return portfolio_history['Total']
 
-def plot_stock_performance(historical_data):
-    # Verwenden Sie Streamlits integrierte Funktion, um den Graphen zu plotten
-    for ticker, data in historical_data.items():
-        st.line_chart(data, width=0, height=0, use_container_width=True)
-
+def plot_portfolio_performance(total_portfolio_history):
+    # Plottet die Gesamtperformance des Portfolios
+    plt.figure(figsize=(10, 5))
+    plt.plot(total_portfolio_history.index, total_portfolio_history, label='Total Portfolio Value')
+    plt.title('Total Portfolio Performance Over Time')
+    plt.xlabel('Date')
+    plt.ylabel('Total Value')
+    plt.legend()
+    st.pyplot(plt)
 
 def main():
     st.sidebar.title("Navigation")
