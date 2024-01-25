@@ -123,22 +123,6 @@ def account_overview(df):
         st.subheader("Total account balance:")
         st.write(account_balance)
 
-def show_add_ticker_form():
-    with st.form("add_ticker_form"):
-        st.subheader("Add new stock")
-        ticker = st.text_input("Ticker")
-        quantity = st.number_input("Quantity", min_value=1, step=1)
-        submit_button = st.form_submit_button("Add")
-        if submit_button:
-            url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/StockPortfolio.xlsx'
-            add_ticker_to_excel(ticker, quantity, "path_to_your_excel_file.xlsx")
-
-def add_ticker_to_excel(ticker, quantity, file_path):
-    try:
-        df = pd.read_excel(file_path)
-    except FileNotFoundError:
-        df = pd.DataFrame
-
     if ticker in df['Ticker'].values:
         df.loc[df['Ticker'] == ticker, 'Amount'] += amount
     else:
@@ -152,12 +136,6 @@ def add_ticker_to_excel(ticker, quantity, file_path):
         st.error(f"Es gab einen Fehler beim Schreiben in Excel: {e}")
 
 
-def add_entry_to_excel(date, name, amount, file_path):
-    date_str = date.strftime('%d.%m.%Y')
-    new_entry = pd.DataFrame({
-        'Datum': [date_str], 
-        'Name': [name], 
-        'Betrag': [amount]
     })
     try:
         df = pd.read_excel(file_path)
@@ -356,8 +334,6 @@ def main():
 
     if page == "Account Overview":
         account_overview(df)
-        df = show_new_entry_form(df)
-        show_add_ticker_form()
         stock_portfolio_df = load_stock_portfolio()
 
         if stock_portfolio_df is not None:
