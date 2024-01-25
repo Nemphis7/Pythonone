@@ -102,50 +102,31 @@ def account_overview(df):
     st.title("Financial Data Analysis App")
     current_month = datetime.now().strftime('%Y-%m')
     current_month_period = pd.Period(current_month)
+    
     if df is not None:
         df_sorted = df.sort_values(by='Date', ascending=False)
         current_month_data = df[df['Date'].dt.to_period('M') == current_month_period]
         current_month_expenses = current_month_data[current_month_data['Amount'] < 0]['Amount'].sum()
         current_month_income = current_month_data[current_month_data['Amount'] > 0]['Amount'].sum()
+        
         st.subheader(f"Expenses in {current_month}:")
         st.write(current_month_expenses)
         with st.expander("Show last 10 expenses"):
             last_expenses = df_sorted[df_sorted['Amount'] < 0].head(10)
             st.dataframe(last_expenses[['Date', 'Name', 'Amount']])
+        
         st.subheader(f"Income in {current_month}:")
         st.write(current_month_income)
         with st.expander("Show last 10 incomes"):
             last_incomes = df_sorted[df_sorted['Amount'] > 0].head(10)
             st.dataframe(last_incomes[['Date', 'Name', 'Amount']])
+        
         total_expenses = current_month_data[current_month_data['Amount'] < 0]['Amount'].sum()
         total_income = current_month_data[current_month_data['Amount'] > 0]['Amount'].sum()
         account_balance = total_income + total_expenses
+        
         st.subheader("Total account balance:")
         st.write(account_balance)
-
-    if ticker in df['Ticker'].values:
-        df.loc[df['Ticker'] == ticker, 'Amount'] += amount
-    else:
-        new_row = pd.DataFrame({'Ticker': [ticker], 'Amount': [amount]})
-        df = pd.concat([df, new_row], ignore_index=True)
-
-    try:
-        df.to_excel(file_path, index=False)
-        st.success("Die Daten wurden erfolgreich in Excel hinzugefügt.")
-    except Exception as e:
-        st.error(f"Es gab einen Fehler beim Schreiben in Excel: {e}")
-
-
-    })
-    try:
-        df = pd.read_excel(file_path)
-        df['Datum'] = pd.to_datetime(df['Datum'], format='%d.%m.%Y', errors='coerce')
-        df = df.dropna(subset=['Datum'])
-        df['Datum'] = df['Datum'].dt.strftime('%d.%m.%Y')
-    except FileNotFoundError:
-        df = pd.DataFrame(columns=['Datum', 'Name', 'Betrag'])
-    df = pd.concat([df, new_entry], ignore_index=True)
-    df.to_excel(file_path, index=False)
 
 
 def analyse(df):
