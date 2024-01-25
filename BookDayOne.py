@@ -354,7 +354,7 @@ def main():
     st.sidebar.title("Navigation")
     page = st.sidebar.radio("Choose a page", ["Account Overview", "Analysis", "Recommendation", "Stock Prices"])
 
-    st.title("You Finance")
+    st.title("YouFinance")
 
     # Daten laden, wenn die App startet oder wenn "Account Overview" ausgewählt wird
     if 'dataframe' not in st.session_state or page == "Account Overview":
