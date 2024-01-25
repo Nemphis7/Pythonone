@@ -360,13 +360,15 @@ def main():
         show_add_ticker_form()
         stock_portfolio_df = load_stock_portfolio()
 
-    if stock_portfolio_df is not None:
+        if stock_portfolio_df is not None:
             st.subheader("My Stock Portfolio")
             st.dataframe(stock_portfolio_df)
-   
-        total_portfolio_value = sum(stock_portfolio_df['TotalValue'].str.replace('.', '').str.replace(',', '.').astype(float))
-        st.write(f"Total Portfolio Value: {total_portfolio_value}")
-            # Stellen Sie sicher, dass diese Zeile Ihren Anforderungen entspricht und korrigieren Sie sie falls nötig.
 
+            # Berechnen des Gesamtwerts des Portfolios
+            total_portfolio_value = sum(stock_portfolio_df['TotalValue'].str.replace('.', '').str.replace(',', '.').astype(float))
+            st.write(f"Total Portfolio Value: {total_portfolio_value}")
+            # ... weiterer Code
+   
+   
 if __name__ == "__main__":
     main()
