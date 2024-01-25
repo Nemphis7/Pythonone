@@ -339,22 +339,22 @@ def aktienkurse_app():
 
 def main():
     st.sidebar.title("Navigation")
-    # Ensure the page titles here match the ones in the if-else conditions
+    # Stellen Sie sicher, dass die Seitentitel hier mit denen in den if-else-Bedingungen übereinstimmen
     page = st.sidebar.radio("Choose a page", ["Account Overview", "Analysis", "Recommendation", "Stock Prices"])
 
     st.title("Finance Data Analysis App")
 
-    # Load data when the app starts or when "Account Overview" is selected
+    # Daten laden, wenn die App startet oder wenn "Account Overview" ausgewählt wird
     if 'dataframe' not in st.session_state or page == "Account Overview":
         st.session_state.dataframe = load_data()
 
     df = st.session_state.dataframe
 
-    # Process data if it's not None
+    # Daten verarbeiten, wenn df nicht None ist
     if df is not None:
         df = process_data(df)
 
-   if page == "Account Overview":
+    if page == "Account Overview":
         account_overview(df)
         df = show_new_entry_form(df)
         show_add_ticker_form()
@@ -367,8 +367,20 @@ def main():
             # Berechnen des Gesamtwerts des Portfolios
             total_portfolio_value = sum(stock_portfolio_df['TotalValue'].str.replace('.', '').str.replace(',', '.').astype(float))
             st.write(f"Total Portfolio Value: {total_portfolio_value}")
-            # ... weiterer Code
-   
-   
+
+    elif page == "Analysis":
+        analyse(df)
+
+    elif page == "Recommendation":
+        # Stellen Sie sicher, dass die stock_portfolio_df vor der Verwendung geladen wird
+        if 'stock_portfolio_df' not in locals():
+            stock_portfolio_df = load_stock_portfolio()
+        empfehlung(df, stock_portfolio_df)
+
+    elif page == "Stock Prices":
+        aktienkurse_app()
+
+# Die __name__-Überprüfung, um sicherzustellen, dass das Skript direkt ausgeführt wird
 if __name__ == "__main__":
     main()
+
