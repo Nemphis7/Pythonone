@@ -331,14 +331,15 @@ def aktienkurse_app():
         # Holen Sie sich die fundamentalen Daten
         fundamental_data = get_fundamental_data(aktien_ticker)
         
+        # Überprüfen Sie die Daten in der Konsole
+        print(fundamental_data)
+        
         # Anzeige der fundamentalen Daten
         st.subheader(f"Aktuelle Informationen für: {aktien_ticker}")
         if fundamental_data:
             st.write(f"Kurs-Gewinn-Verhältnis (KGV): {fundamental_data['kgv']}")
             st.write(f"Marktkapitalisierung: {fundamental_data['market_cap']}")
             st.write(f"Dividendenrendite: {fundamental_data['dividend_yield']}")
-            # Hier können Sie weitere Informationen hinzufügen, die Sie anzeigen möchten
-
 
 def get_combined_historical_data(stock_df, period="1y"):
     # Holt die kombinierten historischen Daten für das Gesamtportfolio
