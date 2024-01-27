@@ -160,6 +160,10 @@ def account_overview(df, stock_df):
     if stock_df is not None:
         total_portfolio_history = get_combined_historical_data(stock_df, period="1y")
         plot_portfolio_performance(total_portfolio_history)
+         # Anzeige der Liste der Aktien unterhalb des Gesamtperformance-Charts
+        st.subheader("Aktien im Portfolio:")
+        st.table(stock_df[['Ticker', 'Quantity', 'CurrentPrice', 'TotalValue']])
+        
 
 def analyse(df):
     st.title("Analyse")
