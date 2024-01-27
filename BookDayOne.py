@@ -127,7 +127,7 @@ def plot_financials(financial_df):
     st.pyplot(plt)
 
 def account_overview(df, stock_df):
-    st.title("Financial Data Analysis App")
+    st.title("Financial Data Analysis")
     current_month = datetime.now().strftime('%Y-%m')
     current_month_period = pd.Period(current_month)
     
