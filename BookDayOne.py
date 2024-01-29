@@ -65,8 +65,10 @@ def load_stock_portfolio():
 
 def get_combined_historical_data(stock_df, period="1y"):
     # Check if DataFrame has expected columns
-    if 'Ticker' not in stock_df.columns or 'Quantity' not in stock_df.columns:
-        st.error("DataFrame does not have the expected columns 'Ticker' and 'Quantity'.")
+    def get_combined_historical_data(stock_df, period="1y"):
+    # Ensure the DataFrame has the 'Quantity' column
+    if 'Quantity' not in stock_df.columns:
+        st.error("Missing 'Quantity' column in stock_df")
         return pd.DataFrame()
 
     portfolio_history = pd.DataFrame()
