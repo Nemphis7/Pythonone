@@ -51,11 +51,11 @@ def load_data():
 def load_stock_portfolio():
     try:
         url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/StockPortfolio.xlsx'
-        stock_df = pd.read_excel(url, names=['Ticker', 'StockCount'])
+        stock_df = pd.read_excel(url, names=['Ticker', 'Amount'])
         stock_df['CurrentPrice'] = stock_df['Ticker'].apply(fetch_current_price)
         stock_df.dropna(subset=['CurrentPrice'], inplace=True)
         stock_df = stock_df[stock_df['CurrentPrice'] != 0]
-        stock_df['TotalValue'] = stock_df['StockCount'] * stock_df['CurrentPrice']
+        stock_df['TotalValue'] = stock_df['Amount'] * stock_df['CurrentPrice']
         stock_df['CurrentPrice'] = stock_df['CurrentPrice'].round(2).apply(custom_format)
         stock_df['TotalValue'] = stock_df['TotalValue'].round(2).apply(custom_format)
         return stock_df
@@ -68,7 +68,7 @@ def get_combined_historical_data(stock_df, period="1y"):
     
     for index, row in stock_df.iterrows():
         ticker = row['Ticker']
-        quantity = row['StockCount']  # Updated to 'StockCount'
+        quantity = row['Amount']  # Changed from 'Quantity' to 'Amount'
         stock = yf.Ticker(ticker)
         hist = stock.history(period=period)['Close']
         portfolio_history[ticker] = hist * quantity
@@ -171,8 +171,8 @@ def account_overview(df, stock_df):
         plot_portfolio_performance(total_portfolio_history)
          # Anzeige der Liste der Aktien unterhalb des Gesamtperformance-Charts
         st.subheader("Stocks in Portfolio:")
-        st.table(stock_df[['Ticker', 'StockCount', 'CurrentPrice', 'TotalValue']])  # Updated 'Quantity' to 'StockCount'
-    
+        st.table(stock_df[['Ticker', 'Quantity', 'CurrentPrice', 'TotalValue']])
+        
 
 def analyse(df):
     st.title("Analyse")
@@ -407,12 +407,8 @@ def main():
     df = st.session_state.dataframe
     stock_df = st.session_state.stock_df
 
-   if page == "Account Overview":
-        # Print DataFrame columns for debugging
-        print("stock_df columns:", stock_df.columns.tolist())
-
+    if page == "Account Overview":
         account_overview(df, stock_df)
-
 
     elif page == "Analysis":
         analyse(df)
