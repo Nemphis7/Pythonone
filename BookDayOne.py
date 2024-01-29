@@ -171,8 +171,8 @@ def account_overview(df, stock_df):
         plot_portfolio_performance(total_portfolio_history)
          # Anzeige der Liste der Aktien unterhalb des Gesamtperformance-Charts
         st.subheader("Stocks in Portfolio:")
-        st.table(stock_df[['Ticker', 'Quantity', 'CurrentPrice', 'TotalValue']])
-        
+        st.table(stock_df[['Ticker', 'StockCount', 'CurrentPrice', 'TotalValue']])  # Updated 'Quantity' to 'StockCount'
+    
 
 def analyse(df):
     st.title("Analyse")
