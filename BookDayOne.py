@@ -68,10 +68,10 @@ def get_combined_historical_data(stock_df, period="1y"):
     
     for index, row in stock_df.iterrows():
         ticker = row['Ticker']
-        quantity = row['Amount']  # Changed from 'Quantity' to 'Amount'
+        Amount = row['Amount']  # Changed from 'Amount' to 'Amount'
         stock = yf.Ticker(ticker)
         hist = stock.history(period=period)['Close']
-        portfolio_history[ticker] = hist * quantity
+        portfolio_history[ticker] = hist * Amount
     
     portfolio_history['Total'] = portfolio_history.sum(axis=1)
     return portfolio_history['Total']
@@ -110,7 +110,7 @@ def plot_portfolio_history(stock_df):
     for index, row in stock_df.iterrows():
         ticker = row['Ticker']
         stock_data = yf.download(ticker, start=start, end=end, progress=False)
-        stock_data['Value'] = stock_data['Close'] * row['Quantity']
+        stock_data['Value'] = stock_data['Close'] * row['Amount']
         portfolio_history[ticker] = stock_data['Value']
 
     portfolio_history['TotalValue'] = portfolio_history.sum(axis=1)
@@ -171,7 +171,7 @@ def account_overview(df, stock_df):
         plot_portfolio_performance(total_portfolio_history)
          # Anzeige der Liste der Aktien unterhalb des Gesamtperformance-Charts
         st.subheader("Stocks in Portfolio:")
-        st.table(stock_df[['Ticker', 'Quantity', 'CurrentPrice', 'TotalValue']])
+        st.table(stock_df[['Ticker', 'Amount', 'CurrentPrice', 'TotalValue']])
         
 
 def analyse(df):
@@ -374,10 +374,10 @@ def get_combined_historical_data(stock_df, period="1y"):
     
     for index, row in stock_df.iterrows():
         ticker = row['Ticker']
-        quantity = row['Quantity']
+        Amount = row['Amount']
         stock = yf.Ticker(ticker)
         hist = stock.history(period=period)['Close']
-        portfolio_history[ticker] = hist * quantity
+        portfolio_history[ticker] = hist * Amount
     
     # Summiere die Werte aller Aktien für jeden Tag
     portfolio_history['Total'] = portfolio_history.sum(axis=1)
