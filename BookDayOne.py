@@ -88,7 +88,10 @@ def process_data(df):
         return None
 
 def plot_portfolio_performance(total_portfolio_history):
-    # Diese Funktion plottet die Gesamtperformance des Portfolios
+    if total_portfolio_history.empty:
+        st.error("No data available to plot portfolio performance.")
+        return
+
     plt.figure(figsize=(10, 5))
     plt.plot(total_portfolio_history.index, total_portfolio_history, label='Total Portfolio Value')
     plt.title('Total Portfolio Performance Over Time')
