@@ -218,6 +218,11 @@ def calculate_real_monthly_income(total_investment, years_in_retirement):
     monthly_income = total_investment / (years_in_retirement * 12)
     return monthly_income
 
+def calculate_portfolio_distribution(current_age):
+    # Calculate stock percentage as 100 minus the age
+    stock_percentage = 100 - current_age
+    return stock_percentage, None  # The second value is a placeholder
+
 
 def monte_carlo_simulation(start_balance, monthly_savings, stock_percentage, years_to_invest, inflation_rate, simulations=1000):
     # Assumed annual return rates (can be adjusted)
