@@ -257,10 +257,15 @@ def recommendation_page():
 
     if st.button("Calculate Investment Projection"):
         years_to_invest = retirement_age - current_age
+
+        # Calculate stock percentage based on age
         stock_percentage, _ = calculate_portfolio_distribution(current_age)
 
         # Run Monte Carlo Simulation
         simulation_results = monte_carlo_simulation(0, monthly_savings, stock_percentage, years_to_invest, inflation_rate)
+
+        # Display Results
+        # (rest of your code)
 
         # Display Results
         median_projection = np.median(simulation_results)
