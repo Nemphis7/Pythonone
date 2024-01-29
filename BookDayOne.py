@@ -67,7 +67,7 @@ def get_combined_historical_data(stock_df, period="1y"):
     # Check if DataFrame has expected columns
     def get_combined_historical_data(stock_df, period="1y"):
     # Ensure the DataFrame has the 'Quantity' column
-    if 'Quantity' not in stock_df.columns:
+        if 'Quantity' not in stock_df.columns:
         st.error("Missing 'Quantity' column in stock_df")
         return pd.DataFrame()
 
