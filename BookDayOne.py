@@ -51,11 +51,11 @@ def load_data():
 def load_stock_portfolio():
     try:
         url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/StockPortfolio.xlsx'
-        stock_df = pd.read_excel(url, names=['Ticker', 'Amount'])
+        stock_df = pd.read_excel(url, names=['Ticker', 'StockCount'])
         stock_df['CurrentPrice'] = stock_df['Ticker'].apply(fetch_current_price)
         stock_df.dropna(subset=['CurrentPrice'], inplace=True)
         stock_df = stock_df[stock_df['CurrentPrice'] != 0]
-        stock_df['TotalValue'] = stock_df['Amount'] * stock_df['CurrentPrice']
+        stock_df['TotalValue'] = stock_df['StockCount'] * stock_df['CurrentPrice']
         stock_df['CurrentPrice'] = stock_df['CurrentPrice'].round(2).apply(custom_format)
         stock_df['TotalValue'] = stock_df['TotalValue'].round(2).apply(custom_format)
         return stock_df
