@@ -1,4 +1,3 @@
-pip install --upgrade pip
 pandas
 matplotlib
 yfinance
@@ -9,4 +8,4 @@ requests
 plotly
 datetime
 numb
-scipy.stats
+
