@@ -168,19 +168,19 @@ def account_overview(df, stock_df):
 
 def analyse(df):
     st.title("Analyse")
-    if df is not None and 'Betrag' in df.columns and 'Datum' in df.columns:
+    if df is not None and 'Amount' in df.columns and 'Date' in df.columns:
         # Debug: Show initial data
         st.write("Initial Data Sample:", df.head())
 
-        df['Betrag'] = pd.to_numeric(df['Betrag'], errors='coerce')
-        df['Datum'] = pd.to_datetime(df['Datum'], errors='coerce')
-        df.dropna(subset=['Betrag', 'Datum'], inplace=True)
+        df['Amount'] = pd.to_numeric(df['Amount'], errors='coerce')
+        df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
+        df.dropna(subset=['Amount', 'Date'], inplace=True)
 
-        df['YearMonth'] = df['Datum'].dt.to_period('M')
+        df['YearMonth'] = df['Date'].dt.to_period('M')
 
-        monthly_data = df.groupby('YearMonth')['Betrag'].sum().reset_index()
-        monthly_income = monthly_data[monthly_data['Betrag'] > 0]['Betrag'].mean()
-        monthly_expenses = monthly_data[monthly_data['Betrag'] < 0]['Betrag'].mean()
+        monthly_data = df.groupby('YearMonth')['Amount'].sum().reset_index()
+        monthly_income = monthly_data[monthly_data['Amount'] > 0]['Amount'].mean()
+        monthly_expenses = monthly_data[monthly_data['Amount'] < 0]['Amount'].mean()
         average_savings = monthly_income + monthly_expenses
 
         # Debug: Show computed values
@@ -234,17 +234,17 @@ def empfehlung(df, stock_portfolio_df):
 def add_entry_to_excel(date, name, amount, file_path):
     date_str = date.strftime('%d.%m.%Y')
     new_entry = pd.DataFrame({
-        'Datum': [date_str], 
+        'Date': [date_str], 
         'Name': [name], 
-        'Betrag': [amount]
+        'Amount': [amount]
     })
     try:
         df = pd.read_excel(file_path)
-        df['Datum'] = pd.to_datetime(df['Datum'], format='%d.%m.%Y', errors='coerce')
-        df = df.dropna(subset=['Datum'])
-        df['Datum'] = df['Datum'].dt.strftime('%d.%m.%Y')
+        df['Date'] = pd.to_datetime(df['Date'], format='%d.%m.%Y', errors='coerce')
+        df = df.dropna(subset=['Date'])
+        df['Date'] = df['Date'].dt.strftime('%d.%m.%Y')
     except FileNotFoundError:
-        df = pd.DataFrame(columns=['Datum', 'Name', 'Betrag'])
+        df = pd.DataFrame(columns=['Date', 'Name', 'Amount'])
     df = pd.concat([df, new_entry], ignore_index=True)
     df.to_excel(file_path, index=False)
 
@@ -271,9 +271,9 @@ def display_fundamental_data(ticker, kurs):
 def show_new_entry_form(df):
     with st.form("new_entry_form", clear_on_submit=True):
         st.subheader("Neue Buchung hinzufügen")
-        date = st.date_input("Datum", datetime.today())
+        date = st.date_input("Date", datetime.today())
         name = st.text_input("Name")
-        amount = st.number_input("Betrag", step=1.0)
+        amount = st.number_input("Amount", step=1.0)
         submitted = st.form_submit_button("Eintrag hinzufügen")
         if submitted:
             url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/Mappe1.xlsx'
@@ -293,7 +293,7 @@ def plot_stock_history(ticker):
     plt.figure(figsize=(10, 5))
     plt.plot(data.index, data['Close'], label='Schlusskurse')
     plt.title(f"Aktienkursverlauf der letzten 6 Monate: {ticker}")
-    plt.xlabel('Datum')
+    plt.xlabel('Date')
     plt.ylabel('Kurs in €')
     plt.legend()
     plt.grid(True)
@@ -318,7 +318,7 @@ def plot_stock_data(ticker):
         plt.figure(figsize=(10, 5))
         plt.plot(data.index, data['Close'], label='Schlusskurs')
         plt.title(f"Aktienkursverlauf der letzten 5 Jahre: {ticker}")
-        plt.xlabel('Datum')
+        plt.xlabel('Date')
         plt.ylabel('Kurs')
         plt.legend()
         plt.grid(True)
