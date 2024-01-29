@@ -64,19 +64,18 @@ def load_stock_portfolio():
         return None
 
 def get_combined_historical_data(stock_df, period="1y"):
-    # Diese Funktion holt die kombinierten historischen Daten für das Gesamtportfolio
     portfolio_history = pd.DataFrame()
     
     for index, row in stock_df.iterrows():
         ticker = row['Ticker']
-        quantity = row['Quantity']
+        quantity = row['Amount']  # Changed from 'Quantity' to 'Amount'
         stock = yf.Ticker(ticker)
         hist = stock.history(period=period)['Close']
         portfolio_history[ticker] = hist * quantity
     
-    # Summieren Sie die Werte aller Aktien für jeden Tag, um den Gesamtwert des Portfolios zu erhalten
     portfolio_history['Total'] = portfolio_history.sum(axis=1)
     return portfolio_history['Total']
+
 
 def process_data(df):
     if df is not None and 'Date' in df.columns:
