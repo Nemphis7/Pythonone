@@ -414,7 +414,12 @@ def main():
     stock_df = st.session_state.stock_df
 
     if page == "Account Overview":
+        # Debug: Print columns of stock_df
+        if 'stock_df' in st.session_state:
+            print("Columns in stock_df:", st.session_state.stock_df.columns.tolist())
+        
         account_overview(df, stock_df)
+
 
     elif page == "Analysis":
         analyse(df)
