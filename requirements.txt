@@ -1,3 +1,4 @@
+streamlit==23.3.2
 pandas
 matplotlib
 yfinance
