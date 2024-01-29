@@ -5,6 +5,10 @@ import yfinance as yf
 from datetime import datetime
 import plotly.graph_objects as go
 from datetime import date
+import numpy as np
+import scipy.stats as st
+
+INFLATION_RATE = 0.02
 
 def custom_format(value):
     if pd.isna(value):
@@ -211,7 +215,39 @@ def generate_financial_recommendations(investment_period, stock_portfolio_df):
     # For example, you might adjust the stock/bond ratio based on the investment period.
     # This is just a placeholder:
     return f"Recommended investment strategy for an investment period of {investment_period} years."
+def calculate_monthly_savings(df):
+    monthly_data = df.groupby('YearMonth')['Amount'].sum()
+    average_monthly_savings = monthly_data[monthly_data > 0].mean()
+    return average_monthly_savings
 
+def calculate_investment_values(age, average_savings, retirement_age):
+    investment_years = retirement_age - age
+    stock_ratio = (100 - age) / 100
+    bond_ratio = 1 - stock_ratio
+    monthly_stock_investment = average_savings * stock_ratio
+    monthly_bond_investment = average_savings * bond_ratio
+    return monthly_stock_investment, monthly_bond_investment, investment_years
+
+def calculate_future_value(monthly_investment, rate_of_return, years):
+    months = years * 12
+    future_value = np.fv(rate_of_return/12, months, -monthly_investment, -monthly_investment)
+    return future_value
+
+def calculate_confidence_interval(values, confidence=0.95):
+    mean_val = np.mean(values)
+    std_dev = np.std(values)
+    interval = st.norm.interval(confidence, loc=mean_val, scale=std_dev)
+    return interval
+
+def calculate_real_value(future_value, years):
+    real_value = future_value / ((1 + INFLATION_RATE) ** years)
+    return real_value
+
+def calculate_monthly_income(real_value, years):
+    months = years * 12
+    monthly_income = real_value / months
+    return monthly_income
+    
 def empfehlung(df, stock_portfolio_df):
     st.title("Empfehlung")
 
@@ -220,34 +256,22 @@ def empfehlung(df, stock_portfolio_df):
     retirement_age = st.number_input("Geplantes Rentenalter", min_value=current_age, max_value=100, step=1)
 
     if current_age and retirement_age:
-        # Calculate the investment period
-        investment_period = calculate_investment_period(current_age, retirement_age)
+        average_savings = calculate_monthly_savings(df)
+        stock_investment, bond_investment, investment_years = calculate_investment_values(current_age, average_savings, retirement_age)
+        future_stock_value = calculate_future_value(stock_investment, 0.07, investment_years)  # Assuming 7% return for stocks
+        future_bond_value = calculate_future_value(bond_investment, 0.03, investment_years)  # Assuming 3% return for bonds
+        total_future_value = future_stock_value + future_bond_value
 
-        # Generate and display financial recommendations
-        recommendations = generate_financial_recommendations(investment_period, stock_portfolio_df)
-        st.subheader("Personalisierte finanzielle Empfehlungen:")
-        st.write(recommendations)
-    else:
-        st.write("Bitte geben Sie Ihr aktuelles Alter und das geplante Rentenalter ein, um Empfehlungen zu erhalten.")
+        confidence_interval = calculate_confidence_interval([future_stock_value, future_bond_value])
+        real_value = calculate_real_value(total_future_value, investment_years)
+        monthly_income = calculate_monthly_income(real_value, investment_years)
 
-
-def add_entry_to_excel(date, name, amount, file_path):
-    date_str = date.strftime('%d.%m.%Y')
-    new_entry = pd.DataFrame({
-        'Date': [date_str], 
-        'Name': [name], 
-        'Amount': [amount]
-    })
-    try:
-        df = pd.read_excel(file_path)
-        df['Date'] = pd.to_datetime(df['Date'], format='%d.%m.%Y', errors='coerce')
-        df = df.dropna(subset=['Date'])
-        df['Date'] = df['Date'].dt.strftime('%d.%m.%Y')
-    except FileNotFoundError:
-        df = pd.DataFrame(columns=['Date', 'Name', 'Amount'])
-    df = pd.concat([df, new_entry], ignore_index=True)
-    df.to_excel(file_path, index=False)
-
+        st.subheader("Investment Projections:")
+        st.write(f"Future Value (nominal): {total_future_value:.2f}")
+        st.write(f"95% Confidence Interval: {confidence_interval}")
+        st.write(f"Real Value (today's money): {real_value:.2f}")
+        st.write(f"Estimated Monthly Income at Retirement: {monthly_income:.2f}")
+        
 def custom_format_large_number(value):
     if pd.isna(value):
         return None
