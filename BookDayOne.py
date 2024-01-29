@@ -39,7 +39,7 @@ def get_fundamental_data(ticker):
 def load_data():
     try:
         url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/Mappe1.xlsx'
-        df = pd.read_excel(url, names=['Date', 'Name', 'Amount'])
+        df = pd.read_excel(url, names=['Date', 'Name', 'Amount', 'Category'])
         return df
     except Exception as e:
         st.error(f"Error reading financial data file: {e}")
@@ -48,11 +48,11 @@ def load_data():
 def load_stock_portfolio():
     try:
         url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/StockPortfolio.xlsx'
-        stock_df = pd.read_excel(url, names=['Ticker', 'Quantity'])
+        stock_df = pd.read_excel(url, names=['Ticker', 'Amount'])
         stock_df['CurrentPrice'] = stock_df['Ticker'].apply(fetch_current_price)
         stock_df.dropna(subset=['CurrentPrice'], inplace=True)
         stock_df = stock_df[stock_df['CurrentPrice'] != 0]
-        stock_df['TotalValue'] = stock_df['Quantity'] * stock_df['CurrentPrice']
+        stock_df['TotalValue'] = stock_df['Amount'] * stock_df['CurrentPrice']
         stock_df['CurrentPrice'] = stock_df['CurrentPrice'].round(2).apply(custom_format)
         stock_df['TotalValue'] = stock_df['TotalValue'].round(2).apply(custom_format)
         return stock_df
