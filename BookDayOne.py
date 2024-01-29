@@ -407,11 +407,10 @@ def main():
     df = st.session_state.dataframe
     stock_df = st.session_state.stock_df
 
-    if page == "Account Overview":
-        # Debug: Print columns of stock_df
-        if 'stock_df' in st.session_state:
-            print("Columns in stock_df:", st.session_state.stock_df.columns.tolist())
-        
+   if page == "Account Overview":
+        # Print DataFrame columns for debugging
+        print("stock_df columns:", stock_df.columns.tolist())
+
         account_overview(df, stock_df)
 
 
