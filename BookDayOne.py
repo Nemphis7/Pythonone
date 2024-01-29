@@ -201,7 +201,7 @@ def analyse(df):
         fig.update_layout(title_text="Financial Flow - Sankey Diagram", font_size=10)
         st.plotly_chart(fig)
     else:
-        st.error("Keine Daten zum Analysieren vorhanden.")
+        st.error("No Data to analyse")
 
 def calculate_investment_period(current_age, retirement_age):
     return retirement_age - current_age
