@@ -212,8 +212,8 @@ def generate_financial_recommendations(investment_period, stock_portfolio_df):
     # This is just a placeholder:
     return f"Recommended investment strategy for an investment period of {investment_period} years."
 
-def recommendation(df, stock_portfolio_df):
-    st.title("recommendation")
+def empfehlung(df, stock_portfolio_df):
+    st.title("Empfehlung")
 
     # Inputs for age and retirement date
     current_age = st.number_input("Dein aktuelles Alter", min_value=18, max_value=100, step=1)
@@ -225,40 +225,10 @@ def recommendation(df, stock_portfolio_df):
 
         # Generate and display financial recommendations
         recommendations = generate_financial_recommendations(investment_period, stock_portfolio_df)
-        st.subheader("Personalisierte finanzielle recommendationen:")
+        st.subheader("Personalisierte finanzielle Empfehlungen:")
         st.write(recommendations)
     else:
-        st.write("Bitte geben Sie Ihr aktuelles Alter und das geplante Rentenalter ein, um recommendationen zu erhalten.")
-
-def calculate_future_investment(age, monthly_savings, retirement_age, inflation_rate, stock_return, bond_return):
-    years_to_invest = retirement_age - age
-    investment_ratio = (100 - age) / 100
-
-    total_investment = 0
-    for year in range(years_to_invest):
-        annual_investment = monthly_savings * 12
-        annual_return = (annual_investment * investment_ratio * stock_return) + \
-                        (annual_investment * (1 - investment_ratio) * bond_return)
-        total_investment += annual_return
-
-        # Adjust for inflation
-        total_investment /= (1 + inflation_rate)
-
-    # Calculate real monthly income in today's money
-    real_monthly_income = (total_investment / years_to_invest) / 12
-    return total_investment, real_monthly_income
-
-# Sample Usage
-age = st.number_input("Your Current Age", min_value=18, max_value=100)
-retirement_age = st.number_input("Retirement Age", min_value=age, max_value=100)
-monthly_savings = # Average monthly savings from your code
-inflation_rate = # Official inflation rate
-stock_return = # Average historical return rate for stocks
-bond_return = # Average historical return rate for bonds
-
-total_investment, real_monthly_income = calculate_future_investment(age, monthly_savings, retirement_age, inflation_rate, stock_return, bond_return)
-st.write(f"Projected Investment at Retirement: {total_investment}")
-st.write(f"Equivalent Monthly Income in Today's Money: {real_monthly_income}")
+        st.write("Bitte geben Sie Ihr aktuelles Alter und das geplante Rentenalter ein, um Empfehlungen zu erhalten.")
 
 
 def add_entry_to_excel(date, name, amount, file_path):
@@ -422,7 +392,7 @@ def main():
         analyse(df)
 
     elif page == "Recommendation":
-        recommendation(df, stock_df)
+        empfehlung(df, stock_df)
 
     elif page == "Stock Prices":
         aktienkurse_app()
