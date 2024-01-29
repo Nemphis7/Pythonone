@@ -207,70 +207,64 @@ def analyse(df):
     else:
         st.error("No Data to analyse")
 
-def calculate_investment_period(current_age, retirement_age):
-    return retirement_age - current_age
-
-def generate_financial_recommendations(investment_period, stock_portfolio_df):
-    # This is where you'd implement the logic for financial recommendations.
-    # For example, you might adjust the stock/bond ratio based on the investment period.
-    # This is just a placeholder:
-    return f"Recommended investment strategy for an investment period of {investment_period} years."
-def calculate_monthly_savings(df):
-    monthly_data = df.groupby('YearMonth')['Amount'].sum()
-    average_monthly_savings = monthly_data[monthly_data > 0].mean()
-    return average_monthly_savings
-
-def calculate_investment_values(age, average_savings, retirement_age):
-    investment_years = retirement_age - age
-    stock_ratio = (100 - age) / 100
-    bond_ratio = 1 - stock_ratio
-    monthly_stock_investment = average_savings * stock_ratio
-    monthly_bond_investment = average_savings * bond_ratio
-    return monthly_stock_investment, monthly_bond_investment, investment_years
-
-def calculate_future_value(monthly_investment, rate_of_return, years):
-    months = years * 12
-    future_value = np.fv(rate_of_return/12, months, -monthly_investment, -monthly_investment)
-    return future_value
-
-def calculate_confidence_interval(values, confidence=0.95):
-    mean_val = np.mean(values)
-    std_dev = np.std(values)
-    interval = st.norm.interval(confidence, loc=mean_val, scale=std_dev)
-    return interval
-
-def calculate_real_value(future_value, years):
-    real_value = future_value / ((1 + INFLATION_RATE) ** years)
-    return real_value
-
-def calculate_monthly_income(real_value, years):
-    months = years * 12
-    monthly_income = real_value / months
-    return monthly_income
+def adjust_for_inflation(value, years, inflation_rate):
+    return value / ((1 + inflation_rate) ** years)
     
-def empfehlung(df, stock_portfolio_df):
-    st.title("Empfehlung")
+def calculate_real_monthly_income(total_investment, years_in_retirement):
+    monthly_income = total_investment / (years_in_retirement * 12)
+    return monthly_income
 
-    # Inputs for age and retirement date
-    current_age = st.number_input("Dein aktuelles Alter", min_value=18, max_value=100, step=1)
-    retirement_age = st.number_input("Geplantes Rentenalter", min_value=current_age, max_value=100, step=1)
 
-    if current_age and retirement_age:
-        average_savings = calculate_monthly_savings(df)
-        stock_investment, bond_investment, investment_years = calculate_investment_values(current_age, average_savings, retirement_age)
-        future_stock_value = calculate_future_value(stock_investment, 0.07, investment_years)  # Assuming 7% return for stocks
-        future_bond_value = calculate_future_value(bond_investment, 0.03, investment_years)  # Assuming 3% return for bonds
-        total_future_value = future_stock_value + future_bond_value
+def monte_carlo_simulation(start_balance, monthly_savings, stock_percentage, years_to_invest, inflation_rate, simulations=1000):
+    # Assumed annual return rates (can be adjusted)
+    avg_return_stock = 0.07
+    avg_return_bond = 0.03
+    std_dev_stock = 0.18
+    std_dev_bond = 0.06
 
-        confidence_interval = calculate_confidence_interval([future_stock_value, future_bond_value])
-        real_value = calculate_real_value(total_future_value, investment_years)
-        monthly_income = calculate_monthly_income(real_value, investment_years)
+    # Preparing the simulation array
+    results = np.zeros(simulations)
 
-        st.subheader("Investment Projections:")
-        st.write(f"Future Value (nominal): {total_future_value:.2f}")
-        st.write(f"95% Confidence Interval: {confidence_interval}")
-        st.write(f"Real Value (today's money): {real_value:.2f}")
-        st.write(f"Estimated Monthly Income at Retirement: {monthly_income:.2f}")
+    for i in range(simulations):
+        balance = start_balance
+        for year in range(years_to_invest):
+            annual_stock_return = np.random.normal(avg_return_stock, std_dev_stock)
+            annual_bond_return = np.random.normal(avg_return_bond, std_dev_bond)
+            weighted_return = (stock_percentage * annual_stock_return + (100 - stock_percentage) * annual_bond_return) / 100
+            balance = balance * (1 + weighted_return) + monthly_savings * 12
+            balance = adjust_for_inflation(balance, 1, inflation_rate)  # Adjust each year for inflation
+        results[i] = balance
+
+    return results
+    
+def recommendation_page():
+    st.title("Investment Recommendation")
+
+    # User Inputs
+    current_age = st.number_input("Your Current Age", min_value=18, max_value=100, step=1)
+    retirement_age = st.number_input("Your Retirement Age", min_value=current_age+1, max_value=100, step=1)
+    monthly_savings = st.number_input("Monthly Savings", min_value=0.0, step=1.0)
+    inflation_rate = st.number_input("Expected Annual Inflation Rate", min_value=0.0, max_value=10.0, step=0.1, value=2.0) / 100
+
+    if st.button("Calculate Investment Projection"):
+        years_to_invest = retirement_age - current_age
+        stock_percentage, _ = calculate_portfolio_distribution(current_age)
+
+        # Run Monte Carlo Simulation
+        simulation_results = monte_carlo_simulation(0, monthly_savings, stock_percentage, years_to_invest, inflation_rate)
+
+        # Display Results
+        median_projection = np.median(simulation_results)
+        lower_bound = np.percentile(simulation_results, 5)
+        upper_bound = np.percentile(simulation_results, 95)
+
+        st.write(f"Projected Investment Value at Retirement (Median): ${median_projection:,.2f}")
+        st.write(f"95% Confidence Interval: ${lower_bound:,.2f} - ${upper_bound:,.2f}")
+
+        # Calculate Real Monthly Income
+        years_in_retirement = 90 - retirement_age  # Assuming retirement until age 90
+        real_monthly_income = calculate_real_monthly_income(median_projection, years_in_retirement)
+        st.write(f"Estimated Real Monthly Income in Today's Money: ${real_monthly_income:,.2f}")
         
 def custom_format_large_number(value):
     if pd.isna(value):
@@ -416,7 +410,7 @@ def main():
         analyse(df)
 
     elif page == "Recommendation":
-        empfehlung(df, stock_df)
+        recommendation_page()
 
     elif page == "Stock Prices":
         aktienkurse_app()
