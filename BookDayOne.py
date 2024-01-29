@@ -5,9 +5,6 @@ import yfinance as yf
 from datetime import datetime
 import plotly.graph_objects as go
 from datetime import date
-import numpy as np
-
-INFLATION_RATE = 0.02
 
 def custom_format(value):
     if pd.isna(value):
@@ -22,11 +19,8 @@ def fetch_current_price(ticker):
         stock = yf.Ticker(ticker)
         price = stock.history(period="1d")['Close'][-1]
         return price
-    except ValueError as e:
-        st.error(f"Value Error: {e}")
     except Exception as e:
-        st.error(f"Error fetching data for {ticker}: {e}")
-
+        raise Exception(f"Error fetching data for {ticker}: {e}")
 
 def get_fundamental_data(ticker):
     stock = yf.Ticker(ticker)
@@ -42,7 +36,7 @@ def get_fundamental_data(ticker):
 def load_data():
     try:
         url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/Mappe1.xlsx'
-        df = pd.read_excel(url, names=['Date', 'Name', 'Amount', 'Category'])
+        df = pd.read_excel(url, names=['Date', 'Name', 'Amount'])
         return df
     except Exception as e:
         st.error(f"Error reading financial data file: {e}")
@@ -51,11 +45,11 @@ def load_data():
 def load_stock_portfolio():
     try:
         url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/StockPortfolio.xlsx'
-        stock_df = pd.read_excel(url, names=['Ticker', 'Amount'])
+        stock_df = pd.read_excel(url, names=['Ticker', 'Quantity'])
         stock_df['CurrentPrice'] = stock_df['Ticker'].apply(fetch_current_price)
         stock_df.dropna(subset=['CurrentPrice'], inplace=True)
         stock_df = stock_df[stock_df['CurrentPrice'] != 0]
-        stock_df['TotalValue'] = stock_df['Amount'] * stock_df['CurrentPrice']
+        stock_df['TotalValue'] = stock_df['Quantity'] * stock_df['CurrentPrice']
         stock_df['CurrentPrice'] = stock_df['CurrentPrice'].round(2).apply(custom_format)
         stock_df['TotalValue'] = stock_df['TotalValue'].round(2).apply(custom_format)
         return stock_df
@@ -64,18 +58,19 @@ def load_stock_portfolio():
         return None
 
 def get_combined_historical_data(stock_df, period="1y"):
+    # Diese Funktion holt die kombinierten historischen Daten für das Gesamtportfolio
     portfolio_history = pd.DataFrame()
     
     for index, row in stock_df.iterrows():
         ticker = row['Ticker']
-        quantity = row['Amount']  # Changed from 'Quantity' to 'Amount'
+        quantity = row['Quantity']
         stock = yf.Ticker(ticker)
         hist = stock.history(period=period)['Close']
         portfolio_history[ticker] = hist * quantity
     
+    # Summieren Sie die Werte aller Aktien für jeden Tag, um den Gesamtwert des Portfolios zu erhalten
     portfolio_history['Total'] = portfolio_history.sum(axis=1)
     return portfolio_history['Total']
-
 
 def process_data(df):
     if df is not None and 'Date' in df.columns:
@@ -90,10 +85,7 @@ def process_data(df):
         return None
 
 def plot_portfolio_performance(total_portfolio_history):
-    if total_portfolio_history.empty:
-        st.error("No data available to plot portfolio performance.")
-        return
-
+    # Diese Funktion plottet die Gesamtperformance des Portfolios
     plt.figure(figsize=(10, 5))
     plt.plot(total_portfolio_history.index, total_portfolio_history, label='Total Portfolio Value')
     plt.title('Total Portfolio Performance Over Time')
@@ -211,65 +203,51 @@ def analyse(df):
     else:
         st.error("No Data to analyse")
 
-def adjust_for_inflation(value, years, inflation_rate):
-    return value / ((1 + inflation_rate) ** years)
-    
-def calculate_real_monthly_income(total_investment, years_in_retirement):
-    monthly_income = total_investment / (years_in_retirement * 12)
-    return monthly_income
+def calculate_investment_period(current_age, retirement_age):
+    return retirement_age - current_age
+
+def generate_financial_recommendations(investment_period, stock_portfolio_df):
+    # This is where you'd implement the logic for financial recommendations.
+    # For example, you might adjust the stock/bond ratio based on the investment period.
+    # This is just a placeholder:
+    return f"Recommended investment strategy for an investment period of {investment_period} years."
+
+def empfehlung(df, stock_portfolio_df):
+    st.title("Empfehlung")
+
+    # Inputs for age and retirement date
+    current_age = st.number_input("Dein aktuelles Alter", min_value=18, max_value=100, step=1)
+    retirement_age = st.number_input("Geplantes Rentenalter", min_value=current_age, max_value=100, step=1)
+
+    if current_age and retirement_age:
+        # Calculate the investment period
+        investment_period = calculate_investment_period(current_age, retirement_age)
+
+        # Generate and display financial recommendations
+        recommendations = generate_financial_recommendations(investment_period, stock_portfolio_df)
+        st.subheader("Personalisierte finanzielle Empfehlungen:")
+        st.write(recommendations)
+    else:
+        st.write("Bitte geben Sie Ihr aktuelles Alter und das geplante Rentenalter ein, um Empfehlungen zu erhalten.")
 
 
-def monte_carlo_simulation(start_balance, monthly_savings, stock_percentage, years_to_invest, inflation_rate, simulations=1000):
-    # Assumed annual return rates (can be adjusted)
-    avg_return_stock = 0.07
-    avg_return_bond = 0.03
-    std_dev_stock = 0.18
-    std_dev_bond = 0.06
+def add_entry_to_excel(date, name, amount, file_path):
+    date_str = date.strftime('%d.%m.%Y')
+    new_entry = pd.DataFrame({
+        'Date': [date_str], 
+        'Name': [name], 
+        'Amount': [amount]
+    })
+    try:
+        df = pd.read_excel(file_path)
+        df['Date'] = pd.to_datetime(df['Date'], format='%d.%m.%Y', errors='coerce')
+        df = df.dropna(subset=['Date'])
+        df['Date'] = df['Date'].dt.strftime('%d.%m.%Y')
+    except FileNotFoundError:
+        df = pd.DataFrame(columns=['Date', 'Name', 'Amount'])
+    df = pd.concat([df, new_entry], ignore_index=True)
+    df.to_excel(file_path, index=False)
 
-    # Preparing the simulation array
-    results = np.zeros(simulations)
-
-    for i in range(simulations):
-        balance = start_balance
-        for year in range(years_to_invest):
-            annual_stock_return = np.random.normal(avg_return_stock, std_dev_stock)
-            annual_bond_return = np.random.normal(avg_return_bond, std_dev_bond)
-            weighted_return = (stock_percentage * annual_stock_return + (100 - stock_percentage) * annual_bond_return) / 100
-            balance = balance * (1 + weighted_return) + monthly_savings * 12
-            balance = adjust_for_inflation(balance, 1, inflation_rate)  # Adjust each year for inflation
-        results[i] = balance
-
-    return results
-    
-def recommendation_page():
-    st.title("Investment Recommendation")
-
-    # User Inputs
-    current_age = st.number_input("Your Current Age", min_value=18, max_value=100, step=1)
-    retirement_age = st.number_input("Your Retirement Age", min_value=current_age+1, max_value=100, step=1)
-    monthly_savings = st.number_input("Monthly Savings", min_value=0.0, step=1.0)
-    inflation_rate = st.number_input("Expected Annual Inflation Rate", min_value=0.0, max_value=10.0, step=0.1, value=2.0) / 100
-
-    if st.button("Calculate Investment Projection"):
-        years_to_invest = retirement_age - current_age
-        stock_percentage, _ = calculate_portfolio_distribution(current_age)
-
-        # Run Monte Carlo Simulation
-        simulation_results = monte_carlo_simulation(0, monthly_savings, stock_percentage, years_to_invest, inflation_rate)
-
-        # Display Results
-        median_projection = np.median(simulation_results)
-        lower_bound = np.percentile(simulation_results, 5)
-        upper_bound = np.percentile(simulation_results, 95)
-
-        st.write(f"Projected Investment Value at Retirement (Median): ${median_projection:,.2f}")
-        st.write(f"95% Confidence Interval: ${lower_bound:,.2f} - ${upper_bound:,.2f}")
-
-        # Calculate Real Monthly Income
-        years_in_retirement = 90 - retirement_age  # Assuming retirement until age 90
-        real_monthly_income = calculate_real_monthly_income(median_projection, years_in_retirement)
-        st.write(f"Estimated Real Monthly Income in Today's Money: ${real_monthly_income:,.2f}")
-        
 def custom_format_large_number(value):
     if pd.isna(value):
         return None
@@ -414,7 +392,7 @@ def main():
         analyse(df)
 
     elif page == "Recommendation":
-        recommendation_page()
+        empfehlung(df, stock_df)
 
     elif page == "Stock Prices":
         aktienkurse_app()
