@@ -64,17 +64,23 @@ def load_stock_portfolio():
         return None
 
 def get_combined_historical_data(stock_df, period="1y"):
+    # Check if DataFrame has expected columns
+    if 'Ticker' not in stock_df.columns or 'Quantity' not in stock_df.columns:
+        st.error("DataFrame does not have the expected columns 'Ticker' and 'Quantity'.")
+        return pd.DataFrame()
+
     portfolio_history = pd.DataFrame()
     
     for index, row in stock_df.iterrows():
         ticker = row['Ticker']
-        quantity = row['Quantity']  # Corrected from 'Quantity' to 'Amount'
+        quantity = row['Quantity']
         stock = yf.Ticker(ticker)
         hist = stock.history(period=period)['Close']
         portfolio_history[ticker] = hist * quantity
     
     portfolio_history['Total'] = portfolio_history.sum(axis=1)
     return portfolio_history['Total']
+
 
 
 def process_data(df):
