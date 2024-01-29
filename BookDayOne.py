@@ -229,6 +229,7 @@ def recommendation(df, stock_portfolio_df):
         st.write(recommendations)
     else:
         st.write("Bitte geben Sie Ihr aktuelles Alter und das geplante Rentenalter ein, um recommendationen zu erhalten.")
+
 def calculate_future_investment(age, monthly_savings, retirement_age, inflation_rate, stock_return, bond_return):
     years_to_invest = retirement_age - age
     investment_ratio = (100 - age) / 100
