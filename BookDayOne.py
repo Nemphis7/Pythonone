@@ -68,7 +68,7 @@ def get_combined_historical_data(stock_df, period="1y"):
     
     for index, row in stock_df.iterrows():
         ticker = row['Ticker']
-        quantity = row['Amount']  # Changed from 'Quantity' to 'Amount'
+        quantity = row['Amount']  # Corrected from 'Quantity' to 'Amount'
         stock = yf.Ticker(ticker)
         hist = stock.history(period=period)['Close']
         portfolio_history[ticker] = hist * quantity
