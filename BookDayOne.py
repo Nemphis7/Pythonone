@@ -6,7 +6,6 @@ from datetime import datetime
 import plotly.graph_objects as go
 from datetime import date
 import numpy as np
-import scipy.stats as st
 
 INFLATION_RATE = 0.02
 
