@@ -22,8 +22,11 @@ def fetch_current_price(ticker):
         stock = yf.Ticker(ticker)
         price = stock.history(period="1d")['Close'][-1]
         return price
+    except ValueError as e:
+        st.error(f"Value Error: {e}")
     except Exception as e:
-        raise Exception(f"Error fetching data for {ticker}: {e}")
+        st.error(f"Error fetching data for {ticker}: {e}")
+
 
 def get_fundamental_data(ticker):
     stock = yf.Ticker(ticker)
