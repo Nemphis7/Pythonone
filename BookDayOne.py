@@ -165,18 +165,26 @@ def recommendation_page():
 
         # Plot the results
         plt.figure(figsize=(10, 6))
-        for simulation in simulation_results.T:
-            plt.plot(simulation, linewidth=0.5, alpha=0.3)
-        plt.title("Monte Carlo Simulation of Investment Over Time")
+        plt.fill_between(range(years_to_invest), lower_bound, upper_bound, color='gray', alpha=0.5)
+        plt.plot(median_projection, label='Median Projection')
+        plt.title("Investment Projection Over Time")
         plt.xlabel("Years")
         plt.ylabel("Portfolio Value")
+        plt.legend()
         st.pyplot(plt)
+        
+        for simulation in simulation_results.T:
+            plt.plot(simulation, linewidth=0.5, alpha=0.3)
+            plt.title("Monte Carlo Simulation of Investment Over Time")
+            plt.xlabel("Years")
+            plt.ylabel("Portfolio Value")
+            st.pyplot(plt)
 
             try:
                 # Calculate the median projection
-                median_projection = np.median(simulation_results)  # No axis specified
-                lower_bound = np.percentile(simulation_results, 5)
-                upper_bound = np.percentile(simulation_results, 95)
+                median_projection = np.median(simulation_results, axis=0)
+                lower_bound = np.percentile(simulation_results, 5, axis=0)
+                upper_bound = np.percentile(simulation_results, 95, axis=0)
 
                 st.write(f"Projected Investment Value at Retirement (Median): ${median_projection:,.2f}")
                 st.write(f"95% Confidence Interval: ${lower_bound:,.2f} - ${upper_bound:,.2f}")
@@ -278,19 +286,20 @@ def monte_carlo_simulation(start_balance, monthly_savings, stock_percentage, yea
     std_dev_bond = 0.06
 
     # Preparing the simulation array
-    results = np.zeros(simulations)
+    all_results = np.zeros((simulations, years_to_invest))
 
     for i in range(simulations):
         balance = start_balance
+        for year in range(years_to_invest):
         for year in range(years_to_invest):
             annual_stock_return = np.random.normal(avg_return_stock, std_dev_stock)
             annual_bond_return = np.random.normal(avg_return_bond, std_dev_bond)
             weighted_return = (stock_percentage * annual_stock_return + (100 - stock_percentage) * annual_bond_return) / 100
             balance = balance * (1 + weighted_return) + monthly_savings * 12
             balance = adjust_for_inflation(balance, 1, inflation_rate)  # Adjust each year for inflation
-        results[i] = balance
+        all_results[i, year] = balance
 
-    return results
+    return all_results
 
 
 
