@@ -173,14 +173,14 @@ def plot_financials(financial_df):
     plt.grid(True)
     st.pyplot(plt)
 
-def calculate_cumulative_savings(monthly_savings, years_to_invest, inflation_rate):
-    cumulative_savings = np.zeros(years_to_invest)
+def calculate_cumulative_savings(monthly_savings, years_to_invest):
     total_savings = 0
-    for year in range(years_to_invest):
-        total_savings += monthly_savings * 12
-        total_savings /= (1 + inflation_rate)  # Adjust for inflation
-        cumulative_savings[year] = total_savings
+    cumulative_savings = []
+    for year in range(1, years_to_invest + 1):
+        total_savings += monthly_savings * 12 * year
+        cumulative_savings.append(total_savings)
     return cumulative_savings
+
 
 def recommendation_page():
     st.title("Investment Recommendation")
