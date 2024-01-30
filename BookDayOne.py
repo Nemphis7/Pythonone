@@ -158,6 +158,7 @@ def recommendation_page():
 
         # Run Monte Carlo Simulation
         simulation_results = monte_carlo_simulation(0, monthly_savings, stock_percentage, years_to_invest, inflation_rate)
+        print("Shape of simulation_results:", simulation_results.shape)
 
         # Plot the results
         plt.figure(figsize=(10, 6))
