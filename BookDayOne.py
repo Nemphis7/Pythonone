@@ -364,33 +364,36 @@ def get_stock_data(ticker):
         print(f"Fehler beim Abrufen der Daten für {ticker}: {e}")
         return None
 
-def plot_stock_data(ticker, color='blue', secondary_ticker=None, secondary_color='orange'):
-    """Plot the stock price over the last 5 years."""
+def plot_stock_data(ticker_a, ticker_b, period='5y'):
+    """Plot the stock price percentage change over the selected period."""
     try:
-        stock = yf.Ticker(ticker)
-        data = stock.history(period="5y")
-        if data.empty:
-            st.error("No historical data found for this ticker.")
+        stock_a = yf.Ticker(ticker_a)
+        stock_b = yf.Ticker(ticker_b)
+
+        data_a = stock_a.history(period=period)['Close']
+        data_b = stock_b.history(period=period)['Close']
+
+        if data_a.empty or data_b.empty:
+            st.error("No historical data found for one or both tickers.")
             return
 
+        # Calculate the percentage change from the start of the period
+        data_a_pct_change = data_a.pct_change().fillna(0).add(1).cumprod().sub(1)
+        data_b_pct_change = data_b.pct_change().fillna(0).add(1).cumprod().sub(1)
+
         plt.figure(figsize=(10, 5))
-        plt.plot(data.index, data['Close'], label=f'{ticker} Closing Price', color=color)
-        
-        # If a secondary ticker is provided, plot it in orange
-        if secondary_ticker:
-            secondary_stock = yf.Ticker(secondary_ticker)
-            secondary_data = secondary_stock.history(period="5y")
-            if not secondary_data.empty:
-                plt.plot(secondary_data.index, secondary_data['Close'], label=f'{secondary_ticker} Closing Price', color=secondary_color)
-        
-        plt.title(f"Stock Price Performance Over The Last 5 Years")
+        plt.plot(data_a_pct_change.index, data_a_pct_change, label=f'{ticker_a} Percentage Change', color='blue')
+        plt.plot(data_b_pct_change.index, data_b_pct_change, label=f'{ticker_b} Percentage Change', color='orange')
+
+        plt.title(f"Stock Price Percentage Change Comparison")
         plt.xlabel('Date')
-        plt.ylabel('Price')
+        plt.ylabel('Percentage Change')
         plt.legend()
         plt.grid(True)
         st.pyplot(plt)
     except Exception as e:
-        st.error(f"An error occurred while fetching data for {ticker}: {e}")
+        st.error(f"An error occurred while fetching data for the tickers: {e}")
+
 
 def display_comparison_table(ticker_a, ticker_b):
     data_a = get_fundamental_data(ticker_a)
@@ -422,19 +425,22 @@ def display_comparison_table(ticker_a, ticker_b):
 
 def Aktienkurse_app():
     st.title("Stock Price Comparison")
-    col1, col2 = st.columns(2)
-    
+    col1, col2, col3 = st.columns(3)
+
     with col1:
         aktien_ticker_a = st.text_input("Insert Stock Ticker for Stock A:", "")
     with col2:
         aktien_ticker_b = st.text_input("Insert Stock Ticker for Stock B:", "")
+    with col3:
+        period_option = st.selectbox("Select Period:", options=['5y', '3y', '1y', '6mo'], index=0)
 
     if aktien_ticker_a and aktien_ticker_b:
         # Show the stock price chart and comparison
-        plot_stock_data(aktien_ticker_a, color='blue', secondary_ticker=aktien_ticker_b, secondary_color='orange')
+        plot_stock_data(aktien_ticker_a, aktien_ticker_b, period=period_option)
         
         # Display the fundamental data comparison
         display_comparison_table(aktien_ticker_a, aktien_ticker_b)
+
 
 def get_combined_historical_data(stock_df, period="1y"):
     # Holt die kombinierten historischen Daten für das Gesamtportfolio
