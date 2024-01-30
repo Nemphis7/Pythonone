@@ -172,7 +172,7 @@ def recommendation_page():
         plt.ylabel("Portfolio Value")
         st.pyplot(plt)
 
-            try:
+        try:
                 # Calculate the median projection
                 median_projection = np.median(simulation_results, axis=1)[-1]
                 lower_bound = np.percentile(simulation_results, 5, axis=1)[-1]
@@ -185,7 +185,7 @@ def recommendation_page():
                 years_in_retirement = 90 - retirement_age
                 real_monthly_income = calculate_real_monthly_income(median_projection, years_in_retirement)
                 st.write(f"Estimated Real Monthly Income in Today's Money: ${real_monthly_income:,.2f}")
-            except Exception as e:
+        except Exception as e:
                 error_message = f"An error occurred while processing the data: {str(e)}"
                 st.error(error_message)
                 print("Detailed error information:", e)
