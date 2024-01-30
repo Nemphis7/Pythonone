@@ -194,20 +194,20 @@ def account_overview(df, stock_df):
         current_month_income = current_month_data[current_month_data['Amount'] > 0]['Amount'].sum()
         
         # Display Expenses
-        st.markdown(f"#### Expenses in {current_month}:")
-        st.markdown(f"**{current_month_expenses}**")
+        st.markdown(f"### Expenses in {current_month}: **{current_month_expenses}**")
         
         # Display Income
-        st.markdown(f"#### Income in {current_month}:")
-        st.markdown(f"**{current_month_income}**")
+        st.markdown(f"### Income in {current_month}: **{current_month_income}**")
         
         total_expenses = current_month_data[current_month_data['Amount'] < 0]['Amount'].sum()
         total_income = current_month_data[current_month_data['Amount'] > 0]['Amount'].sum()
         account_balance = total_income + total_expenses
         
         # Display Total Account Balance
-        st.markdown(f"#### Total account balance:")
-        st.markdown(f"**{account_balance}**")
+        st.markdown(f"### Total account balance: **{account_balance}**")
+
+    # The rest of your existing implementation...
+
 
     # Plot der Gesamtperformance am Ende der Account Overview
     if stock_df is not None:
