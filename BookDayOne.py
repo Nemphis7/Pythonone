@@ -472,32 +472,31 @@ def plot_portfolio_performance(total_portfolio_history):
 
 def main():
     st.sidebar.title("Navigation")
-    # Dark mode toggle switch
-  
 
-    page = st.sidebar.radio("Choose a page", ["Account Overview", "Analysis", "Recommendation", "Browse"])
+    # Define the navigation options
+    navigation_options = {
+        "Account Overview": account_overview,
+        "Analysis": analyse,
+        "Recommendation": recommendation_page,
+        "Browse": Aktienkurse_app
+    }
+
+    # Radio buttons for navigation
+    page_selection = st.sidebar.radio("Choose a page", list(navigation_options.keys()))
 
     st.title("YouFinance")
 
-    # Daten laden, wenn die App startet oder wenn "Account Overview" ausgewählt wird
-    if 'dataframe' not in st.session_state or page == "Account Overview":
+    # Load data when the app starts or when "Account Overview" is selected
+    if 'dataframe' not in st.session_state or page_selection == "Account Overview":
         st.session_state.dataframe = load_data()
         st.session_state.stock_df = load_stock_portfolio()
 
     df = st.session_state.dataframe
     stock_df = st.session_state.stock_df
 
-    if page == "Account Overview":
-        account_overview(df, stock_df)
-
-    elif page == "Analysis":
-        analyse(df)
-
-    elif page == "Recommendation":
-        recommendation_page()
-
-    elif page == "Browse":
-        Aktienkurse_app()
+    # Call the corresponding function based on the selected page
+    if page_selection in navigation_options:
+        navigation_options[page_selection](df, stock_df)
 
 if __name__ == "__main__":
     main()
