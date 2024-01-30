@@ -364,35 +364,77 @@ def get_stock_data(ticker):
         print(f"Fehler beim Abrufen der Daten für {ticker}: {e}")
         return None
 
-def plot_stock_data(ticker):
-    """Zeichnet den Kursverlauf der Aktie über die letzten 5 Jahre."""
+def plot_stock_data(ticker, color='blue', secondary_ticker=None, secondary_color='orange'):
+    """Plot the stock price over the last 5 years."""
     try:
         stock = yf.Ticker(ticker)
         data = stock.history(period="5y")
         if data.empty:
-            st.error("Keine historischen Daten für diesen Ticker gefunden.")
+            st.error("No historical data found for this ticker.")
             return
 
         plt.figure(figsize=(10, 5))
-        plt.plot(data.index, data['Close'], label='Schlusskurs')
-        plt.title(f"Share price performance over the last 5 years: {ticker}")
+        plt.plot(data.index, data['Close'], label=f'{ticker} Closing Price', color=color)
+        
+        # If a secondary ticker is provided, plot it in orange
+        if secondary_ticker:
+            secondary_stock = yf.Ticker(secondary_ticker)
+            secondary_data = secondary_stock.history(period="5y")
+            if not secondary_data.empty:
+                plt.plot(secondary_data.index, secondary_data['Close'], label=f'{secondary_ticker} Closing Price', color=secondary_color)
+        
+        plt.title(f"Stock Price Performance Over The Last 5 Years")
         plt.xlabel('Date')
         plt.ylabel('Price')
         plt.legend()
         plt.grid(True)
         st.pyplot(plt)
     except Exception as e:
-        st.error(f"Fehler beim Abrufen der Daten für {ticker}: {e}")
+        st.error(f"An error occurred while fetching data for {ticker}: {e}")
+
+def display_comparison_table(ticker_a, ticker_b):
+    data_a = get_fundamental_data(ticker_a)
+    data_b = get_fundamental_data(ticker_b)
+    
+    # Assuming 'kgv' is the P/E ratio, 'market_cap' is the market capitalization, etc.
+    table_data = {
+        f"{ticker_a}": [
+            data_a['kgv'], 
+            f"{data_a['market_cap']:,}", 
+            f"{data_a['dividend_yield']:.2%}",
+            f"{data_a['roe']:.2%}",
+            f"{data_a['debt_to_equity']:.2f}",
+            f"{data_a['price_to_book']:.2f}"
+        ],
+        f"{ticker_b}": [
+            data_b['kgv'], 
+            f"{data_b['market_cap']:,}", 
+            f"{data_b['dividend_yield']:.2%}",
+            f"{data_b['roe']:.2%}",
+            f"{data_b['debt_to_equity']:.2f}",
+            f"{data_b['price_to_book']:.2f}"
+        ]
+    }
+    
+    comparison_df = pd.DataFrame(table_data, index=["P/E Ratio", "Market Cap", "Dividend Yield", "ROE", "D/E Ratio", "P/B Ratio"])
+    st.table(comparison_df)
+
 
 def Aktienkurse_app():
-    st.title("Stock Price")
-    aktien_ticker = st.text_input("Insert Stock Ticker:", "")
-    if aktien_ticker:
-        # Show the stock price chart
-        plot_stock_data(aktien_ticker)
+    st.title("Stock Price Comparison")
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        aktien_ticker_a = st.text_input("Insert Stock Ticker for Stock A:", "")
+    with col2:
+        aktien_ticker_b = st.text_input("Insert Stock Ticker for Stock B:", "")
+
+    if aktien_ticker_a and aktien_ticker_b:
+        # Show the stock price chart and comparison
+        plot_stock_data(aktien_ticker_a, color='blue', secondary_ticker=aktien_ticker_b, secondary_color='orange')
         
-        # Get and display the fundamental data
-        display_fundamental_data(aktien_ticker)
+        # Display the fundamental data comparison
+        display_comparison_table(aktien_ticker_a, aktien_ticker_b)
 
 def get_combined_historical_data(stock_df, period="1y"):
     # Holt die kombinierten historischen Daten für das Gesamtportfolio
