@@ -173,6 +173,15 @@ def plot_financials(financial_df):
     plt.grid(True)
     st.pyplot(plt)
 
+def calculate_cumulative_savings(monthly_savings, years_to_invest, inflation_rate):
+    cumulative_savings = np.zeros(years_to_invest)
+    total_savings = 0
+    for year in range(years_to_invest):
+        total_savings += monthly_savings * 12
+        total_savings /= (1 + inflation_rate)  # Adjust for inflation
+        cumulative_savings[year] = total_savings
+    return cumulative_savings
+
 def recommendation_page():
     st.title("Investment Recommendation")
 
@@ -186,45 +195,37 @@ def recommendation_page():
         years_to_invest = retirement_age - current_age
         stock_percentage, _ = calculate_portfolio_distribution(current_age)
 
-        # Run Monte Carlo Simulation
         simulation_results = monte_carlo_simulation(0, monthly_savings, stock_percentage, years_to_invest, inflation_rate)
 
-        # Debugging: Print the shape and first few rows of simulation_results
-        print("Shape of simulation_results:", simulation_results.shape)
-        print("First few rows of simulation_results:", simulation_results[:5])
+        # Calculate cumulative savings without investment
+        cumulative_savings = calculate_cumulative_savings(monthly_savings, years_to_invest, inflation_rate)
 
-        # Plot the results
+        # Plot each simulation
         plt.figure(figsize=(10, 6))
-        plt.fill_between(range(years_to_invest), lower_bound, upper_bound, color='gray', alpha=0.5)
-        plt.plot(median_projection, label='Median Projection')
-        plt.title("Investment Projection Over Time")
+        for simulation in simulation_results:
+            plt.plot(range(years_to_invest), simulation, linewidth=0.5, alpha=0.3)
+        plt.title("Monte Carlo Simulation of Investment Over Time")
         plt.xlabel("Years")
         plt.ylabel("Portfolio Value")
-        plt.legend()
         st.pyplot(plt)
-        
-        for simulation in simulation_results.T:
-            plt.plot(simulation, linewidth=0.5, alpha=0.3)
-            plt.title("Monte Carlo Simulation of Investment Over Time")
+
+        try:
+            median_projection = np.median(simulation_results, axis=0)
+            lower_bound = np.percentile(simulation_results, 5, axis=0)
+            upper_bound = np.percentile(simulation_results, 95, axis=0)
+
+            # Plot median and confidence interval with cumulative savings
+            plt.figure(figsize=(10, 6))
+            plt.fill_between(range(years_to_invest), lower_bound, upper_bound, color='gray', alpha=0.5)
+            plt.plot(median_projection, label='Median Projection', color='blue')
+            plt.plot(cumulative_savings, label='Cumulative Savings Without Investment', color='green', linestyle='--')
+            plt.title("Investment Projection Over Time")
             plt.xlabel("Years")
             plt.ylabel("Portfolio Value")
+            plt.legend()
             st.pyplot(plt)
-
-            try:
-                # Calculate the median projection
-                median_projection = np.median(simulation_results, axis=0)
-                lower_bound = np.percentile(simulation_results, 10, axis=0)
-                upper_bound = np.percentile(simulation_results, 90, axis=0)
-
-                st.write(f"Projected Investment Value at Retirement (Median): ${median_projection:,.2f}")
-                st.write(f"95% Confidence Interval: ${lower_bound:,.2f} - ${upper_bound:,.2f}")
-
-                # Calculate Real Monthly Income
-                years_in_retirement = 90 - retirement_age
-                real_monthly_income = calculate_real_monthly_income(median_projection, years_in_retirement)
-                st.write(f"Estimated Real Monthly Income in Today's Money: ${real_monthly_income:,.2f}")
-            except Exception as e:
-                st.error(f"An error occurred while processing the data: {str(e)}")
+        except Exception as e:
+            st.error(f"An error occurred while processing the data: {str(e)}")
     
 def account_overview(df, stock_df):
     st.title("Financial Data Analysis")
