@@ -219,6 +219,7 @@ def monte_carlo_simulation(start_balance, monthly_savings, stock_percentage, yea
             balance = adjust_for_inflation(balance, 1, inflation_rate)  # Adjust each year for inflation
         results[i] = balance
     return results
+    
     def recommendation_page():
         st.title("Investment Recommendation")
     
