@@ -442,6 +442,8 @@ def plot_portfolio_performance(total_portfolio_history):
     plt.ylabel('Total Value')
     plt.legend()
     st.pyplot(plt)
+
+
 def main():
     st.sidebar.title("Navigation")
     # Dark mode toggle switch
@@ -462,5 +464,7 @@ def main():
         recommendation_page()
     elif page == "Browse":
         Aktienkurse_app()
+
+
 if __name__ == "__main__":
     main()
