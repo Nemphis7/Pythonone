@@ -375,11 +375,11 @@ def Aktienkurse_app():
         print(fundamental_data)
         
         # Anzeige der fundamentalen Daten
-        st.subheader(f"Aktuelle Informationen für: {aktien_ticker}")
+        st.subheader(f"Current information for: {aktien_ticker}")
         if fundamental_data:
-            st.write(f"Kurs-Gewinn-Verhältnis (KGV): {fundamental_data['kgv']}")
-            st.write(f"Marktkapitalisierung: {fundamental_data['market_cap']}")
-            st.write(f"Dividendenrendite: {fundamental_data['dividend_yield']}")
+            st.write(f"Price-earnings ratio (P/E ratio): {fundamental_data['kgv']}")
+            st.write(f"Market capitalization: {fundamental_data['market_cap']}")
+            st.write(f"Dividend yield: {fundamental_data['dividend_yield']}")
 
 def get_combined_historical_data(stock_df, period="1y"):
     # Holt die kombinierten historischen Daten für das Gesamtportfolio
