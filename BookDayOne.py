@@ -27,6 +27,15 @@ def fetch_current_price(ticker):
     except Exception as e:
         st.error(f"Error fetching data for {ticker}: {e}")
 
+def display_highlighted_balance(balance):
+    # Markdown can be used for basic styling like bold text
+    st.markdown(f"**Total account balance: {balance} €**")
+    
+    # Alternatively, you can use st.write with arguments for some emphasis
+    st.write("", f"**Total account balance: {balance} €**")
+
+# Example usage:
+display_highlighted_balance(2269)
 
 def get_fundamental_data(ticker):
     stock = yf.Ticker(ticker)
