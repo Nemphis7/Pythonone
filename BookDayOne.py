@@ -422,7 +422,6 @@ def display_comparison_table(ticker_a, ticker_b):
     st.table(comparison_df)
 
 
-
 def Aktienkurse_app():
     st.title("Stock Price Comparison")
     col1, col2, col3 = st.columns(3)
