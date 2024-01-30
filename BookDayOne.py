@@ -361,7 +361,7 @@ def plot_stock_data(ticker):
     except Exception as e:
         st.error(f"Fehler beim Abrufen der Daten für {ticker}: {e}")
 
-def Stock Price_app():
+def Aktienkurse_app():
     st.title("Stock Price")
     aktien_ticker = st.text_input("Insert Stock Ticker:", "")
     if aktien_ticker:
@@ -433,7 +433,7 @@ def main():
         recommendation_page()
 
     elif page == "Browse":
-        Stock Price_app()
+        Aktienkurse_app()
 
 if __name__ == "__main__":
     main()
