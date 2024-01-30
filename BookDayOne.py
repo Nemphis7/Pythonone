@@ -299,12 +299,8 @@ def custom_format_large_number(value):
         value = round(value, 2)
     return f"{value:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
 
-def display_fundamental_data(ticker, kurs):
+def display_fundamental_data(ticker):
     fundamental_data = get_fundamental_data(ticker)
-    formatierter_kurs = custom_format(kurs) if kurs is not None else 'N/A'
-    
-    # Format the P/E ratio
-    kgv = f"{fundamental_data['kgv']:.2f}" if isinstance(fundamental_data['kgv'], float) else fundamental_data['kgv']
     
     # Format the market capitalization with commas
     market_cap = f"{fundamental_data['market_cap']:,}" if isinstance(fundamental_data['market_cap'], (int, float)) else fundamental_data['market_cap']
@@ -312,16 +308,22 @@ def display_fundamental_data(ticker, kurs):
     # Format the dividend yield as a percentage
     dividend_yield = f"{fundamental_data['dividend_yield']:.2%}" if isinstance(fundamental_data['dividend_yield'], float) else fundamental_data['dividend_yield']
     
+    # Format ROE as a percentage
     roe = f"{fundamental_data['roe']:.2%}" if isinstance(fundamental_data['roe'], float) else fundamental_data['roe']
+    
+    # Format Debt-to-Equity as a floating number with two decimal points
     debt_to_equity = f"{fundamental_data['debt_to_equity']:.2f}" if isinstance(fundamental_data['debt_to_equity'], float) else fundamental_data['debt_to_equity']
+    
+    # Format Price-to-Book as a floating number with two decimal points
     price_to_book = f"{fundamental_data['price_to_book']:.2f}" if isinstance(fundamental_data['price_to_book'], float) else fundamental_data['price_to_book']
 
-    data = {
-        "Kennzahl": ["Aktueller Kurs", "KGV", "Marktkapitalisierung", "Dividendenrendite", "ROE", "D/E", "P/B"],
-        "Wert": [formatierter_kurs, kgv, market_cap, dividend_yield, roe, debt_to_equity, price_to_book]
-    }
-    df = pd.DataFrame(data)
-    st.table(df)
+    # Display the formatted fundamental data
+    st.write(f"Price-earnings ratio (P/E ratio): {fundamental_data['kgv']}")
+    st.write(f"Market capitalization: {market_cap}")
+    st.write(f"Dividend yield: {dividend_yield}")
+    st.write(f"Return on Equity (ROE): {roe}")
+    st.write(f"Debt-to-Equity Ratio (D/E): {debt_to_equity}")
+    st.write(f"Price-to-Book Ratio (P/B): {price_to_book}")
 
 
 def show_new_entry_form(df):
@@ -386,21 +388,11 @@ def Aktienkurse_app():
     st.title("Stock Price")
     aktien_ticker = st.text_input("Insert Stock Ticker:", "")
     if aktien_ticker:
-        # Zeigen Sie die Stock Price an
+        # Show the stock price chart
         plot_stock_data(aktien_ticker)
         
-        # Holen Sie sich die fundamentalen Daten
-        fundamental_data = get_fundamental_data(aktien_ticker)
-        
-        # Überprüfen Sie die Daten in der Konsole
-        print(fundamental_data)
-        
-        # Anzeige der fundamentalen Daten
-        st.subheader(f"Current information for: {aktien_ticker}")
-        if fundamental_data:
-            st.write(f"Price-earnings ratio (P/E ratio): {fundamental_data['kgv']}")
-            st.write(f"Market capitalization: {fundamental_data['market_cap']}")
-            st.write(f"Dividend yield: {fundamental_data['dividend_yield']}")
+        # Get and display the fundamental data
+        display_fundamental_data(aktien_ticker)
 
 def get_combined_historical_data(stock_df, period="1y"):
     # Holt die kombinierten historischen Daten für das Gesamtportfolio
