@@ -177,9 +177,14 @@ def calculate_cumulative_savings(monthly_savings, years_to_invest):
     total_savings = 0
     cumulative_savings = []
     for year in range(1, years_to_invest + 1):
-        total_savings += monthly_savings * 12 * year
+        total_savings += monthly_savings * 12
         cumulative_savings.append(total_savings)
     return cumulative_savings
+
+# Test the function with example values
+test_savings = calculate_cumulative_savings(500, 30)  # Example: $500 per month over 30 years
+print(test_savings)  # Check the output
+
 
 
 def recommendation_page():
@@ -193,12 +198,18 @@ def recommendation_page():
 
     if st.button("Calculate Investment Projection"):
         years_to_invest = retirement_age - current_age
-        stock_percentage, _ = calculate_portfolio_distribution(current_age)
-
-        simulation_results = monte_carlo_simulation(0, monthly_savings, stock_percentage, years_to_invest, inflation_rate)
 
         # Calculate cumulative savings without investment
         cumulative_savings = calculate_cumulative_savings(monthly_savings, years_to_invest)
+
+        # Plotting only cumulative savings
+        plt.figure(figsize=(10, 6))
+        plt.plot(range(1, years_to_invest + 1), cumulative_savings, label='Cumulative Savings Without Investment', color='green', linestyle='--')
+        plt.title("Cumulative Savings Over Time")
+        plt.xlabel("Years")
+        plt.ylabel("Total Savings")
+        plt.legend()
+        st.pyplot(plt)
 
         try:
             median_projection = np.median(simulation_results, axis=0)
