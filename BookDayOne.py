@@ -470,11 +470,16 @@ def plot_portfolio_performance(total_portfolio_history):
 
 def main():
     st.sidebar.title("Navigation")
-    page = st.sidebar.radio("Choose a page", ["Account Overview", "Analysis", "Recommendation", "Stock Prices"])
+
+    # Define pages without HTML or emoji formatting
+    pages = ["Account Overview", "Analysis", "Recommendation", "Browse"]
+
+    # Create the radio buttons for navigation
+    page = st.sidebar.radio("Choose a page", pages)
 
     st.title("YouFinance")
 
-    # Daten laden, wenn die App startet oder wenn "Account Overview" ausgewählt wird
+    # Load data when the app starts or when "Account Overview" is selected
     if 'dataframe' not in st.session_state or page == "Account Overview":
         st.session_state.dataframe = load_data()
         st.session_state.stock_df = load_stock_portfolio()
@@ -482,17 +487,16 @@ def main():
     df = st.session_state.dataframe
     stock_df = st.session_state.stock_df
 
+    # Call the corresponding function based on the selected page
     if page == "Account Overview":
         account_overview(df, stock_df)
-
     elif page == "Analysis":
         analyse(df)
-
     elif page == "Recommendation":
         recommendation_page()
-
-    elif page == "Stock Prices":
-        aktienkurse_app()
+    elif page == "Browse":
+        Aktienkurse_app()
 
 if __name__ == "__main__":
     main()
+
