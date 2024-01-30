@@ -291,17 +291,25 @@ def custom_format_large_number(value):
     return f"{value:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
 
 def display_fundamental_data(ticker, kurs):
-    kgv, market_cap, dividend_yield = get_fundamental_data(ticker)
+    fundamental_data = get_fundamental_data(ticker)
     formatierter_kurs = custom_format(kurs) if kurs is not None else 'N/A'
-    kgv = f"{kgv:.2f}" if isinstance(kgv, float) else kgv
-    market_cap = custom_format_large_number(market_cap) if market_cap != 'N/A' else 'N/A'
-    dividend_yield = f"{dividend_yield:.2f}%" if isinstance(dividend_yield, float) else dividend_yield
+    
+    # Format the P/E ratio
+    kgv = f"{fundamental_data['kgv']:.2f}" if isinstance(fundamental_data['kgv'], float) else fundamental_data['kgv']
+    
+    # Format the market capitalization with commas
+    market_cap = f"{fundamental_data['market_cap']:,}" if isinstance(fundamental_data['market_cap'], (int, float)) else fundamental_data['market_cap']
+    
+    # Format the dividend yield as a percentage
+    dividend_yield = f"{fundamental_data['dividend_yield']:.2%}" if isinstance(fundamental_data['dividend_yield'], float) else fundamental_data['dividend_yield']
+    
     data = {
         "Kennzahl": ["Aktueller Kurs", "KGV", "Marktkapitalisierung", "Dividendenrendite"],
         "Wert": [formatierter_kurs, kgv, market_cap, dividend_yield]
     }
     df = pd.DataFrame(data)
     st.table(df)
+
 
 def show_new_entry_form(df):
     with st.form("new_entry_form", clear_on_submit=True):
