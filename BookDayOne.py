@@ -411,7 +411,7 @@ def main():
     # Dark mode toggle switch
   
 
-    page = st.sidebar.radio("Choose a page", ["Account Overview", "Analysis", "Recommendation", "Stock Prices"])
+    page = st.sidebar.radio("Choose a page", ["Account Overview", "Analysis", "Recommendation", "Browse"])
 
     st.title("YouFinance")
 
@@ -432,7 +432,7 @@ def main():
     elif page == "Recommendation":
         recommendation_page()
 
-    elif page == "Stock Prices":
+    elif page == "Browse":
         aktienkurse_app()
 
 if __name__ == "__main__":
