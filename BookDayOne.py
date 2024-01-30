@@ -9,56 +9,7 @@ import numpy as np
 
 INFLATION_RATE = 0.02
 
-# Custom CSS to inject into the Streamlit app
-st.markdown("""
-<style>
-/* Adjust sidebar width, background and color */
-.sidebar .sidebar-content {
-    width: 300px;
-    background-color: #fafafa;
-}
-/* Custom style for the active page radio button */
-input[type="radio"]:checked + label {
-    font-weight: bold;
-    color: #f63366;
-}
-/* Custom style for the radio buttons: remove default styles */
-input[type="radio"] {
-    -webkit-appearance: none;
-    appearance: none;
-}
-/* Custom style for the labels of the radio buttons */
-label {
-    display: block;
-    padding: 10px;
-    border-radius: 10px;
-    margin: 5px 0;
-    cursor: pointer;
-}
-/* Style for hover effect on labels */
-label:hover {
-    background-color: #f0f0f0;
-}
-/* Style for the selected label */
-input[type="radio"]:checked + label {
-    background-color: #e0e0e0;
-    border-color: #d63376;
-}
-/* Icons for the navigation menu */
-.home-icon:before {
-    content: '🏠';
-}
-.analysis-icon:before {
-    content: '🔍';
-}
-.recommendation-icon:before {
-    content: '🌟';
-}
-.browse-icon:before {
-    content: '📈';
-}
-</style>
-""", unsafe_allow_html=True)
+
 
 def create_nav():
     with st.sidebar:
@@ -531,18 +482,17 @@ def main():
 
     # Define the icons and pages in a dictionary
     icons = {
-        "Account Overview": "home-icon",
-        "Analysis": "analysis-icon",
-        "Recommendation": "recommendation-icon",
-        "Browse": "browse-icon"
+        "Account Overview": "🏠",
+        "Analysis": "🔍",
+        "Recommendation": "🌟",
+        "Browse": "📈"
     }
 
     # Create the radio buttons for navigation with icons
     page = st.sidebar.radio(
         "Choose a page",
         list(icons.keys()),
-        format_func=lambda x: f'<span class="{icons[x]}">{x}</span>',
-        unsafe_allow_html=True
+        format_func=lambda x: f"{icons[x]} {x}"
     )
 
     st.title("YouFinance")
