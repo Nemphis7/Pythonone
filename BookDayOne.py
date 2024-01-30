@@ -10,15 +10,6 @@ import numpy as np
 INFLATION_RATE = 0.02
 
 
-
-def create_nav():
-    with st.sidebar:
-        with st.expander("Navigation", expanded=True):
-            page = st.radio("", ["Home", "Data Analysis", "Settings"], 
-                            format_func=lambda x: "🏠 Home" if x == "Home" else "📊 Data Analysis" if x == "Data Analysis" else "⚙️ Settings")
-            return page
-
-
 def custom_format(value):
     if pd.isna(value):
         return None
