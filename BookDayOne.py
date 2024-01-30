@@ -172,23 +172,23 @@ def recommendation_page():
         plt.ylabel("Portfolio Value")
         st.pyplot(plt)
 
-        try:
-            # Calculate the median projection
-            median_projection = np.median(simulation_results, axis=1)[-1]
-            lower_bound = np.percentile(simulation_results, 5, axis=1)[-1]
-            upper_bound = np.percentile(simulation_results, 95, axis=1)[-1]
+            try:
+                # Calculate the median projection
+                median_projection = np.median(simulation_results, axis=1)[-1]
+                lower_bound = np.percentile(simulation_results, 5, axis=1)[-1]
+                upper_bound = np.percentile(simulation_results, 95, axis=1)[-1]
 
-            st.write(f"Projected Investment Value at Retirement (Median): ${median_projection:,.2f}")
-            st.write(f"95% Confidence Interval: ${lower_bound:,.2f} - ${upper_bound:,.2f}")
+                st.write(f"Projected Investment Value at Retirement (Median): ${median_projection:,.2f}")
+                st.write(f"95% Confidence Interval: ${lower_bound:,.2f} - ${upper_bound:,.2f}")
 
-            # Calculate Real Monthly Income
-            years_in_retirement = 90 - retirement_age
-            real_monthly_income = calculate_real_monthly_income(median_projection, years_in_retirement)
-            st.write(f"Estimated Real Monthly Income in Today's Money: ${real_monthly_income:,.2f}")
-        except Exception as e:
-            st.error("An error occurred while processing the data.")
-            print("Error in median calculation:", e)
-            print("simulation_results data at error:", simulation_results)
+                # Calculate Real Monthly Income
+                years_in_retirement = 90 - retirement_age
+                real_monthly_income = calculate_real_monthly_income(median_projection, years_in_retirement)
+                st.write(f"Estimated Real Monthly Income in Today's Money: ${real_monthly_income:,.2f}")
+            except Exception as e:
+                error_message = f"An error occurred while processing the data: {str(e)}"
+                st.error(error_message)
+                print("Detailed error information:", e)
 
 def account_overview(df, stock_df):
     st.title("Financial Data Analysis")
