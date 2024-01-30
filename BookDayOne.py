@@ -213,8 +213,8 @@ def recommendation_page():
             try:
                 # Calculate the median projection
                 median_projection = np.median(simulation_results, axis=0)
-                lower_bound = np.percentile(simulation_results, 5, axis=0)
-                upper_bound = np.percentile(simulation_results, 95, axis=0)
+                lower_bound = np.percentile(simulation_results, 20, axis=0)
+                upper_bound = np.percentile(simulation_results, 80, axis=0)
 
                 st.write(f"Projected Investment Value at Retirement (Median): ${median_projection:,.2f}")
                 st.write(f"95% Confidence Interval: ${lower_bound:,.2f} - ${upper_bound:,.2f}")
