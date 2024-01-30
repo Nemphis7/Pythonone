@@ -408,37 +408,7 @@ def plot_portfolio_performance(total_portfolio_history):
 
 def main():
     st.sidebar.title("Navigation")
-    # Dark mode toggle switch
-    dark_mode = st.sidebar.checkbox("Dark Mode")
-
-    if dark_mode:
-        # Applying custom CSS for dark mode
-        custom_css = """
-            <style>
-                body {
-                    color: white;
-                    background-color: #262730;
-                }
-                .st-bb {
-                    background-color: transparent;
-                }
-                .st-at {
-                    background-color: #262730;
-                }
-                .css-145kmo2 {
-                    color: white;
-                    background-color: #333347;
-                }
-                .st-dr {
-                    color: white;
-                    background-color: #262730;
-                }
-            </style>
-        """
-        st.markdown(custom_css, unsafe_allow_html=True)
-    else:
-        # Reset to default styles if dark mode is not selected
-        st.write("")
+ 
 
     page = st.sidebar.radio("Choose a page", ["Account Overview", "Analysis", "Recommendation", "Stock Prices"])
 
