@@ -26,6 +26,36 @@ def fetch_current_price(ticker):
         st.error(f"Value Error: {e}")
     except Exception as e:
         st.error(f"Error fetching data for {ticker}: {e}")
+        
+def monte_carlo_simulation(start_balance, monthly_savings, stock_percentage, years_to_invest, inflation_rate, simulations=1000):
+    avg_return_stock = 0.07  # Average annual return rate for stocks
+    avg_return_bond = 0.03  # Average annual return rate for bonds
+    std_dev_stock = 0.18  # Standard deviation for stock returns
+    std_dev_bond = 0.06  # Standard deviation for bond returns
+
+    # Preparing a 2D array to store simulation results
+    all_results = np.zeros((simulations, years_to_invest))
+
+    for i in range(simulations):
+        balance = start_balance
+        for year in range(years_to_invest):
+            # Generating random returns for stocks and bonds
+            annual_stock_return = np.random.normal(avg_return_stock, std_dev_stock)
+            annual_bond_return = np.random.normal(avg_return_bond, std_dev_bond)
+
+            # Calculating weighted return based on stock and bond distribution
+            weighted_return = (stock_percentage * annual_stock_return + (100 - stock_percentage) * annual_bond_return) / 100
+
+            # Updating the balance with return and monthly savings
+            balance = balance * (1 + weighted_return) + monthly_savings * 12
+
+            # Adjusting for inflation
+            balance = adjust_for_inflation(balance, 1, inflation_rate)
+
+            # Storing the year-end balance in the results array
+            all_results[i, year] = balance
+
+    return all_results
 
 
 def get_fundamental_data(ticker):
@@ -299,13 +329,13 @@ def recommendation_page():
         simulation_results = monte_carlo_simulation(0, monthly_savings, stock_percentage, years_to_invest, inflation_rate)
 
         # Plot each simulation
+
         plt.figure(figsize=(10, 6))
         for simulation in simulation_results:
             plt.plot(range(years_to_invest), simulation, linewidth=0.5, alpha=0.3)
         plt.title("Monte Carlo Simulation of Investment Over Time")
         plt.xlabel("Years")
         plt.ylabel("Portfolio Value")
-        plt.grid(True)
         st.pyplot(plt)
 
         try:
@@ -317,7 +347,7 @@ def recommendation_page():
             # Plot median and confidence interval
             plt.figure(figsize=(10, 6))
             plt.fill_between(range(years_to_invest), lower_bound, upper_bound, color='gray', alpha=0.5)
-            plt.plot(median_projection, label='Median Projection', color='blue')
+            plt.plot(median_projection, label='Median Projection')
             plt.title("Investment Projection Over Time")
             plt.xlabel("Years")
             plt.ylabel("Portfolio Value")
@@ -325,12 +355,6 @@ def recommendation_page():
             st.pyplot(plt)
         except Exception as e:
             st.error(f"An error occurred while processing the data: {str(e)}")
-
-# Make sure to include the monte_carlo_simulation function and any other dependencies above this function
-
-
-
-
 
 def custom_format_large_number(value):
     if pd.isna(value):
