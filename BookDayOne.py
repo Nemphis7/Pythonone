@@ -186,31 +186,28 @@ def account_overview(df, stock_df):
     st.title("Financial Data Analysis")
     current_month = datetime.now().strftime('%Y-%m')
     current_month_period = pd.Period(current_month)
-    
+
     if df is not None:
         df_sorted = df.sort_values(by='Date', ascending=False)
         current_month_data = df[df['Date'].dt.to_period('M') == current_month_period]
         current_month_expenses = current_month_data[current_month_data['Amount'] < 0]['Amount'].sum()
         current_month_income = current_month_data[current_month_data['Amount'] > 0]['Amount'].sum()
         
-        st.subheader(f"Expenses in {current_month}:")
-        st.write(current_month_expenses)
-        with st.expander("Show last 10 expenses"):
-            last_expenses = df_sorted[df_sorted['Amount'] < 0].head(10)
-            st.dataframe(last_expenses[['Date', 'Name', 'Amount']])
+        # Display Expenses
+        st.markdown(f"#### Expenses in {current_month}:")
+        st.markdown(f"**{current_month_expenses}**")
         
-        st.subheader(f"Income in {current_month}:")
-        st.write(current_month_income)
-        with st.expander("Show last 10 incomes"):
-            last_incomes = df_sorted[df_sorted['Amount'] > 0].head(10)
-            st.dataframe(last_incomes[['Date', 'Name', 'Amount']])
+        # Display Income
+        st.markdown(f"#### Income in {current_month}:")
+        st.markdown(f"**{current_month_income}**")
         
         total_expenses = current_month_data[current_month_data['Amount'] < 0]['Amount'].sum()
         total_income = current_month_data[current_month_data['Amount'] > 0]['Amount'].sum()
         account_balance = total_income + total_expenses
         
-        st.subheader("Total account balance:")
-        st.write(account_balance)
+        # Display Total Account Balance
+        st.markdown(f"#### Total account balance:")
+        st.markdown(f"**{account_balance}**")
 
     # Plot der Gesamtperformance am Ende der Account Overview
     if stock_df is not None:
