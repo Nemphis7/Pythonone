@@ -254,44 +254,48 @@ def monte_carlo_simulation(start_balance, monthly_savings, stock_percentage, yea
         results[i] = balance
 
     return results
-    def recommendation_page():
-        st.title("Investment Recommendation")
+
+
     
-        # User Inputs
-        current_age = st.number_input("Your Current Age", min_value=18, max_value=100, step=1)
-        retirement_age = st.number_input("Your Retirement Age", min_value=current_age+1, max_value=100, step=1)
-        monthly_savings = st.number_input("Monthly Savings", min_value=0.0, step=1.0)
-        inflation_rate = st.number_input("Expected Annual Inflation Rate", min_value=0.0, max_value=10.0, step=0.1, value=2.0) / 100
-    
-        if st.button("Calculate Investment Projection"):
-            years_to_invest = retirement_age - current_age
-            stock_percentage, _ = calculate_portfolio_distribution(current_age)
-    
-            # Run Monte Carlo Simulation
-            simulation_results = monte_carlo_simulation(0, monthly_savings, stock_percentage, years_to_invest, inflation_rate)
-    
-            # Plot the results
-            plt.figure(figsize=(10, 6))
-            for simulation in simulation_results.T:
-                plt.plot(simulation, linewidth=0.5, alpha=0.3)
-            plt.title("Monte Carlo Simulation of Investment Over Time")
-            plt.xlabel("Years")
-            plt.ylabel("Portfolio Value")
-            st.pyplot(plt)
-    
-            # Display Results
-            median_projection = np.median(simulation_results, axis=1)[-1]
-            lower_bound = np.percentile(simulation_results, 5, axis=1)[-1]
-            upper_bound = np.percentile(simulation_results, 95, axis=1)[-1]
-    
-            st.write(f"Projected Investment Value at Retirement (Median): ${median_projection:,.2f}")
-            st.write(f"95% Confidence Interval: ${lower_bound:,.2f} - ${upper_bound:,.2f}")
-    
-            # Calculate Real Monthly Income
-            years_in_retirement = 90 - retirement_age
-            real_monthly_income = calculate_real_monthly_income(median_projection, years_in_retirement)
-            st.write(f"Estimated Real Monthly Income in Today's Money: ${real_monthly_income:,.2f}")
-        
+def recommendation_page():
+    st.title("Investment Recommendation")
+
+    # User Inputs
+    current_age = st.number_input("Your Current Age", min_value=18, max_value=100, step=1)
+    retirement_age = st.number_input("Your Retirement Age", min_value=current_age + 1, max_value=100, step=1)
+    monthly_savings = st.number_input("Monthly Savings", min_value=0.0, step=1.0)
+    inflation_rate = st.number_input("Expected Annual Inflation Rate", min_value=0.0, max_value=10.0, step=0.1, value=2.0) / 100
+
+    if st.button("Calculate Investment Projection"):
+        years_to_invest = retirement_age - current_age
+        stock_percentage, _ = calculate_portfolio_distribution(current_age)
+
+        # Run Monte Carlo Simulation
+        simulation_results = monte_carlo_simulation(0, monthly_savings, stock_percentage, years_to_invest, inflation_rate)
+
+        # Plot the results
+        plt.figure(figsize=(10, 6))
+        for simulation in simulation_results.T:
+            plt.plot(simulation, linewidth=0.5, alpha=0.3)
+        plt.title("Monte Carlo Simulation of Investment Over Time")
+        plt.xlabel("Years")
+        plt.ylabel("Portfolio Value")
+        st.pyplot(plt)
+
+        # Display Results
+        median_projection = np.median(simulation_results, axis=1)[-1]
+        lower_bound = np.percentile(simulation_results, 5, axis=1)[-1]
+        upper_bound = np.percentile(simulation_results, 95, axis=1)[-1]
+
+        st.write(f"Projected Investment Value at Retirement (Median): ${median_projection:,.2f}")
+        st.write(f"95% Confidence Interval: ${lower_bound:,.2f} - ${upper_bound:,.2f}")
+
+        # Calculate Real Monthly Income
+        years_in_retirement = 90 - retirement_age
+        real_monthly_income = calculate_real_monthly_income(median_projection, years_in_retirement)
+        st.write(f"Estimated Real Monthly Income in Today's Money: ${real_monthly_income:,.2f}")
+
+
 def custom_format_large_number(value):
     if pd.isna(value):
         return None
