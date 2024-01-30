@@ -198,16 +198,7 @@ def recommendation_page():
         simulation_results = monte_carlo_simulation(0, monthly_savings, stock_percentage, years_to_invest, inflation_rate)
 
         # Calculate cumulative savings without investment
-        cumulative_savings = calculate_cumulative_savings(monthly_savings, years_to_invest, inflation_rate)
-
-        # Plot each simulation
-        plt.figure(figsize=(10, 6))
-        for simulation in simulation_results:
-            plt.plot(range(years_to_invest), simulation, linewidth=0.5, alpha=0.3)
-        plt.title("Monte Carlo Simulation of Investment Over Time")
-        plt.xlabel("Years")
-        plt.ylabel("Portfolio Value")
-        st.pyplot(plt)
+        cumulative_savings = calculate_cumulative_savings(monthly_savings, years_to_invest)
 
         try:
             median_projection = np.median(simulation_results, axis=0)
@@ -217,8 +208,8 @@ def recommendation_page():
             # Plot median and confidence interval with cumulative savings
             plt.figure(figsize=(10, 6))
             plt.fill_between(range(years_to_invest), lower_bound, upper_bound, color='gray', alpha=0.5)
-            plt.plot(median_projection, label='Median Projection', color='blue')
-            plt.plot(cumulative_savings, label='Cumulative Savings Without Investment', color='green', linestyle='--')
+            plt.plot(range(years_to_invest), median_projection, label='Median Projection', color='blue')
+            plt.plot(range(years_to_invest), cumulative_savings, label='Cumulative Savings Without Investment', color='green', linestyle='--')
             plt.title("Investment Projection Over Time")
             plt.xlabel("Years")
             plt.ylabel("Portfolio Value")
