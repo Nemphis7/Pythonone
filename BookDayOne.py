@@ -395,29 +395,29 @@ def plot_stock_data(ticker, color='blue', secondary_ticker=None, secondary_color
 def display_comparison_table(ticker_a, ticker_b):
     data_a = get_fundamental_data(ticker_a)
     data_b = get_fundamental_data(ticker_b)
-    
-    # Assuming 'kgv' is the P/E ratio, 'market_cap' is the market capitalization, etc.
+
+    # Helper function to format the financial metric
+    def format_metric(metric):
+        if isinstance(metric, float):
+            if metric > 0.01:  # Assuming it's a ratio and not a percentage
+                return f"{metric:.2f}"
+            else:  # Assuming it's a percentage already and needs to be formatted as such
+                return f"{metric:.2%}"
+        elif isinstance(metric, int):
+            return f"{metric:,}"  # For integers like market cap, use commas
+        else:
+            return metric
+
+    # Creating a dictionary for each stock's financial data, formatted appropriately
     table_data = {
-        f"{ticker_a}": [
-            data_a['kgv'], 
-            f"{data_a['market_cap']:,}", 
-            f"{data_a['dividend_yield']:.2%}",
-            f"{data_a['roe']:.2%}",
-            f"{data_a['debt_to_equity']:.2f}",
-            f"{data_a['price_to_book']:.2f}"
-        ],
-        f"{ticker_b}": [
-            data_b['kgv'], 
-            f"{data_b['market_cap']:,}", 
-            f"{data_b['dividend_yield']:.2%}",
-            f"{data_b['roe']:.2%}",
-            f"{data_b['debt_to_equity']:.2f}",
-            f"{data_b['price_to_book']:.2f}"
-        ]
+        f"{ticker_a}": [format_metric(data_a[key]) for key in ['kgv', 'market_cap', 'dividend_yield', 'roe', 'debt_to_equity', 'price_to_book']],
+        f"{ticker_b}": [format_metric(data_b[key]) for key in ['kgv', 'market_cap', 'dividend_yield', 'roe', 'debt_to_equity', 'price_to_book']]
     }
     
+    # Create and display the DataFrame for comparison
     comparison_df = pd.DataFrame(table_data, index=["P/E Ratio", "Market Cap", "Dividend Yield", "ROE", "D/E Ratio", "P/B Ratio"])
     st.table(comparison_df)
+
 
 
 def Aktienkurse_app():
