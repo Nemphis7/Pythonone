@@ -9,6 +9,65 @@ import numpy as np
 
 INFLATION_RATE = 0.02
 
+# Custom CSS to inject into the Streamlit app
+st.markdown("""
+<style>
+/* Adjust sidebar width, background and color */
+.sidebar .sidebar-content {
+    width: 300px;
+    background-color: #fafafa;
+}
+/* Custom style for the active page radio button */
+input[type="radio"]:checked + label {
+    font-weight: bold;
+    color: #f63366;
+}
+/* Custom style for the radio buttons: remove default styles */
+input[type="radio"] {
+    -webkit-appearance: none;
+    appearance: none;
+}
+/* Custom style for the labels of the radio buttons */
+label {
+    display: block;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 5px 0;
+    cursor: pointer;
+}
+/* Style for hover effect on labels */
+label:hover {
+    background-color: #f0f0f0;
+}
+/* Style for the selected label */
+input[type="radio"]:checked + label {
+    background-color: #e0e0e0;
+    border-color: #d63376;
+}
+/* Icons for the navigation menu */
+.home-icon:before {
+    content: '🏠';
+}
+.analysis-icon:before {
+    content: '🔍';
+}
+.recommendation-icon:before {
+    content: '🌟';
+}
+.browse-icon:before {
+    content: '📈';
+}
+</style>
+""", unsafe_allow_html=True)
+
+def create_nav():
+    with st.sidebar:
+        with st.expander("Navigation", expanded=True):
+            page = st.radio("", ["Home", "Data Analysis", "Settings"], 
+                            format_func=lambda x: "🏠 Home" if x == "Home" else "📊 Data Analysis" if x == "Data Analysis" else "⚙️ Settings")
+            return page
+
+
 def custom_format(value):
     if pd.isna(value):
         return None
@@ -469,14 +528,26 @@ def plot_portfolio_performance(total_portfolio_history):
 
 def main():
     st.sidebar.title("Navigation")
-    # Dark mode toggle switch
-  
 
-    page = st.sidebar.radio("Choose a page", ["Account Overview", "Analysis", "Recommendation", "Browse"])
+    # Define the icons and pages in a dictionary
+    icons = {
+        "Account Overview": "home-icon",
+        "Analysis": "analysis-icon",
+        "Recommendation": "recommendation-icon",
+        "Browse": "browse-icon"
+    }
+
+    # Create the radio buttons for navigation with icons
+    page = st.sidebar.radio(
+        "Choose a page",
+        list(icons.keys()),
+        format_func=lambda x: f'<span class="{icons[x]}">{x}</span>',
+        unsafe_allow_html=True
+    )
 
     st.title("YouFinance")
 
-    # Daten laden, wenn die App startet oder wenn "Account Overview" ausgewählt wird
+    # Load data when the app starts or when "Account Overview" is selected
     if 'dataframe' not in st.session_state or page == "Account Overview":
         st.session_state.dataframe = load_data()
         st.session_state.stock_df = load_stock_portfolio()
@@ -484,15 +555,13 @@ def main():
     df = st.session_state.dataframe
     stock_df = st.session_state.stock_df
 
+    # Call the corresponding function based on the selected page
     if page == "Account Overview":
         account_overview(df, stock_df)
-
     elif page == "Analysis":
         analyse(df)
-
     elif page == "Recommendation":
         recommendation_page()
-
     elif page == "Browse":
         Aktienkurse_app()
 
