@@ -31,11 +31,20 @@ def fetch_current_price(ticker):
 def get_fundamental_data(ticker):
     stock = yf.Ticker(ticker)
     info = stock.info
+
+    # Fetch the additional financial metrics
+    roe = info.get('returnOnEquity', 'N/A')
+    debt_to_equity = info.get('debtToEquity', 'N/A')
+    price_to_book = info.get('priceToBook', 'N/A')
+
     return {
         'kgv': info.get('trailingPE', 'N/A'),
         'market_cap': info.get('marketCap', 'N/A'),
         'dividend_yield': info.get('dividendYield', 'N/A'),
-        # Sie können hier weitere Daten hinzufügen, die Sie anzeigen möchten
+        'roe': roe,
+        'debt_to_equity': debt_to_equity,
+        'price_to_book': price_to_book,
+        # ... any other data you want to fetch
     }
 
 
@@ -303,9 +312,13 @@ def display_fundamental_data(ticker, kurs):
     # Format the dividend yield as a percentage
     dividend_yield = f"{fundamental_data['dividend_yield']:.2%}" if isinstance(fundamental_data['dividend_yield'], float) else fundamental_data['dividend_yield']
     
+     roe = f"{fundamental_data['roe']:.2%}" if isinstance(fundamental_data['roe'], float) else fundamental_data['roe']
+    debt_to_equity = f"{fundamental_data['debt_to_equity']:.2f}" if isinstance(fundamental_data['debt_to_equity'], float) else fundamental_data['debt_to_equity']
+    price_to_book = f"{fundamental_data['price_to_book']:.2f}" if isinstance(fundamental_data['price_to_book'], float) else fundamental_data['price_to_book']
+
     data = {
-        "Kennzahl": ["Aktueller Kurs", "KGV", "Marktkapitalisierung", "Dividendenrendite"],
-        "Wert": [formatierter_kurs, kgv, market_cap, dividend_yield]
+        "Kennzahl": ["Aktueller Kurs", "KGV", "Marktkapitalisierung", "Dividendenrendite", "ROE", "D/E", "P/B"],
+        "Wert": [formatierter_kurs, kgv, market_cap, dividend_yield, roe, debt_to_equity, price_to_book]
     }
     df = pd.DataFrame(data)
     st.table(df)
