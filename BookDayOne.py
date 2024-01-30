@@ -327,9 +327,9 @@ def plot_stock_history(ticker):
         return
     plt.figure(figsize=(10, 5))
     plt.plot(data.index, data['Close'], label='Schlusskurse')
-    plt.title(f"Aktienkursverlauf der letzten 6 Monate: {ticker}")
+    plt.title(f"Share price performance over the last 6 months: {ticker}")
     plt.xlabel('Date')
-    plt.ylabel('Kurs in €')
+    plt.ylabel('Share price in €')
     plt.legend()
     plt.grid(True)
     st.pyplot(plt)
@@ -352,9 +352,9 @@ def plot_stock_data(ticker):
 
         plt.figure(figsize=(10, 5))
         plt.plot(data.index, data['Close'], label='Schlusskurs')
-        plt.title(f"Aktienkursverlauf der letzten 5 Jahre: {ticker}")
+        plt.title(f"Share price performance over the last 5 years: {ticker}")
         plt.xlabel('Date')
-        plt.ylabel('Kurs')
+        plt.ylabel('Price')
         plt.legend()
         plt.grid(True)
         st.pyplot(plt)
