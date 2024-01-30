@@ -470,15 +470,10 @@ def main():
     st.sidebar.title("Navigation")
 
     # Define the navigation options
-    navigation_options = {
-        "Account Overview": account_overview,
-        "Analysis": analyse,
-        "Recommendation": recommendation_page,
-        "Browse": Aktienkurse_app
-    }
+    navigation_options = ["Account Overview", "Analysis", "Recommendation", "Browse"]
 
     # Radio buttons for navigation
-    page_selection = st.sidebar.radio("Choose a page", list(navigation_options.keys()))
+    page_selection = st.sidebar.radio("Choose a page", navigation_options)
 
     st.title("YouFinance")
 
@@ -491,8 +486,14 @@ def main():
     stock_df = st.session_state.stock_df
 
     # Call the corresponding function based on the selected page
-    if page_selection in navigation_options:
-        navigation_options[page_selection](df, stock_df)
+    if page_selection == "Account Overview":
+        account_overview(df, stock_df)
+    elif page_selection == "Analysis":
+        analyse(df)
+    elif page_selection == "Recommendation":
+        recommendation_page()
+    elif page_selection == "Browse":
+        Aktienkurse_app()
 
 if __name__ == "__main__":
     main()
