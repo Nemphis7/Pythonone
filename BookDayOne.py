@@ -289,20 +289,23 @@ def account_overview(df, stock_df):
 
     # Plot der Gesamtperformance am Ende der Account Overview
     if stock_df is not None:
-        st.subheader("Stocks in Portfolio:")
+    st.subheader("Stocks in Portfolio:")
 
-    # Convert the DataFrame to HTML and use the 'financial-table' class for consistent styling
-    # Also add a style for highlighting the "Total Value" column
-    html_stock_table = (
-        stock_df.style
-        .applymap(lambda x: "background-color: lightblue", subset=['TotalValue'])
-        .set_table_attributes('class="financial-table"')
-        .render()
-    )
+    # Define the custom styling function for the 'TotalValue' column
+    def highlight_total_value(val):
+        color = 'lightblue' if pd.notnull(val) else 'white'
+        return f'background-color: {color}'
 
-    # Display the styled table
+    # Apply the custom styling to the DataFrame
+    styled_df = stock_df.style.applymap(highlight_total_value, subset=['TotalValue']) \
+                              .set_table_attributes('class="financial-table"') \
+                              .set_properties(**{'font-size': '16px'})  # Ensuring font size consistency
+    
+    # Convert the styled DataFrame to HTML
+    html_stock_table = styled_df.to_html(escape=False)
+
+    # Display the styled table using markdown
     st.markdown(html_stock_table, unsafe_allow_html=True)
-
 
 def analyse(df):
     st.title("Analyse")
