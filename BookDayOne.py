@@ -570,71 +570,11 @@ def analyse(df):
             # Summarize expenses and income by category for the current month
             current_month_summary = current_month_data.groupby('Category')['Amount'].sum().reset_index()
 
-            # Convert to HTML with escape=False to properly render HTML elements
-            summary_html = current_month_summary.to_html(escape=False, index=False)
-
-            # Custom Styling
-            custom_style = """
-            <style>
-                table { 
-                    width: 100%;
-                    border-collapse: collapse; 
-                    margin: 25px 0;
-                    font-size: 0.9em;
-                    font-family: Arial, Helvetica, sans-serif;
-                }
-                th, td { 
-                    padding: 12px 15px;
-                    text-align: left; 
-                    border-bottom: 1px solid #ddd; 
-                }
-                tr:nth-child(even) {background-color: #f2f2f2;}
-                tr:hover {background-color: #f5f5f5;}
-                th {
-                    background-color: #4CAF50;
-                    color: white;
-                    position: sticky;
-                    top: 0;
-                }
-                table.content-table {
-                    border-collapse: collapse;
-                    margin: 25px 0;
-                    font-size: 0.9em;
-                    min-width: 400px;
-                    border-radius: 5px 5px 0 0;
-                    overflow: hidden;
-                    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-                }
-                .content-table thead tr {
-                    background-color: #009879;
-                    color: white;
-                    text-align: left;
-                    font-weight: bold;
-                }
-                .content-table th,
-                .content-table td {
-                    padding: 12px 15px;
-                }
-                .content-table tbody tr {
-                    border-bottom: 1px solid #dddddd;
-                }
-                .content-table tbody tr:nth-of-type(even) {
-                    background-color: #f3f3f3;
-                }
-                .content-table tbody tr:last-of-type {
-                    border-bottom: 2px solid #009879;
-                }
-                .content-table tbody tr.active-row {
-                    font-weight: bold;
-                    color: #009879;
-                }
-            </style>
-            """
-
-            # Display the formatted table
-            st.markdown(custom_style + summary_html, unsafe_allow_html=True)
+            # Display the current month summary using Streamlit's built-in functionality
+            st.table(current_month_summary)
         else:
             st.error("No Data to analyse")
+
 
 
 def adjust_for_inflation(value, years, inflation_rate):
