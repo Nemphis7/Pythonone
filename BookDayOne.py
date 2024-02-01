@@ -244,26 +244,27 @@ def account_overview(df, stock_df):
         current_month_expenses = current_month_data[current_month_data['Amount'] < 0]['Amount'].sum()
         current_month_income = current_month_data[current_month_data['Amount'] > 0]['Amount'].sum()
 
-        st.markdown(f"### Expenses in {current_month}: **{current_month_expenses} €**")
-        st.markdown(f"### Income in {current_month}: **{current_month_income} €**")
-
         total_expenses = current_month_data[current_month_data['Amount'] < 0]['Amount'].sum()
         total_income = current_month_data[current_month_data['Amount'] > 0]['Amount'].sum()
         account_balance = total_income + total_expenses
 
-        # Highlight the Total Account Balance using st.info
-        st.info(f"### Total account balance: **{account_balance} €**")
+        # Creating a DataFrame for the financial summary
+        financial_summary = pd.DataFrame({
+            'Category': ['Expenses', 'Income', 'Total Account Balance'],
+            'Amount (€)': [current_month_expenses, current_month_income, account_balance]
+        })
 
+        # Display the financial summary as a table
+        st.table(financial_summary)
 
     # Plot der Gesamtperformance am Ende der Account Overview
     if stock_df is not None:
         st.subheader("Portfolio:")
         total_portfolio_history = get_combined_historical_data(stock_df, period="1y")
         plot_portfolio_performance(total_portfolio_history)
-         # Anzeige der Liste der Aktien unterhalb des Gesamtperformance-Charts
         st.subheader("Stocks in Portfolio:")
         st.table(stock_df[['Ticker', 'Amount', 'CurrentPrice', 'TotalValue']])
-        
+
 
 def analyse(df):
     st.title("Analyse")
