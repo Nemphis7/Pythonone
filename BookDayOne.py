@@ -561,19 +561,40 @@ def analyse(df):
             # Ensure correct data types
             df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
             df['Amount'] = pd.to_numeric(df['Amount'], errors='coerce')
-
-            # Filter for the current month
+            
+            # Current month's data
             current_month = datetime.now().month
             current_year = datetime.now().year
             current_month_data = df[(df['Date'].dt.month == current_month) & (df['Date'].dt.year == current_year)]
 
-            # Summarize expenses and income by category for the current month
+            # Summarize current month's expenses and income by category
             current_month_summary = current_month_data.groupby('Category')['Amount'].sum().reset_index()
 
-            # Display the current month summary using Streamlit's built-in functionality
+            # Display the current month's summary with caption
+            st.markdown("### Categories for the Current Month")
             st.table(current_month_summary)
+
+            # Last 6 months' data
+            six_months_ago = datetime.now() - pd.DateOffset(months=6)
+            six_months_data = df[(df['Date'] >= six_months_ago) & (df['Date'] < datetime.now())]
+            
+            # Group by month and calculate total spent and income
+            monthly_summary = six_months_data.groupby(six_months_data['Date'].dt.to_period('M'))['Amount'].sum().reset_index()
+            monthly_summary['Income'] = six_months_data[six_months_data['Amount'] > 0].groupby(six_months_data['Date'].dt.to_period('M'))['Amount'].sum()
+            monthly_summary['Spent'] = six_months_data[six_months_data['Amount'] < 0].groupby(six_months_data['Date'].dt.to_period('M'))['Amount'].sum()
+            monthly_summary.fillna(0, inplace=True)
+
+            # Calculate the total sum for spent and income
+            monthly_summary.loc['Total', 'Income'] = monthly_summary['Income'].sum()
+            monthly_summary.loc['Total', 'Spent'] = monthly_summary['Spent'].sum()
+
+            # Display the last 6 months' summary with caption
+            st.markdown("### Summary of Last 6 Months")
+            st.table(monthly_summary)
+
         else:
             st.error("No Data to analyse")
+
 
 
 
