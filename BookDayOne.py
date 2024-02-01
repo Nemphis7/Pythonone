@@ -19,16 +19,6 @@ def custom_format(value):
         value_str = value_str.replace(',', 'X').replace('.', ',').replace('X', '.')
         return value_str
 
-def format_with_points(value):
-    if pd.isna(value):
-        return None
-    else:
-        # Remove any existing formatting
-        value = float(str(value).replace('.', '').replace(',', '.'))
-        # Format the number with points as thousand separators
-        value_str = f"{value:,.2f}".replace(',', 'X').replace('.', ',').replace('X', '.')
-        return value_str
-
 def fetch_current_price(ticker):
     try:
         stock = yf.Ticker(ticker)
@@ -255,25 +245,6 @@ def display_total_portfolio_value(stock_df):
     # Display the Total Portfolio Value with the 'total-row' class for dark blue background
     st.markdown(f"<div class='total-row' style='padding: 10px;'><strong>Total Portfolio Value: {formatted_total_portfolio_value}</strong></div>", unsafe_allow_html=True)
 
-def display_stocks_in_portfolio(stock_df):
-    st.subheader("Stocks in Portfolio:")
-    
-    # Apply the formatting to the 'CurrentPrice' and 'TotalValue' columns
-    stock_df['CurrentPrice'] = stock_df['CurrentPrice'].apply(format_with_points)
-    stock_df['TotalValue'] = stock_df['TotalValue'].apply(format_with_points)
-
-    # Display the DataFrame
-    st.table(stock_df[['Ticker', 'Amount', 'CurrentPrice', 'TotalValue']])
-
-    # Calculate the total portfolio value and format it
-    stock_df['TotalValueNumeric'] = stock_df['TotalValue'].replace('[\.,]', '', regex=True).astype(float)
-    total_portfolio_value = stock_df['TotalValueNumeric'].sum()
-    formatted_total_portfolio_value = format_with_points(total_portfolio_value)
-
-    # Display the Total Portfolio Value with the 'total-row' class for dark blue background
-    st.markdown(f"<div style='background-color: darkblue; color: white; padding: 10px; text-align: center;'>"
-                f"<strong>Total Portfolio Value: {formatted_total_portfolio_value} €</strong></div>", 
-                unsafe_allow_html=True)
 
 # Function to plot the historical data with Plotly
 def plot_portfolio_history_plotly(portfolio_history):
