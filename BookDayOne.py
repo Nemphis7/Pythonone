@@ -678,25 +678,10 @@ def Aktienkurse_app():
     if aktien_ticker_a and aktien_ticker_b:
         # Show the stock price chart and comparison
         plot_stock_data(aktien_ticker_a, aktien_ticker_b, period=period_option)
-        
-        # Fetch and format the fundamental data for the comparison
-        fundamental_data_a = get_fundamental_data(aktien_ticker_a)
-        fundamental_data_b = get_fundamental_data(aktien_ticker_b)
-        
-        # Create a dataframe for the comparison
-        comparison_df = pd.DataFrame({
-            aktien_ticker_a: [fundamental_data_a['kgv'], fundamental_data_a['market_cap'], fundamental_data_a['dividend_yield'],
-                              fundamental_data_a['roe'], fundamental_data_a['debt_to_equity'], fundamental_data_a['price_to_book']],
-            aktien_ticker_b: [fundamental_data_b['kgv'], fundamental_data_b['market_cap'], fundamental_data_b['dividend_yield'],
-                              fundamental_data_b['roe'], fundamental_data_b['debt_to_equity'], fundamental_data_b['price_to_book']],
-        }, index=["P/E Ratio", "Market Cap", "Dividend Yield", "ROE", "D/E Ratio", "P/B Ratio"])
 
-        # Convert the comparison dataframe to HTML
-        html_comparison_table = comparison_df.to_html(escape=False, index=True, classes="table table-striped")
-        html_comparison_table = html_comparison_table.replace('<table', '<table style="text-align: left;"')
+        # Display the comparison table using the existing function
+        display_comparison_table(aktien_ticker_a, aktien_ticker_b)
 
-        # Display the HTML table with Streamlit markdown
-        st.markdown(html_comparison_table, unsafe_allow_html=True)
 
 
 def get_combined_historical_data(stock_df, period="1y"):
