@@ -28,9 +28,6 @@ def fetch_current_price(ticker):
         st.error(f"Value Error: {e}")
     except Exception as e:
         st.error(f"Error fetching data for {ticker}: {e}")
-
-
-
         
 def monte_carlo_simulation(start_balance, monthly_savings, stock_percentage, years_to_invest, inflation_rate, simulations=1000):
     avg_return_stock = 0.07  # Average annual return rate for stocks
@@ -363,13 +360,6 @@ def account_overview(df, stock_df):
     # Plot der Gesamtperformance am Ende der Account Overview
     if stock_df is not None:
         st.subheader("Stocks in Portfolio:")
-        
-    
-    # Display the styled table
-    st.markdown(html_stock_table, unsafe_allow_html=True)
-
-
-    
     
     # Assuming stock_df already contains the 'TotalValue' with proper formatting
     st.table(stock_df[['Ticker', 'Amount', 'CurrentPrice', 'TotalValue']])
