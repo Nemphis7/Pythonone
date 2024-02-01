@@ -189,6 +189,42 @@ print(test_savings)  # Check the output
 
 
 
+def format_metric(metric):
+    if isinstance(metric, float):
+        # Check if the metric is less than 1 to decide on the percentage formatting
+        if metric < 1:
+            return f"{metric:.2%}"
+        else:
+            # For larger numbers, use separators
+            return f"{metric:,.2f}"
+    elif isinstance(metric, int):
+        # For integers, use separators
+        return f"{metric:,}"
+    else:
+        return metric
+
+def display_comparison_table(ticker_a, ticker_b):
+    data_a = get_fundamental_data(ticker_a)
+    data_b = get_fundamental_data(ticker_b)
+
+    # Creating a dictionary for each stock's financial data, formatted appropriately
+    table_data = {
+        f"{ticker_a}": [format_metric(data_a[key]) for key in ['kgv', 'market_cap', 'dividend_yield', 'roe', 'debt_to_equity', 'price_to_book']],
+        f"{ticker_b}": [format_metric(data_b[key]) for key in ['kgv', 'market_cap', 'dividend_yield', 'roe', 'debt_to_equity', 'price_to_book']]
+    }
+
+    # Create and display the DataFrame for comparison
+    comparison_df = pd.DataFrame(table_data, index=["P/E Ratio", "Market Cap", "Dividend Yield", "ROE", "D/E Ratio", "P/B Ratio"])
+    
+    # Convert the DataFrame to HTML, applying the custom format
+    html_comparison_table = comparison_df.to_html(escape=False, index=True, classes="table table-striped")
+    html_comparison_table = html_comparison_table.replace('<table', '<table style="text-align: left;"')
+
+    # Display the HTML table with Streamlit markdown
+    st.markdown(html_comparison_table, unsafe_allow_html=True)
+
+# ... (rest of your code) ...
+
 def recommendation_page():
     st.title("Investment Recommendation")
 
