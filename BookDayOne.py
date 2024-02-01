@@ -232,6 +232,18 @@ def recommendation_page():
             st.pyplot(plt)
         except Exception as e:
             st.error(f"An error occurred while processing the data: {str(e)}")
+
+def display_total_portfolio_value(stock_df):
+    # Ensure numeric types and calculate the total value
+    stock_df['Amount'] = pd.to_numeric(stock_df['Amount'], errors='coerce')
+    stock_df['CurrentPrice'] = stock_df['CurrentPrice'].apply(lambda x: float(x.replace('.', '').replace(',', '.')))
+    stock_df['TotalValue'] = stock_df['Amount'] * stock_df['CurrentPrice']
+    total_portfolio_value = stock_df['TotalValue'].sum()
+    formatted_total_portfolio_value = f"{total_portfolio_value:,.2f} €".replace(",", "X").replace(".", ",").replace("X", ".")
+
+    # Display the Total Portfolio Value with the 'total-row' class for dark blue background
+    st.markdown(f"<div class='total-row' style='padding: 10px;'><strong>Total Portfolio Value: {formatted_total_portfolio_value}</strong></div>", unsafe_allow_html=True)
+
     
 def account_overview(df, stock_df):
     st.title("Financial Data Analysis")
@@ -321,7 +333,7 @@ def account_overview(df, stock_df):
     st.markdown(html_stock_table, unsafe_allow_html=True)
 
     # Display the Total Portfolio Value
-    st.markdown(f"<div class='total-row'><strong>Total Portfolio Value: {formatted_total_portfolio_value} €</strong></div>", unsafe_allow_html=True)
+    display_total_portfolio_value(stock_df)
 
 
  # Allow the user to select the time period for the historical data
