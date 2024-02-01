@@ -615,8 +615,6 @@ def analyse(df):
             st.error("No Data to analyse")
 
 
-
-
 def adjust_for_inflation(value, years, inflation_rate):
     return value / ((1 + inflation_rate) ** years)
     
