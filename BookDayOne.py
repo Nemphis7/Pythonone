@@ -10,12 +10,6 @@ import numpy as np
 INFLATION_RATE = 0.02
 
 
-[theme]
-primaryColor="#F63366"
-backgroundColor="#FFFFFF"
-secondaryBackgroundColor="#F0F2F6"
-textColor="#262730"
-font="sans serif"
 
 def custom_format(value):
     if pd.isna(value):
