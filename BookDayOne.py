@@ -559,39 +559,25 @@ def analyse(df):
     # Add a button for triggering the analysis
     if st.button("Start Analysis"):
         if df is not None and 'Amount' in df.columns and 'Date' in df.columns:
-            # Debug: Show initial data
-            st.write("Initial Data Sample:", df.head())
-
-            df['Amount'] = pd.to_numeric(df['Amount'], errors='coerce')
+            # Ensure correct data types
             df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
-            df.dropna(subset=['Amount', 'Date'], inplace=True)
+            df['Amount'] = pd.to_numeric(df['Amount'], errors='coerce')
 
-            df['YearMonth'] = df['Date'].dt.to_period('M')
+            # Filter for the current month
+            current_month = datetime.now().month
+            current_year = datetime.now().year
+            current_month_data = df[(df['Date'].dt.month == current_month) & (df['Date'].dt.year == current_year)]
 
-            monthly_data = df.groupby('YearMonth')['Amount'].sum().reset_index()
-            monthly_income = monthly_data[monthly_data['Amount'] > 0]['Amount'].mean()
-            monthly_expenses = monthly_data[monthly_data['Amount'] < 0]['Amount'].mean()
-            average_savings = monthly_income + monthly_expenses
+            # Summarize expenses and income by category for the current month
+            current_month_summary = current_month_data.groupby('Category')['Amount'].sum()
 
-            # Debug: Show computed values
-            st.write("Computed Monthly Data:", monthly_data)
-            st.write("Average Monthly Income:", monthly_income)
-            st.write("Average Monthly Expenses:", monthly_expenses)
-            st.write("Average Monthly Savings:", average_savings)
-
-            # Sankey Chart Integration
-            source = [0, 0, 1, 1, 2, 2, 3, 3]
-            target = [4, 5, 6, 7, 8, 9, 10, 11]
-            value = [8, 2, 2, 3, 4, 4, 2, 5]
-            label = ["Income", "Expenses", "Savings", "Investments", 
-                     "Salary", "Other Income", "Bills", "Entertainment", 
-                     "Retirement Fund", "Stocks", "Bonds", "Savings Account"]
-
-            fig = go.Figure(data=[go.Sankey(node=dict(pad=10, thickness=10, line=dict(color="black", width=0.5), label=label), link=dict(source=source, target=target, value=value))])
-            fig.update_layout(title_text="Financial Flow - Sankey Diagram", font_size=10)
-            st.plotly_chart(fig)
+            # Display the initial data sample and the current month summary
+            st.write("Initial Data Sample:", df.head())
+            st.write("Current Month Summary:")
+            st.table(current_month_summary)
         else:
             st.error("No Data to analyse")
+
 
 
 def adjust_for_inflation(value, years, inflation_rate):
