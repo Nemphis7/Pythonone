@@ -290,6 +290,19 @@ def account_overview(df, stock_df):
     # Plot der Gesamtperformance am Ende der Account Overview
     if stock_df is not None:
         st.subheader("Stocks in Portfolio:")
+        
+        # Calculate the total portfolio value
+        total_portfolio_value = stock_df['TotalValue'].replace('[\.,]', '', regex=True).astype(float).sum()
+        formatted_total_portfolio_value = f"{total_portfolio_value:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+
+        # Convert the DataFrame to HTML and use the 'financial-table' class for consistent styling
+        html_stock_table = (
+            stock_df.style
+            .applymap(lambda x: "background-color: lightblue", subset=['TotalValue'])
+            .set_table_attributes('class="financial-table"')
+            .set_properties(**{'font-size': '16px'})  # Ensuring font size consistency
+            .to_html(escape=False, index=False)
+        )
 
     # Define the custom styling function for the 'TotalValue' column
     def highlight_total_value(val):
@@ -306,6 +319,10 @@ def account_overview(df, stock_df):
 
     # Display the styled table using markdown
     st.markdown(html_stock_table, unsafe_allow_html=True)
+
+    # Display the Total Portfolio Value
+    st.markdown(f"<div class='total-row'><strong>Total Portfolio Value: {formatted_total_portfolio_value} €</strong></div>", unsafe_allow_html=True)
+
 
  # Allow the user to select the time period for the historical data
     period = st.selectbox("Select the time period for the portfolio performance:",
