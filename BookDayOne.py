@@ -669,11 +669,11 @@ def Aktienkurse_app():
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        aktien_ticker_a = st.text_input("Insert Stock Ticker for Stock A:", "")
+        aktien_ticker_a = st.text_input("Insert Stock Ticker for Stock A:", key="ticker_a")
     with col2:
-        aktien_ticker_b = st.text_input("Insert Stock Ticker for Stock B:", "")
+        aktien_ticker_b = st.text_input("Insert Stock Ticker for Stock B:", key="ticker_b")
     with col3:
-        period_option = st.selectbox("Select Period:", options=['5y', '3y', '1y', '6mo'], index=0)
+        period_option = st.selectbox("Select Period:", options=['5y', '3y', '1y', '6mo'], index=0, key="period_option")
 
     if aktien_ticker_a and aktien_ticker_b:
         plot_stock_data(aktien_ticker_a, aktien_ticker_b, period=period_option)
@@ -686,24 +686,17 @@ def Aktienkurse_app():
             aktien_ticker_a: [format_metric(data_a[key]) for key in data_a],
             aktien_ticker_b: [format_metric(data_b[key]) for key in data_b]
         }, index=list(data_a.keys()))
-        
-        # Define the common table style
-        table_style = """
-        <style>
-            .financial-table { font-size: 16px; margin-bottom: 20px; }
-            .financial-table th, .financial-table td { text-align: left; padding: 8px; }
-            .financial-table tr:nth-child(odd) { background-color: #f2f2f2; }
-            .financial-table tr.highlight-row { background-color: lightblue; }
-        </style>
-        """
+
+        # Apply the common table style defined in account_overview function
         st.markdown(table_style, unsafe_allow_html=True)
         
         html_comparison_table = comparison_df.to_html(escape=False, index=True, classes="financial-table")
         html_comparison_table = html_comparison_table.replace('<table', '<table style="text-align: left;"')
         st.markdown(html_comparison_table, unsafe_allow_html=True)
 
-# Call the function where it should be executed
-Aktienkurse_app()
+# You should call this function in the main() if condition for page selection
+# Aktienkurse_app()
+
 
 def get_combined_historical_data(stock_df, period="1y"):
     # Holt die kombinierten historischen Daten für das Gesamtportfolio
