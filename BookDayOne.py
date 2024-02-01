@@ -542,6 +542,17 @@ def get_portfolio_historical_data(stock_df, period="1y"):
     portfolio_history['Total'] = portfolio_history.sum(axis=1)
     return portfolio_history
 
+
+def get_portfolio_historical_data(ticker, period="1y"):
+    try:
+        stock = yf.Ticker(ticker)
+        hist = stock.history(period=period)
+        hist['Total'] = hist['Close']  # Assuming you want to plot the Close prices
+        return hist[['Total']]  # Return a DataFrame with just the 'Total' column
+    except Exception as e:
+        st.error(f"Error fetching historical data for {ticker}: {e}")
+        return pd.DataFrame()
+
 # Function to plot the historical data
 def plot_portfolio_history(portfolio_history):
     plt.figure(figsize=(10, 5))
@@ -808,6 +819,7 @@ def Aktienkurse_app():
 
         # Display the comparison table using the existing function
         display_comparison_table(aktien_ticker_a, aktien_ticker_b)
+
 
 
 def get_combined_historical_data(stock_df, period="1y"):
