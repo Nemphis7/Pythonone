@@ -570,27 +570,10 @@ def analyse(df):
             # Summarize expenses and income by category for the current month
             current_month_summary = current_month_data.groupby('Category')['Amount'].sum().reset_index()
 
-            # Use pandas styling
-            styler = current_month_summary.style\
-                .set_properties(**{
-                    'background-color': 'black',
-                    'color': 'white',
-                    'border-color': 'gray',
-                    'text-align': 'left'
-                })\
-                .format("{:,.2f}")\
-                .set_table_styles([
-                    {'selector': 'th', 'props': [('background-color', '#4CAF50'), ('color', 'white')]},
-                    {'selector': 'td:hover', 'props': [('background-color', 'lightgrey')]}
-                ], overwrite=False)\
-                .apply(lambda x: ['background: lightblue' if x.name % 2 else '' for i in x], axis=1)
-
-            # Render DataFrame as HTML
-            st.write(styler.to_html(), unsafe_allow_html=True)
+            # Display the current month summary using Streamlit's built-in functionality
+            st.table(current_month_summary)
         else:
             st.error("No Data to analyse")
-
-
 
 
 
@@ -894,4 +877,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-
+    
