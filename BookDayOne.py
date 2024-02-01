@@ -679,9 +679,36 @@ def Aktienkurse_app():
         # Show the stock price chart and comparison
         plot_stock_data(aktien_ticker_a, aktien_ticker_b, period=period_option)
 
-        # Display the comparison table using the existing function
-        display_comparison_table(aktien_ticker_a, aktien_ticker_b)
+        # Fetch and format the fundamental data for the comparison
+        fundamental_data_a = get_fundamental_data(aktien_ticker_a)
+        fundamental_data_b = get_fundamental_data(aktien_ticker_b)
 
+        # Create a dataframe for the comparison
+        comparison_df = pd.DataFrame({
+            aktien_ticker_a: [fundamental_data_a['kgv'], fundamental_data_a['market_cap'], fundamental_data_a['dividend_yield'],
+                              fundamental_data_a['roe'], fundamental_data_a['debt_to_equity'], fundamental_data_a['price_to_book']],
+            aktien_ticker_b: [fundamental_data_b['kgv'], fundamental_data_b['market_cap'], fundamental_data_b['dividend_yield'],
+                              fundamental_data_b['roe'], fundamental_data_b['debt_to_equity'], fundamental_data_b['price_to_book']],
+        }, index=["P/E Ratio", "Market Cap", "Dividend Yield", "ROE", "D/E Ratio", "P/B Ratio"])
+
+        # Define the common table style
+        table_style = """
+        <style>
+            .financial-table { font-size: 16px; margin-bottom: 20px; }
+            .financial-table th, .financial-table td { text-align: left; padding: 8px; }
+            .financial-table tr:nth-child(odd) { background-color: #f2f2f2; }
+            .financial-table tr.highlight-row { background-color: lightblue; }
+        </style>
+        """
+
+        # Apply the style to the table
+        st.markdown(table_style, unsafe_allow_html=True)
+        
+        # Convert the comparison dataframe to HTML and apply custom style
+        html_comparison_table = comparison_df.to_html(escape=False, index=True, classes="financial-table")
+        
+        # Display the HTML table with Streamlit markdown
+        st.markdown(html_comparison_table, unsafe_allow_html=True)
 
 
 def get_combined_historical_data(stock_df, period="1y"):
