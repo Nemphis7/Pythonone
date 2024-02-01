@@ -359,7 +359,7 @@ def account_overview(df, stock_df):
 
     # Plot der Gesamtperformance am Ende der Account Overview
     if stock_df is not None:
-    st.subheader("Stocks in Portfolio:")
+        st.subheader("Stocks in Portfolio:")
     
     # Assuming stock_df already contains the 'TotalValue' with proper formatting
     st.table(stock_df[['Ticker', 'Amount', 'CurrentPrice', 'TotalValue']])
