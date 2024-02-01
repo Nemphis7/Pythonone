@@ -289,7 +289,7 @@ def account_overview(df, stock_df):
 
     # Plot der Gesamtperformance am Ende der Account Overview
     if stock_df is not None:
-    st.subheader("Stocks in Portfolio:")
+        st.subheader("Stocks in Portfolio:")
 
     # Define the custom styling function for the 'TotalValue' column
     def highlight_total_value(val):
