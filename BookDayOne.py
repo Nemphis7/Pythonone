@@ -303,23 +303,41 @@ def plot_portfolio_history_plotly(portfolio_history):
     st.plotly_chart(fig, use_container_width=True)
 
 
+# Main account overview function
 def account_overview(df, stock_df):
     st.title("Financial Data Analysis")
     current_month = datetime.now().strftime('%Y-%m')
     current_month_period = pd.Period(current_month)
 
-    # Define the common table style
-    table_style = """
-    <style>
-        .financial-table { font-size: 16px; margin-bottom: 20px; }
-        .financial-table th, .financial-table td { text-align: left; padding: 8px; }
-        .financial-table tr:nth-child(odd) { background-color: #f2f2f2; }
-        .financial-table tr.highlight-row { background-color: lightblue; }
-    </style>
-    """
-    
-    # Apply the style at the beginning so it affects all tables
-    st.markdown(table_style, unsafe_allow_html=True)
+    if df is not None:
+        df_sorted = df.sort_values(by='Date', ascending=False)
+        current_month_data = df[df['Date'].dt.to_period('M') == current_month_period]
+        current_month_expenses = df_sorted[df_sorted['Amount'] < 0]['Amount'].sum()
+        current_month_income = df_sorted[df_sorted['Amount'] > 0]['Amount'].sum()
+        account_balance = current_month_income + current_month_expenses
+
+        # Format the numbers with periods as thousand separators and commas as decimal points
+        formatted_expenses = f"{current_month_expenses:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+        formatted_income = f"{current_month_income:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+        formatted_account_balance = f"{account_balance:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+
+        # Creating an HTML table with styling for the financial summary
+        html_table = f"""
+        <table class='financial-table'>
+            <tr><th>Category</th><th>Amount (€)</th></tr>
+            <tr><td>Expenses</td><td>{formatted_expenses}</td></tr>
+            <tr><td>Income</td><td>{formatted_income}</td></tr>
+            <tr class='highlight-row'><td>Total Account Balance</td><td>{formatted_account_balance}</td></tr>
+        </table>
+        """
+
+        # Display the table using markdown
+        st.markdown(html_table, unsafe_allow_html=True)
+
+    # ... rest of the account overview ...
+
+# ... rest of your code ...
+
 
     if df is not None:
         df_sorted = df.sort_values(by='Date', ascending=False)
