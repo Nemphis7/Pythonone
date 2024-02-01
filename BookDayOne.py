@@ -324,23 +324,13 @@ def account_overview(df, stock_df):
     if df is not None:
         df_sorted = df.sort_values(by='Date', ascending=False)
         current_month_data = df[df['Date'].dt.to_period('M') == current_month_period]
-        current_month_expenses = df_sorted[df_sorted['Amount'] < 0]['Amount'].sum()
-        current_month_income = df_sorted[df_sorted['Amount'] > 0]['Amount'].sum()
-        account_balance = current_month_income + current_month_expenses
+        current_month_expenses = current_month_data[current_month_data['Amount'] < 0]['Amount'].sum()
+        current_month_income = current_month_data[current_month_data['Amount'] > 0]['Amount'].sum()
 
-        # Format the numbers with points and commas
-        formatted_expenses = f"{current_month_expenses:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-        formatted_income = f"{current_month_income:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-        formatted_account_balance = f"{account_balance:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+        total_expenses = current_month_data[current_month_data['Amount'] < 0]['Amount'].sum()
+        total_income = current_month_data[current_month_data['Amount'] > 0]['Amount'].sum()
+        account_balance = total_income + total_expenses
 
-        # Creating a DataFrame for the financial summary
-        financial_summary = pd.DataFrame({
-            'Category': ['Expenses', 'Income', 'Total Account Balance'],
-            'Amount (€)': [formatted_expenses, formatted_income, formatted_account_balance]
-        })
-
-        # Display the financial summary as a table
-        st.table(financial_summary)
         # Creating an HTML table with styling for the financial summary
         html_table = f"""
         <table class='financial-table'>
