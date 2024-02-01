@@ -307,6 +307,37 @@ def account_overview(df, stock_df):
     # Display the styled table using markdown
     st.markdown(html_stock_table, unsafe_allow_html=True)
 
+ # Allow the user to select the time period for the historical data
+    period = st.selectbox("Select the time period for the portfolio performance:",
+                          options=['5y', '3y', '1y', '6mo'], index=2)
+
+    # Retrieve and plot the historical data based on the selected time period
+    portfolio_history = get_portfolio_historical_data(stock_df, period)
+    plot_portfolio_history(portfolio_history)
+
+
+def get_portfolio_historical_data(stock_df, period="1y"):
+    portfolio_history = pd.DataFrame()
+    for index, row in stock_df.iterrows():
+        ticker = row['Ticker']
+        amount = row['Amount']
+        stock = yf.Ticker(ticker)
+        hist = stock.history(period=period)['Close']
+        portfolio_history[ticker] = hist * amount
+    portfolio_history['Total'] = portfolio_history.sum(axis=1)
+    return portfolio_history
+
+# Function to plot the historical data
+def plot_portfolio_history(portfolio_history):
+    plt.figure(figsize=(10, 5))
+    plt.plot(portfolio_history.index, portfolio_history['Total'], label='Total Portfolio Value')
+    plt.title('Portfolio Performance Over Time')
+    plt.xlabel('Date')
+    plt.ylabel('Total Value')
+    plt.legend()
+    plt.grid(True)
+    st.pyplot(plt)
+
 def analyse(df):
     st.title("Analyse")
     if df is not None and 'Amount' in df.columns and 'Date' in df.columns:
