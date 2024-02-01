@@ -669,33 +669,19 @@ def Aktienkurse_app():
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        aktien_ticker_a = st.text_input("Insert Stock Ticker for Stock A:", key="ticker_a")
+        aktien_ticker_a = st.text_input("Insert Stock Ticker for Stock A:", "")
     with col2:
-        aktien_ticker_b = st.text_input("Insert Stock Ticker for Stock B:", key="ticker_b")
+        aktien_ticker_b = st.text_input("Insert Stock Ticker for Stock B:", "")
     with col3:
-        period_option = st.selectbox("Select Period:", options=['5y', '3y', '1y', '6mo'], index=0, key="period_option")
+        period_option = st.selectbox("Select Period:", options=['5y', '3y', '1y', '6mo'], index=0)
 
     if aktien_ticker_a and aktien_ticker_b:
+        # Show the stock price chart and comparison
         plot_stock_data(aktien_ticker_a, aktien_ticker_b, period=period_option)
 
-        data_a = get_fundamental_data(aktien_ticker_a)
-        data_b = get_fundamental_data(aktien_ticker_b)
+        # Display the comparison table using the existing function
+        display_comparison_table(aktien_ticker_a, aktien_ticker_b)
 
-        # Create and style the comparison table
-        comparison_df = pd.DataFrame({
-            aktien_ticker_a: [format_metric(data_a[key]) for key in data_a],
-            aktien_ticker_b: [format_metric(data_b[key]) for key in data_b]
-        }, index=list(data_a.keys()))
-
-        # Apply the common table style defined in account_overview function
-        st.markdown(table_style, unsafe_allow_html=True)
-        
-        html_comparison_table = comparison_df.to_html(escape=False, index=True, classes="financial-table")
-        html_comparison_table = html_comparison_table.replace('<table', '<table style="text-align: left;"')
-        st.markdown(html_comparison_table, unsafe_allow_html=True)
-
-# You should call this function in the main() if condition for page selection
-# Aktienkurse_app()
 
 
 def get_combined_historical_data(stock_df, period="1y"):
