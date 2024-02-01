@@ -289,11 +289,19 @@ def account_overview(df, stock_df):
 
     # Plot der Gesamtperformance am Ende der Account Overview
     if stock_df is not None:
-        st.subheader("Portfolio:")
-        total_portfolio_history = get_combined_historical_data(stock_df, period="1y")
-        plot_portfolio_performance(total_portfolio_history)
-        st.subheader("Stocks in Portfolio:")
-        st.table(stock_df[['Ticker', 'Amount', 'CurrentPrice', 'TotalValue']])
+    st.subheader("Stocks in Portfolio:")
+
+    # Convert the DataFrame to HTML and use the 'financial-table' class for consistent styling
+    # Also add a style for highlighting the "Total Value" column
+    html_stock_table = (
+        stock_df.style
+        .applymap(lambda x: "background-color: lightblue", subset=['TotalValue'])
+        .set_table_attributes('class="financial-table"')
+        .render()
+    )
+
+    # Display the styled table
+    st.markdown(html_stock_table, unsafe_allow_html=True)
 
 
 def analyse(df):
