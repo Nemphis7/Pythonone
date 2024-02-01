@@ -793,14 +793,18 @@ def Aktienkurse_app():
         period_option = st.selectbox("Select Period:", options=['5y', '3y', '1y', '6mo'], index=0)
 
     if aktien_ticker_a and aktien_ticker_b:
-        # Fetch the historical data for both stocks
-        stock_df_a = get_portfolio_historical_data(aktien_ticker_a, period=period_option)
-        stock_df_b = get_portfolio_historical_data(aktien_ticker_b, period=period_option)
+        # Prepare a DataFrame for each stock with 'Ticker' and 'Amount' columns
+        df_a = pd.DataFrame({'Ticker': [aktien_ticker_a], 'Amount': [1]})  # Assuming an amount of 1 for illustration
+        df_b = pd.DataFrame({'Ticker': [aktien_ticker_b], 'Amount': [1]})
+
+        # Fetch the historical data for both stocks using the existing function
+        portfolio_history_a = get_combined_historical_data(df_a, period=period_option)
+        portfolio_history_b = get_combined_historical_data(df_b, period=period_option)
 
         # Combine the data into a single DataFrame for plotting
         combined_portfolio_history = pd.DataFrame({
-            'Stock A': stock_df_a['Total'],
-            'Stock B': stock_df_b['Total']
+            aktien_ticker_a: portfolio_history_a,
+            aktien_ticker_b: portfolio_history_b
         })
 
         # Plot the combined historical data
@@ -808,7 +812,6 @@ def Aktienkurse_app():
 
         # Display the comparison table using the existing function
         display_comparison_table(aktien_ticker_a, aktien_ticker_b)
-
 
 def get_combined_historical_data(stock_df, period="1y"):
     # Holt die kombinierten historischen Daten für das Gesamtportfolio
