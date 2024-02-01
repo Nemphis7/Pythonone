@@ -570,10 +570,50 @@ def analyse(df):
             # Summarize expenses and income by category for the current month
             current_month_summary = current_month_data.groupby('Category')['Amount'].sum().reset_index()
 
-            # Display the current month summary using Streamlit's built-in functionality
-            st.table(current_month_summary)
+            # Convert the DataFrame to HTML and add custom styling
+            summary_html = current_month_summary.to_html(index=False, classes="styled-table", escape=False)
+
+            custom_style = """
+            <style>
+                .styled-table {
+                    border-collapse: collapse;
+                    margin: 25px 0;
+                    font-size: 0.9em;
+                    font-family: sans-serif;
+                    min-width: 400px;
+                    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+                }
+                .styled-table thead tr {
+                    background-color: #009879;
+                    color: #ffffff;
+                    text-align: left;
+                }
+                .styled-table th,
+                .styled-table td {
+                    padding: 12px 15px;
+                    text-align: left;
+                }
+                .styled-table tbody tr {
+                    border-bottom: 1px solid #dddddd;
+                }
+                .styled-table tbody tr:nth-of-type(even) {
+                    background-color: #f3f3f3;
+                }
+                .styled-table tbody tr:last-of-type {
+                    border-bottom: 2px solid #009879;
+                }
+                .styled-table tbody tr.active-row {
+                    font-weight: bold;
+                    color: #009879;
+                }
+            </style>
+            """
+
+            # Display the formatted table
+            st.markdown(custom_style + summary_html, unsafe_allow_html=True)
         else:
             st.error("No Data to analyse")
+
 
 
 
