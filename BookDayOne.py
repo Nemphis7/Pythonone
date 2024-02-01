@@ -808,19 +808,26 @@ def Aktienkurse_app():
             aktien_ticker_b: portfolio_history_b.values
         }).set_index('Date')
 
-        # Rename the columns to match the expected format by plotly
-        combined_portfolio_history = combined_portfolio_history.rename(columns={
-            aktien_ticker_a: 'Total A',
-            aktien_ticker_b: 'Total B'
-        })
-
         # Plot the combined historical data using Plotly
-        fig = px.line(combined_portfolio_history, x=combined_portfolio_history.index, y=['Total A', 'Total B'])
-        fig.update_layout(title='Stock Price Comparison Over Time', xaxis_title='Date', yaxis_title='Stock Price', template='plotly_dark')
+        fig = px.line(combined_portfolio_history, x=combined_portfolio_history.index, y=[aktien_ticker_a, aktien_ticker_b])
+        fig.update_traces(overwrite=True, marker=dict(size=10))
+
+        # Update traces to set the color, assuming the first trace is for Stock A and the second is for Stock B
+        fig.update_traces(overwrite=True, selector=dict(name=aktien_ticker_a), line=dict(color='blue'))
+        fig.update_traces(overwrite=True, selector=dict(name=aktien_ticker_b), line=dict(color='orange'))
+
+        fig.update_layout(
+            title='Stock Price Comparison Over Time',
+            xaxis_title='Date',
+            yaxis_title='Stock Price',
+            template='plotly_dark',
+            legend_title_text='Ticker'
+        )
         st.plotly_chart(fig, use_container_width=True)
 
         # Display the comparison table using the existing function
         display_comparison_table(aktien_ticker_a, aktien_ticker_b)
+
 
 
 def get_combined_historical_data(stock_df, period="1y"):
