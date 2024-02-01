@@ -794,7 +794,7 @@ def Aktienkurse_app():
 
     if aktien_ticker_a and aktien_ticker_b:
         # Prepare a DataFrame for each stock with 'Ticker' and 'Amount' columns
-        df_a = pd.DataFrame({'Ticker': [aktien_ticker_a], 'Amount': [1]})  # Assuming an amount of 1 for illustration
+        df_a = pd.DataFrame({'Ticker': [aktien_ticker_a], 'Amount': [1]})
         df_b = pd.DataFrame({'Ticker': [aktien_ticker_b], 'Amount': [1]})
 
         # Fetch the historical data for both stocks using the existing function
@@ -803,15 +803,25 @@ def Aktienkurse_app():
 
         # Combine the data into a single DataFrame for plotting
         combined_portfolio_history = pd.DataFrame({
-            aktien_ticker_a: portfolio_history_a,
-            aktien_ticker_b: portfolio_history_b
+            'Date': portfolio_history_a.index,
+            aktien_ticker_a: portfolio_history_a.values,
+            aktien_ticker_b: portfolio_history_b.values
+        }).set_index('Date')
+
+        # Rename the columns to match the expected format by plotly
+        combined_portfolio_history = combined_portfolio_history.rename(columns={
+            aktien_ticker_a: 'Total A',
+            aktien_ticker_b: 'Total B'
         })
 
-        # Plot the combined historical data
-        plot_portfolio_history_plotly(combined_portfolio_history)
+        # Plot the combined historical data using Plotly
+        fig = px.line(combined_portfolio_history, x=combined_portfolio_history.index, y=['Total A', 'Total B'])
+        fig.update_layout(title='Stock Price Comparison Over Time', xaxis_title='Date', yaxis_title='Stock Price', template='plotly_dark')
+        st.plotly_chart(fig, use_container_width=True)
 
         # Display the comparison table using the existing function
         display_comparison_table(aktien_ticker_a, aktien_ticker_b)
+
 
 def get_combined_historical_data(stock_df, period="1y"):
     # Holt die kombinierten historischen Daten für das Gesamtportfolio
