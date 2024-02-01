@@ -676,21 +676,17 @@ def Aktienkurse_app():
         period_option = st.selectbox("Select Period:", options=['5y', '3y', '1y', '6mo'], index=0)
 
     if aktien_ticker_a and aktien_ticker_b:
-        # Show the stock price chart and comparison
         plot_stock_data(aktien_ticker_a, aktien_ticker_b, period=period_option)
 
-        # Fetch and format the fundamental data for the comparison
-        fundamental_data_a = get_fundamental_data(aktien_ticker_a)
-        fundamental_data_b = get_fundamental_data(aktien_ticker_b)
+        data_a = get_fundamental_data(aktien_ticker_a)
+        data_b = get_fundamental_data(aktien_ticker_b)
 
-        # Create a dataframe for the comparison
+        # Create and style the comparison table
         comparison_df = pd.DataFrame({
-            aktien_ticker_a: [fundamental_data_a['kgv'], fundamental_data_a['market_cap'], fundamental_data_a['dividend_yield'],
-                              fundamental_data_a['roe'], fundamental_data_a['debt_to_equity'], fundamental_data_a['price_to_book']],
-            aktien_ticker_b: [fundamental_data_b['kgv'], fundamental_data_b['market_cap'], fundamental_data_b['dividend_yield'],
-                              fundamental_data_b['roe'], fundamental_data_b['debt_to_equity'], fundamental_data_b['price_to_book']],
-        }, index=["P/E Ratio", "Market Cap", "Dividend Yield", "ROE", "D/E Ratio", "P/B Ratio"])
-
+            aktien_ticker_a: [format_metric(data_a[key]) for key in data_a],
+            aktien_ticker_b: [format_metric(data_b[key]) for key in data_b]
+        }, index=list(data_a.keys()))
+        
         # Define the common table style
         table_style = """
         <style>
@@ -700,16 +696,14 @@ def Aktienkurse_app():
             .financial-table tr.highlight-row { background-color: lightblue; }
         </style>
         """
-
-        # Apply the style to the table
         st.markdown(table_style, unsafe_allow_html=True)
         
-        # Convert the comparison dataframe to HTML and apply custom style
         html_comparison_table = comparison_df.to_html(escape=False, index=True, classes="financial-table")
-        
-        # Display the HTML table with Streamlit markdown
+        html_comparison_table = html_comparison_table.replace('<table', '<table style="text-align: left;"')
         st.markdown(html_comparison_table, unsafe_allow_html=True)
 
+# Call the function where it should be executed
+Aktienkurse_app()
 
 def get_combined_historical_data(stock_df, period="1y"):
     # Holt die kombinierten historischen Daten für das Gesamtportfolio
