@@ -364,13 +364,7 @@ def account_overview(df, stock_df):
     if stock_df is not None:
         st.subheader("Stocks in Portfolio:")
         
-        html_stock_table = (
-            stock_df.style
-            .applymap(lambda x: "background-color: lightblue", subset=['TotalValue'])
-            .set_table_attributes('class="financial-table"')
-            .render()
-        )
-
+    
     # Display the styled table
     st.markdown(html_stock_table, unsafe_allow_html=True)
 
