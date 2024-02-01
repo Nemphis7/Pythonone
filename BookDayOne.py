@@ -695,8 +695,7 @@ def Aktienkurse_app():
         html_comparison_table = comparison_df.to_html(escape=False, index=True, classes="table table-striped")
         html_comparison_table = html_comparison_table.replace('<table', '<table style="text-align: left;"')
 
-        # Display the HTML table with Streamlit markdown
-        st.markdown(html_comparison_table, unsafe_allow_html=True)
+         display_comparison_table(aktien_ticker_a, aktien_ticker_b)
 
 # ... (rest of your code) ...
 
