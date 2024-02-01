@@ -568,10 +568,10 @@ def analyse(df):
             current_month_data = df[(df['Date'].dt.month == current_month) & (df['Date'].dt.year == current_year)]
 
             # Summarize expenses and income by category for the current month
-            current_month_summary = current_month_data.groupby('Category')['Amount'].sum()
+            current_month_summary = current_month_data.groupby('Category')['Amount'].sum().reset_index()
 
-            # Convert to HTML
-            summary_html = current_month_summary.to_frame().to_html()
+            # Convert to HTML with escape=False to properly render HTML elements
+            summary_html = current_month_summary.to_html(escape=False, index=False)
 
             # Custom Styling
             custom_style = """
@@ -597,9 +597,6 @@ def analyse(df):
             st.markdown(custom_style + summary_html, unsafe_allow_html=True)
         else:
             st.error("No Data to analyse")
-
-
-
 
 def adjust_for_inflation(value, years, inflation_rate):
     return value / ((1 + inflation_rate) ** years)
