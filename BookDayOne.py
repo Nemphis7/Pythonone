@@ -248,14 +248,24 @@ def account_overview(df, stock_df):
         total_income = current_month_data[current_month_data['Amount'] > 0]['Amount'].sum()
         account_balance = total_income + total_expenses
 
-        # Creating a DataFrame for the financial summary
-        financial_summary = pd.DataFrame({
-            'Category': ['Expenses', 'Income', 'Total Account Balance'],
-            'Amount (€)': [current_month_expenses, current_month_income, account_balance]
-        })
+        # Creating an HTML table with styling
+        html_table = f"""
+        <style>
+            .financial-table {{ font-size: 16px; }}
+            .financial-table th, .financial-table td {{ text-align: left; padding: 8px; }}
+            .financial-table tr:nth-child(odd) {{ background-color: #f2f2f2; }}
+            .financial-table tr.highlight-row {{ background-color: lightblue; }}
+        </style>
+        <table class='financial-table'>
+            <tr><th>Category</th><th>Amount (€)</th></tr>
+            <tr><td>Expenses</td><td>{current_month_expenses}</td></tr>
+            <tr><td>Income</td><td>{current_month_income}</td></tr>
+            <tr class='highlight-row'><td>Total Account Balance</td><td>{account_balance}</td></tr>
+        </table>
+        """
 
-        # Display the financial summary as a table
-        st.table(financial_summary)
+        # Display the table using markdown
+        st.markdown(html_table, unsafe_allow_html=True)
 
     # Plot der Gesamtperformance am Ende der Account Overview
     if stock_df is not None:
