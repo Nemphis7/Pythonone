@@ -6,6 +6,7 @@ from datetime import datetime
 import plotly.graph_objects as go
 from datetime import date
 import numpy as np
+import plotly.express as px
 
 INFLATION_RATE = 0.02
 
@@ -244,7 +245,64 @@ def display_total_portfolio_value(stock_df):
     # Display the Total Portfolio Value with the 'total-row' class for dark blue background
     st.markdown(f"<div class='total-row' style='padding: 10px;'><strong>Total Portfolio Value: {formatted_total_portfolio_value}</strong></div>", unsafe_allow_html=True)
 
-    
+
+# Function to plot the historical data with Plotly
+def plot_portfolio_history_plotly(portfolio_history):
+    fig = px.line(
+        portfolio_history, 
+        x=portfolio_history.index, 
+        y="Total", 
+        title='Portfolio Performance Over Time',
+        labels={'Total': 'Total Value', 'index': 'Date'},
+        template="plotly_dark"  # Choose a template that suits your aesthetic needs
+    )
+    fig.update_layout(
+        plot_bgcolor='rgba(0,0,0,0)',
+        xaxis_title='Date',
+        yaxis_title='Total Value',
+        legend_title_text='Trend',
+        xaxis=dict(
+            showline=True,
+            showgrid=False,
+            showticklabels=True,
+            linecolor='rgb(204, 204, 204)',
+            linewidth=2,
+            ticks='outside',
+            tickfont=dict(
+                family='Arial',
+                size=12,
+                color='rgb(82, 82, 82)',
+            ),
+        ),
+        yaxis=dict(
+            showgrid=True,
+            zeroline=False,
+            showline=False,
+            showticklabels=True,
+        ),
+        autosize=True,
+        margin=dict(
+            autoexpand=True,
+            l=100,
+            r=20,
+            t=110,
+        ),
+        showlegend=True,
+        legend=dict(
+            x=0.01,
+            y=0.99,
+            traceorder='normal',
+            font=dict(
+                family='sans-serif',
+                size=12,
+                color='white'
+            ),
+        )
+    )
+    fig.update_traces(marker=dict(size=10))
+    st.plotly_chart(fig, use_container_width=True)
+
+
 def account_overview(df, stock_df):
     st.title("Financial Data Analysis")
     current_month = datetime.now().strftime('%Y-%m')
@@ -301,48 +359,21 @@ def account_overview(df, stock_df):
 
     # Plot der Gesamtperformance am Ende der Account Overview
     if stock_df is not None:
-        st.subheader("Stocks in Portfolio:")
-        
-        # Calculate the total portfolio value
-        total_portfolio_value = stock_df['TotalValue'].replace('[\.,]', '', regex=True).astype(float).sum()
-        formatted_total_portfolio_value = f"{total_portfolio_value:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
-
-        # Convert the DataFrame to HTML and use the 'financial-table' class for consistent styling
-        html_stock_table = (
-            stock_df.style
-            .applymap(lambda x: "background-color: lightblue", subset=['TotalValue'])
-            .set_table_attributes('class="financial-table"')
-            .set_properties(**{'font-size': '16px'})  # Ensuring font size consistency
-            .to_html(escape=False, index=False)
-        )
-
-    # Define the custom styling function for the 'TotalValue' column
-    def highlight_total_value(val):
-        color = 'lightblue' if pd.notnull(val) else 'white'
-        return f'background-color: {color}'
-
-    # Apply the custom styling to the DataFrame
-    styled_df = stock_df.style.applymap(highlight_total_value, subset=['TotalValue']) \
-                              .set_table_attributes('class="financial-table"') \
-                              .set_properties(**{'font-size': '16px'})  # Ensuring font size consistency
+    st.subheader("Stocks in Portfolio:")
     
-    # Convert the styled DataFrame to HTML
-    html_stock_table = styled_df.to_html(escape=False)
+    # Assuming stock_df already contains the 'TotalValue' with proper formatting
+    st.table(stock_df[['Ticker', 'Amount', 'CurrentPrice', 'TotalValue']])
 
-    # Display the styled table using markdown
-    st.markdown(html_stock_table, unsafe_allow_html=True)
-
-    # Display the Total Portfolio Value
+    # Calculate and display the total portfolio value
     display_total_portfolio_value(stock_df)
-
-
- # Allow the user to select the time period for the historical data
+    
+    # Allow the user to select the time period for the historical data
     period = st.selectbox("Select the time period for the portfolio performance:",
                           options=['5y', '3y', '1y', '6mo'], index=2)
-
-    # Retrieve and plot the historical data based on the selected time period
     portfolio_history = get_portfolio_historical_data(stock_df, period)
-    plot_portfolio_history(portfolio_history)
+    
+    # Plot the historical data with Plotly
+    plot_portfolio_history_plotly(portfolio_history)
 
 
 def get_portfolio_historical_data(stock_df, period="1y"):
