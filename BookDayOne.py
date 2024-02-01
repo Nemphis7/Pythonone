@@ -556,7 +556,6 @@ def plot_portfolio_history(portfolio_history):
 def analyse(df):
     st.title("Analyse")
 
-    # Add a button for triggering the analysis
     if st.button("Start Analysis"):
         if df is not None and 'Amount' in df.columns and 'Date' in df.columns:
             # Ensure correct data types
@@ -571,12 +570,34 @@ def analyse(df):
             # Summarize expenses and income by category for the current month
             current_month_summary = current_month_data.groupby('Category')['Amount'].sum()
 
-            # Display the initial data sample and the current month summary
-            st.write("Initial Data Sample:", df.head())
-            st.write("Current Month Summary:")
-            st.table(current_month_summary)
+            # Convert to HTML
+            summary_html = current_month_summary.to_frame().to_html()
+
+            # Custom Styling
+            custom_style = """
+            <style>
+                table { 
+                    width: 100%;
+                    border-collapse: collapse; 
+                }
+                th, td { 
+                    padding: 8px; 
+                    text-align: left; 
+                    border-bottom: 1px solid #ddd; 
+                }
+                tr:nth-child(even) {background-color: #f2f2f2;}
+                th {
+                    background-color: #04AA6D;
+                    color: white;
+                }
+            </style>
+            """
+
+            # Display the formatted table
+            st.markdown(custom_style + summary_html, unsafe_allow_html=True)
         else:
             st.error("No Data to analyse")
+
 
 
 
