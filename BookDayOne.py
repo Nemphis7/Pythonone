@@ -238,6 +238,19 @@ def account_overview(df, stock_df):
     current_month = datetime.now().strftime('%Y-%m')
     current_month_period = pd.Period(current_month)
 
+    # Define the common table style
+    table_style = """
+    <style>
+        .financial-table { font-size: 16px; margin-bottom: 20px; }
+        .financial-table th, .financial-table td { text-align: left; padding: 8px; }
+        .financial-table tr:nth-child(odd) { background-color: #f2f2f2; }
+        .financial-table tr.highlight-row { background-color: lightblue; }
+    </style>
+    """
+    
+    # Apply the style at the beginning so it affects all tables
+    st.markdown(table_style, unsafe_allow_html=True)
+
     if df is not None:
         df_sorted = df.sort_values(by='Date', ascending=False)
         current_month_data = df[df['Date'].dt.to_period('M') == current_month_period]
@@ -250,12 +263,6 @@ def account_overview(df, stock_df):
 
         # Creating an HTML table with styling for the financial summary
         html_table = f"""
-        <style>
-            .financial-table {{ font-size: 16px; }}
-            .financial-table th, .financial-table td {{ text-align: left; padding: 8px; }}
-            .financial-table tr:nth-child(odd) {{ background-color: #f2f2f2; }}
-            .financial-table tr.highlight-row {{ background-color: lightblue; }}
-        </style>
         <table class='financial-table'>
             <tr><th>Category</th><th>Amount (€)</th></tr>
             <tr><td>Expenses</td><td>{current_month_expenses}</td></tr>
@@ -270,12 +277,15 @@ def account_overview(df, stock_df):
         # Expander to show last ten expense bookings
         with st.expander("View Last 10 Expense Bookings"):
             last_10_expenses = df_sorted[df_sorted['Amount'] < 0].head(10)
-            st.table(last_10_expenses)
+            st.markdown(last_10_expenses.to_html(classes='financial-table'), unsafe_allow_html=True)
 
         # Expander to show last ten income bookings
         with st.expander("View Last 10 Income Bookings"):
             last_10_incomes = df_sorted[df_sorted['Amount'] > 0].head(10)
-            st.table(last_10_incomes)
+            st.markdown(last_10_incomes.to_html(classes='financial-table'), unsafe_allow_html=True)
+
+    # [The rest of your code for plotting and displaying stock portfolio remains unchanged]
+
 
     # Plot der Gesamtperformance am Ende der Account Overview
     if stock_df is not None:
