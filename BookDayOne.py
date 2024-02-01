@@ -583,12 +583,13 @@ def analyse(df):
                     {'selector': 'th', 'props': [('background-color', '#4CAF50'), ('color', 'white')]},
                     {'selector': 'td:hover', 'props': [('background-color', 'lightgrey')]}
                 ], overwrite=False)\
-                .hide_index()
+                .apply(lambda x: ['background: lightblue' if x.name % 2 else '' for i in x], axis=1)
 
             # Render DataFrame as HTML
             st.write(styler.to_html(), unsafe_allow_html=True)
         else:
             st.error("No Data to analyse")
+
 
 
 
