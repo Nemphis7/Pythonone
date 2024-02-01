@@ -354,22 +354,17 @@ def account_overview(df, stock_df):
             last_10_incomes = df_sorted[df_sorted['Amount'] > 0].head(10)
             st.markdown(last_10_incomes.to_html(classes='financial-table'), unsafe_allow_html=True)
 
-    # [The rest of your code for plotting and displaying stock portfolio remains unchanged]
-
 
     # Plot der Gesamtperformance am Ende der Account Overview
     if stock_df is not None:
         st.subheader("Stocks in Portfolio:")
+
+        # Convert the stock dataframe to HTML and use style for left alignment
+        html_stock_table = stock_df.to_html(index=False, escape=False, classes="table table-striped")
+        html_stock_table = html_stock_table.replace('<table', '<table style="text-align: left;"')
         
-        # Restore the Stock Table with formatting
-        stock_df['CurrentPrice'] = stock_df['CurrentPrice'].apply(lambda x: float(str(x).replace('.', '').replace(',', '.')))
-        stock_df['TotalValue'] = stock_df['Amount'] * stock_df['CurrentPrice']
-        
-        # Format the 'CurrentPrice' and 'TotalValue' columns
-        stock_df['CurrentPrice'] = stock_df['CurrentPrice'].apply(lambda x: f"{x:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
-        stock_df['TotalValue'] = stock_df['TotalValue'].apply(lambda x: f"{x:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
-        
-        st.table(stock_df[['Ticker', 'Amount', 'CurrentPrice', 'TotalValue']])
+        # Display the HTML table with Streamlit markdown
+        st.markdown(html_stock_table, unsafe_allow_html=True)
 
     # Calculate and display the total portfolio value
     display_total_portfolio_value(stock_df)
