@@ -801,6 +801,10 @@ def Aktienkurse_app():
         portfolio_history_a = get_combined_historical_data(df_a, period=period_option)
         portfolio_history_b = get_combined_historical_data(df_b, period=period_option)
 
+        # Normalize the starting prices to the same value for comparison (e.g., 100)
+        portfolio_history_a = (portfolio_history_a / portfolio_history_a.iloc[0]) * 100
+        portfolio_history_b = (portfolio_history_b / portfolio_history_b.iloc[0]) * 100
+
         # Combine the data into a single DataFrame for plotting
         combined_portfolio_history = pd.DataFrame({
             'Date': portfolio_history_a.index,
@@ -817,9 +821,9 @@ def Aktienkurse_app():
         fig.update_traces(overwrite=True, selector=dict(name=aktien_ticker_b), line=dict(color='orange'))
 
         fig.update_layout(
-            title='Stock Price Comparison Over Time',
+            title='Stock Performance Comparison Over Time',
             xaxis_title='Date',
-            yaxis_title='Stock Price',
+            yaxis_title='Performance Index',
             template='plotly_dark',
             legend_title_text='Ticker'
         )
