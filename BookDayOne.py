@@ -353,7 +353,8 @@ def account_overview(df, stock_df):
         </table>
         """
 
-    
+        # Display the table using markdown
+        st.markdown(html_table, unsafe_allow_html=True)
 
         # Expander to show last ten expense bookings
         with st.expander("View Last 10 Expense Bookings"):
@@ -712,3 +713,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
