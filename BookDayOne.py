@@ -360,9 +360,16 @@ def account_overview(df, stock_df):
     # Plot der Gesamtperformance am Ende der Account Overview
     if stock_df is not None:
         st.subheader("Stocks in Portfolio:")
-    
-    # Assuming stock_df already contains the 'TotalValue' with proper formatting
-    st.table(stock_df[['Ticker', 'Amount', 'CurrentPrice', 'TotalValue']])
+        
+        # Restore the Stock Table with formatting
+        stock_df['CurrentPrice'] = stock_df['CurrentPrice'].apply(lambda x: float(str(x).replace('.', '').replace(',', '.')))
+        stock_df['TotalValue'] = stock_df['Amount'] * stock_df['CurrentPrice']
+        
+        # Format the 'CurrentPrice' and 'TotalValue' columns
+        stock_df['CurrentPrice'] = stock_df['CurrentPrice'].apply(lambda x: f"{x:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
+        stock_df['TotalValue'] = stock_df['TotalValue'].apply(lambda x: f"{x:,.2f}".replace(",", "X").replace(".", ",").replace("X", "."))
+        
+        st.table(stock_df[['Ticker', 'Amount', 'CurrentPrice', 'TotalValue']])
 
     # Calculate and display the total portfolio value
     display_total_portfolio_value(stock_df)
