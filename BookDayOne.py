@@ -248,7 +248,7 @@ def account_overview(df, stock_df):
         total_income = current_month_data[current_month_data['Amount'] > 0]['Amount'].sum()
         account_balance = total_income + total_expenses
 
-        # Creating an HTML table with styling
+        # Creating an HTML table with styling for the financial summary
         html_table = f"""
         <style>
             .financial-table {{ font-size: 16px; }}
@@ -266,6 +266,16 @@ def account_overview(df, stock_df):
 
         # Display the table using markdown
         st.markdown(html_table, unsafe_allow_html=True)
+
+        # Expander to show last ten expense bookings
+        with st.expander("View Last 10 Expense Bookings"):
+            last_10_expenses = df_sorted[df_sorted['Amount'] < 0].head(10)
+            st.table(last_10_expenses)
+
+        # Expander to show last ten income bookings
+        with st.expander("View Last 10 Income Bookings"):
+            last_10_incomes = df_sorted[df_sorted['Amount'] > 0].head(10)
+            st.table(last_10_incomes)
 
     # Plot der Gesamtperformance am Ende der Account Overview
     if stock_df is not None:
