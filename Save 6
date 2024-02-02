@@ -6,8 +6,11 @@ from datetime import datetime
 import plotly.graph_objects as go
 from datetime import date
 import numpy as np
+import plotly.express as px
+import plotly.graph_objects as go
 
 INFLATION_RATE = 0.02
+
 
 def custom_format(value):
     if pd.isna(value):
@@ -26,6 +29,88 @@ def fetch_current_price(ticker):
         st.error(f"Value Error: {e}")
     except Exception as e:
         st.error(f"Error fetching data for {ticker}: {e}")
+
+
+# Function to plot the historical data with Plotly
+def plot_portfolio_history_plotly(portfolio_history):
+    # Create a figure with a custom layout
+    fig = go.Figure()
+
+    # Add trace for the portfolio history
+    fig.add_trace(go.Scatter(
+        x=portfolio_history.index, 
+        y=portfolio_history['Total'], 
+        mode='lines+markers',
+        name='Total Portfolio Value',
+        line=dict(color='royalblue', width=2, shape='spline'),  # Smooth line
+        marker=dict(color='lightseagreen', size=7, line=dict(width=1, color='DarkSlateGrey'))
+    ))
+
+    # Customize the layout
+    fig.update_layout(
+        title='Portfolio Performance Over Time',
+        title_x=0.5,  # Center the title
+        xaxis_title='Date',
+        yaxis_title='Total Value',
+        template='plotly_dark',  # Dark theme
+        plot_bgcolor='rgba(0,0,0,0)',  # Transparent background
+        xaxis=dict(
+            showline=True,
+            showgrid=False,
+            showticklabels=True,
+            linecolor='rgb(204, 204, 204)',
+            linewidth=2,
+            ticks='outside',
+            tickfont=dict(
+                family='Arial',
+                size=12,
+                color='rgb(82, 82, 82)',
+            ),
+        ),
+        yaxis=dict(
+            showgrid=True,
+            gridcolor='grey',
+            zeroline=False,
+            showline=False,
+            showticklabels=True,
+        ),
+        legend=dict(
+            x=0.01,
+            y=0.99,
+            traceorder='normal',
+            font=dict(
+                family='sans-serif',
+                size=12,
+                color='white'
+            ),
+        ),
+        margin=dict(
+            autoexpand=True,
+            l=100,
+            r=20,
+            t=110,
+        ),
+    )
+
+    # Add a hover effect
+    fig.update_traces(
+        hoverinfo='text+name',
+        line_shape='spline',
+        hovertemplate='Date: %{x}<br>Total Value: %{y}',
+    )
+
+    # Add a range slider
+    fig.update_layout(
+        xaxis=dict(
+            rangeslider=dict(
+                visible=True,
+                thickness=0.05
+            ),
+            type='date'
+        )
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
         
 def monte_carlo_simulation(start_balance, monthly_savings, stock_percentage, years_to_invest, inflation_rate, simulations=1000):
     avg_return_stock = 0.07  # Average annual return rate for stocks
@@ -177,9 +262,84 @@ def calculate_cumulative_savings(monthly_savings, years_to_invest):
     total_savings = 0
     cumulative_savings = []
     for year in range(1, years_to_invest + 1):
-        total_savings += monthly_savings * 12 * year
+        total_savings += monthly_savings * 12
         cumulative_savings.append(total_savings)
     return cumulative_savings
+
+# Test the function with example values
+test_savings = calculate_cumulative_savings(500, 30)  # Example: $500 per month over 30 years
+print(test_savings)  # Check the output
+
+
+
+def format_metric(metric):
+    if isinstance(metric, float):
+        # Check if the metric is less than 1 to decide on the percentage formatting
+        if metric < 1:
+            return f"{metric:.2%}"
+        else:
+            # For larger numbers, use separators
+            return f"{metric:,.2f}"
+    elif isinstance(metric, int):
+        # For integers, use separators
+        return f"{metric:,}"
+    else:
+        return metric
+
+def display_comparison_table(ticker_a, ticker_b):
+    data_a = get_fundamental_data(ticker_a)
+    data_b = get_fundamental_data(ticker_b)
+
+    # Define custom styles for the table
+    custom_table_style = """
+    <style>
+        .styled-table {
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 0.9em;
+            font-family: sans-serif;
+            min-width: 400px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        }
+        .styled-table thead tr {
+            background-color: #009879;
+            color: #ffffff;
+            text-align: left;
+        }
+        .styled-table th,
+        .styled-table td {
+            padding: 12px 15px;
+        }
+        .styled-table tbody tr {
+            border-bottom: 1px solid #dddddd;
+        }
+        .styled-table tbody tr:nth-of-type(even) {
+            background-color: #f3f3f3;
+        }
+        .styled-table tbody tr:last-of-type {
+            border-bottom: 2px solid #009879;
+        }
+        .styled-table tbody tr.active-row {
+            font-weight: bold;
+            color: #009879;
+        }
+    </style>
+    """
+
+    # Creating a dictionary for each stock's financial data, formatted appropriately
+    table_data = {
+        f"{ticker_a}": [format_metric(data_a[key]) for key in data_a],
+        f"{ticker_b}": [format_metric(data_b[key]) for key in data_b]
+    }
+
+    # Create and display the DataFrame for comparison
+    comparison_df = pd.DataFrame(table_data, index=list(data_a.keys()))
+
+    # Convert the DataFrame to HTML and add custom styling
+    html_comparison_table = comparison_df.to_html(classes="styled-table", escape=False, index=True)
+    
+    # Display the custom styled HTML table with Streamlit markdown
+    st.markdown(custom_table_style + html_comparison_table, unsafe_allow_html=True)
 
 
 def recommendation_page():
@@ -193,20 +353,17 @@ def recommendation_page():
 
     if st.button("Calculate Investment Projection"):
         years_to_invest = retirement_age - current_age
-        stock_percentage, _ = calculate_portfolio_distribution(current_age)
-
-        simulation_results = monte_carlo_simulation(0, monthly_savings, stock_percentage, years_to_invest, inflation_rate)
 
         # Calculate cumulative savings without investment
-        cumulative_savings = calculate_cumulative_savings(monthly_savings, years_to_invest, inflation_rate)
+        cumulative_savings = calculate_cumulative_savings(monthly_savings, years_to_invest)
 
-        # Plot each simulation
+        # Plotting only cumulative savings
         plt.figure(figsize=(10, 6))
-        for simulation in simulation_results:
-            plt.plot(range(years_to_invest), simulation, linewidth=0.5, alpha=0.3)
-        plt.title("Monte Carlo Simulation of Investment Over Time")
+        plt.plot(range(1, years_to_invest + 1), cumulative_savings, label='Cumulative Savings Without Investment', color='green', linestyle='--')
+        plt.title("Cumulative Savings Over Time")
         plt.xlabel("Years")
-        plt.ylabel("Portfolio Value")
+        plt.ylabel("Total Savings")
+        plt.legend()
         st.pyplot(plt)
 
         try:
@@ -214,11 +371,14 @@ def recommendation_page():
             lower_bound = np.percentile(simulation_results, 5, axis=0)
             upper_bound = np.percentile(simulation_results, 95, axis=0)
 
-            # Plot median and confidence interval with cumulative savings
+            # Plotting simulations, median projection, and cumulative savings
             plt.figure(figsize=(10, 6))
-            plt.fill_between(range(years_to_invest), lower_bound, upper_bound, color='gray', alpha=0.5)
-            plt.plot(median_projection, label='Median Projection', color='blue')
-            plt.plot(cumulative_savings, label='Cumulative Savings Without Investment', color='green', linestyle='--')
+            for simulation in simulation_results:
+                plt.plot(range(1, years_to_invest + 1), simulation, linewidth=0.5, alpha=0.3, color='lightgray')
+            plt.plot(range(1, years_to_invest + 1), median_projection, label='Median Projection', color='blue')
+            plt.plot(range(1, years_to_invest + 1), cumulative_savings, label='Cumulative Savings Without Investment', color='green', linestyle='--')
+            plt.fill_between(range(1, years_to_invest + 1), lower_bound, upper_bound, color='gray', alpha=0.5)
+
             plt.title("Investment Projection Over Time")
             plt.xlabel("Years")
             plt.ylabel("Portfolio Value")
@@ -226,11 +386,93 @@ def recommendation_page():
             st.pyplot(plt)
         except Exception as e:
             st.error(f"An error occurred while processing the data: {str(e)}")
-    
+
+def display_total_portfolio_value(stock_df):
+    # Ensure numeric types and calculate the total value
+    stock_df['Amount'] = pd.to_numeric(stock_df['Amount'], errors='coerce')
+    stock_df['CurrentPrice'] = stock_df['CurrentPrice'].apply(lambda x: float(x.replace('.', '').replace(',', '.')))
+    stock_df['TotalValue'] = stock_df['Amount'] * stock_df['CurrentPrice']
+    total_portfolio_value = stock_df['TotalValue'].sum()
+    formatted_total_portfolio_value = f"{total_portfolio_value:,.2f} €".replace(",", "X").replace(".", ",").replace("X", ".")
+
+    # Display the Total Portfolio Value with the 'total-row' class for dark blue background
+    st.markdown(f"<div class='total-row' style='padding: 10px;'><strong>Total Portfolio Value: {formatted_total_portfolio_value}</strong></div>", unsafe_allow_html=True)
+
+
+# Function to plot the historical data with Plotly
+def plot_portfolio_history_plotly(portfolio_history):
+    fig = px.line(
+        portfolio_history, 
+        x=portfolio_history.index, 
+        y="Total", 
+        title='Portfolio Performance Over Time',
+        labels={'Total': 'Total Value', 'index': 'Date'},
+        template="plotly_dark"  # Choose a template that suits your aesthetic needs
+    )
+    fig.update_layout(
+        plot_bgcolor='rgba(0,0,0,0)',
+        xaxis_title='Date',
+        yaxis_title='Total Value',
+        legend_title_text='Trend',
+        xaxis=dict(
+            showline=True,
+            showgrid=False,
+            showticklabels=True,
+            linecolor='rgb(204, 204, 204)',
+            linewidth=2,
+            ticks='outside',
+            tickfont=dict(
+                family='Arial',
+                size=12,
+                color='rgb(82, 82, 82)',
+            ),
+        ),
+        yaxis=dict(
+            showgrid=True,
+            zeroline=False,
+            showline=False,
+            showticklabels=True,
+        ),
+        autosize=True,
+        margin=dict(
+            autoexpand=True,
+            l=100,
+            r=20,
+            t=110,
+        ),
+        showlegend=True,
+        legend=dict(
+            x=0.01,
+            y=0.99,
+            traceorder='normal',
+            font=dict(
+                family='sans-serif',
+                size=12,
+                color='white'
+            ),
+        )
+    )
+    fig.update_traces(marker=dict(size=10))
+    st.plotly_chart(fig, use_container_width=True)
+
+
 def account_overview(df, stock_df):
     st.title("Financial Data Analysis")
     current_month = datetime.now().strftime('%Y-%m')
     current_month_period = pd.Period(current_month)
+
+    # Define the common table style
+    table_style = """
+    <style>
+        .financial-table { font-size: 16px; margin-bottom: 20px; }
+        .financial-table th, .financial-table td { text-align: left; padding: 8px; }
+        .financial-table tr:nth-child(odd) { background-color: #f2f2f2; }
+        .financial-table tr.highlight-row { background-color: lightblue; }
+    </style>
+    """
+    
+    # Apply the style at the beginning so it affects all tables
+    st.markdown(table_style, unsafe_allow_html=True)
 
     if df is not None:
         df_sorted = df.sort_values(by='Date', ascending=False)
@@ -238,63 +480,127 @@ def account_overview(df, stock_df):
         current_month_expenses = current_month_data[current_month_data['Amount'] < 0]['Amount'].sum()
         current_month_income = current_month_data[current_month_data['Amount'] > 0]['Amount'].sum()
 
-        st.markdown(f"### Expenses in {current_month}: **{current_month_expenses} €**")
-        st.markdown(f"### Income in {current_month}: **{current_month_income} €**")
-
-        total_expenses = current_month_data[current_month_data['Amount'] < 0]['Amount'].sum()
         total_income = current_month_data[current_month_data['Amount'] > 0]['Amount'].sum()
+        total_expenses = current_month_data[current_month_data['Amount'] < 0]['Amount'].sum()
+
         account_balance = total_income + total_expenses
 
-        # Highlight the Total Account Balance using st.info
-        st.info(f"### Total account balance: **{account_balance} €**")
+        # Creating an HTML table with styling for the financial summary
+        html_table = f"""
+        <table class='financial-table'>
+            <tr><th>Category</th><th>Amount (€)</th></tr>
+            <tr><td>Income</td><td>{current_month_income}</td></tr>
+            <tr><td>Expenses</td><td>{current_month_expenses}</td></tr>
+            <tr class='highlight-row'><td>Total Account Balance</td><td>{account_balance}</td></tr>
+        </table>
+        """
+
+        # Display the table using markdown
+        st.markdown(html_table, unsafe_allow_html=True)
+
+        with st.expander("View Last 10 Income Bookings"):
+            last_10_incomes = df_sorted[df_sorted['Amount'] > 0].head(10)
+            st.markdown(last_10_incomes.to_html(classes='financial-table'), unsafe_allow_html=True)
+        
+        with st.expander("View Last 10 Expense Bookings"):
+            last_10_expenses = df_sorted[df_sorted['Amount'] < 0].head(10)
+            st.markdown(last_10_expenses.to_html(classes='financial-table'), unsafe_allow_html=True)
+
+      
 
 
     # Plot der Gesamtperformance am Ende der Account Overview
     if stock_df is not None:
-        st.subheader("Portfolio:")
-        total_portfolio_history = get_combined_historical_data(stock_df, period="1y")
-        plot_portfolio_performance(total_portfolio_history)
-         # Anzeige der Liste der Aktien unterhalb des Gesamtperformance-Charts
         st.subheader("Stocks in Portfolio:")
-        st.table(stock_df[['Ticker', 'Amount', 'CurrentPrice', 'TotalValue']])
+
+        # Convert the stock dataframe to HTML and use style for left alignment
+        html_stock_table = stock_df.to_html(index=False, escape=False, classes="table table-striped")
+        html_stock_table = html_stock_table.replace('<table', '<table style="text-align: left;"')
         
+        # Display the HTML table with Streamlit markdown
+        st.markdown(html_stock_table, unsafe_allow_html=True)
+
+    # Calculate and display the total portfolio value
+    display_total_portfolio_value(stock_df)
+    
+    # Allow the user to select the time period for the historical data
+    period = st.selectbox("Select the time period for the portfolio performance:",
+                          options=['5y', '3y', '1y', '6mo'], index=2)
+    portfolio_history = get_portfolio_historical_data(stock_df, period)
+    
+    # Plot the historical data with Plotly
+    plot_portfolio_history_plotly(portfolio_history)
+
+
+def get_portfolio_historical_data(stock_df, period="1y"):
+    portfolio_history = pd.DataFrame()
+    for index, row in stock_df.iterrows():
+        ticker = row['Ticker']
+        amount = row['Amount']
+        stock = yf.Ticker(ticker)
+        hist = stock.history(period=period)['Close']
+        portfolio_history[ticker] = hist * amount
+    portfolio_history['Total'] = portfolio_history.sum(axis=1)
+    return portfolio_history
+
+# Function to plot the historical data
+def plot_portfolio_history(portfolio_history):
+    plt.figure(figsize=(10, 5))
+    plt.plot(portfolio_history.index, portfolio_history['Total'], label='Total Portfolio Value')
+    plt.title('Portfolio Performance Over Time')
+    plt.xlabel('Date')
+    plt.ylabel('Total Value')
+    plt.legend()
+    plt.grid(True)
+    st.pyplot(plt)
 
 def analyse(df):
     st.title("Analyse")
-    if df is not None and 'Amount' in df.columns and 'Date' in df.columns:
-        # Debug: Show initial data
-        st.write("Initial Data Sample:", df.head())
 
-        df['Amount'] = pd.to_numeric(df['Amount'], errors='coerce')
-        df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
-        df.dropna(subset=['Amount', 'Date'], inplace=True)
+    if st.button("Start Analysis"):
+        if df is not None and 'Amount' in df.columns and 'Date' in df.columns:
+            # Ensure correct data types
+            df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
+            df['Amount'] = pd.to_numeric(df['Amount'], errors='coerce')
+            
+            # Current month's data
+            current_month = datetime.now().month
+            current_year = datetime.now().year
+            current_month_data = df[(df['Date'].dt.month == current_month) & (df['Date'].dt.year == current_year)]
 
-        df['YearMonth'] = df['Date'].dt.to_period('M')
+            # Summarize current month's expenses and income by category
+            current_month_summary = current_month_data.groupby('Category')['Amount'].sum().reset_index()
+            
+            # Display the current month's summary with caption
+            st.markdown("### Categories for the Current Month")
+            st.dataframe(current_month_summary.style.format({"Amount": "{:.2f}"}))
 
-        monthly_data = df.groupby('YearMonth')['Amount'].sum().reset_index()
-        monthly_income = monthly_data[monthly_data['Amount'] > 0]['Amount'].mean()
-        monthly_expenses = monthly_data[monthly_data['Amount'] < 0]['Amount'].mean()
-        average_savings = monthly_income + monthly_expenses
+            # Last 6 months' data
+            six_months_ago = datetime.now() - pd.DateOffset(months=6)
+            six_months_data = df[(df['Date'] >= six_months_ago) & (df['Date'] < datetime.now())]
 
-        # Debug: Show computed values
-        st.write("Computed Monthly Data:", monthly_data)
-        st.write("Average Monthly Income:", monthly_income)
-        st.write("Average Monthly Expenses:", monthly_expenses)
-        st.write("Average Monthly Savings:", average_savings)
+            # Group by month and calculate total spent and income
+            monthly_summary = six_months_data.groupby(six_months_data['Date'].dt.to_period('M')).agg({'Amount': 'sum'}).rename(columns={'Amount': 'Total'})
+            monthly_summary['Income'] = six_months_data[six_months_data['Amount'] > 0].groupby(six_months_data['Date'].dt.to_period('M')).agg({'Amount': 'sum'})
+            monthly_summary['Spent'] = six_months_data[six_months_data['Amount'] < 0].groupby(six_months_data['Date'].dt.to_period('M')).agg({'Amount': 'sum'})
+            monthly_summary.fillna(0, inplace=True)
 
-        # Sankey Chart Integration
-        source = [0, 0, 1, 1, 2, 2, 3, 3]
-        target = [4, 5, 6, 7, 8, 9, 10, 11]
-        value = [8, 2, 2, 3, 4, 4, 2, 5]
-        label = ["Income", "Expenses", "Savings", "Investments", 
-                 "Salary", "Other Income", "Bills", "Entertainment", 
-                 "Retirement Fund", "Stocks", "Bonds", "Savings Account"]
+            # Calculate the total sum for spent and income
+            monthly_summary.loc['Total', 'Income'] = monthly_summary['Income'].sum()
+            monthly_summary.loc['Total', 'Spent'] = monthly_summary['Spent'].sum()
+            monthly_summary.loc['Total', 'Total'] = monthly_summary['Total'].sum()
 
-        fig = go.Figure(data=[go.Sankey(node=dict(pad=10, thickness=10, line=dict(color="black", width=0.5), label=label), link=dict(source=source, target=target, value=value))])
-        fig.update_layout(title_text="Financial Flow - Sankey Diagram", font_size=10)
-        st.plotly_chart(fig)
-    else:
-        st.error("No Data to analyse")
+            # Convert Date to string for displaying as a column
+            monthly_summary = monthly_summary.reset_index()
+            monthly_summary['Date'] = monthly_summary['Date'].astype(str)
+
+            # Display the last 6 months' summary with caption
+            st.markdown("### Summary of Last 6 Months")
+            st.dataframe(monthly_summary.style.format({"Total": "{:.2f}", "Income": "{:.2f}", "Spent": "{:.2f}"}))
+
+        else:
+            st.error("No Data to analyse")
+
 
 def adjust_for_inflation(value, years, inflation_rate):
     return value / ((1 + inflation_rate) ** years)
@@ -499,11 +805,45 @@ def Aktienkurse_app():
         period_option = st.selectbox("Select Period:", options=['5y', '3y', '1y', '6mo'], index=0)
 
     if aktien_ticker_a and aktien_ticker_b:
-        # Show the stock price chart and comparison
-        plot_stock_data(aktien_ticker_a, aktien_ticker_b, period=period_option)
-        
-        # Display the fundamental data comparison
+        # Prepare a DataFrame for each stock with 'Ticker' and 'Amount' columns
+        df_a = pd.DataFrame({'Ticker': [aktien_ticker_a], 'Amount': [1]})
+        df_b = pd.DataFrame({'Ticker': [aktien_ticker_b], 'Amount': [1]})
+
+        # Fetch the historical data for both stocks using the existing function
+        portfolio_history_a = get_combined_historical_data(df_a, period=period_option)
+        portfolio_history_b = get_combined_historical_data(df_b, period=period_option)
+
+        # Normalize the starting prices to the same value for comparison (e.g., 100)
+        portfolio_history_a = (portfolio_history_a / portfolio_history_a.iloc[0]) * 100
+        portfolio_history_b = (portfolio_history_b / portfolio_history_b.iloc[0]) * 100
+
+        # Combine the data into a single DataFrame for plotting
+        combined_portfolio_history = pd.DataFrame({
+            'Date': portfolio_history_a.index,
+            aktien_ticker_a: portfolio_history_a.values,
+            aktien_ticker_b: portfolio_history_b.values
+        }).set_index('Date')
+
+        # Plot the combined historical data using Plotly
+        fig = px.line(combined_portfolio_history, x=combined_portfolio_history.index, y=[aktien_ticker_a, aktien_ticker_b])
+        fig.update_traces(overwrite=True, marker=dict(size=10))
+
+        # Update traces to set the color, assuming the first trace is for Stock A and the second is for Stock B
+        fig.update_traces(overwrite=True, selector=dict(name=aktien_ticker_a), line=dict(color='blue'))
+        fig.update_traces(overwrite=True, selector=dict(name=aktien_ticker_b), line=dict(color='orange'))
+
+        fig.update_layout(
+            title='Stock Performance Comparison Over Time',
+            xaxis_title='Date',
+            yaxis_title='Performance Index',
+            template='plotly_dark',
+            legend_title_text='Ticker'
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+        # Display the comparison table using the existing function
         display_comparison_table(aktien_ticker_a, aktien_ticker_b)
+
 
 
 def get_combined_historical_data(stock_df, period="1y"):
@@ -562,3 +902,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
