@@ -498,15 +498,15 @@ def account_overview(df, stock_df):
         # Display the table using markdown
         st.markdown(html_table, unsafe_allow_html=True)
 
-        # Expander to show last ten expense bookings
+        with st.expander("View Last 10 Income Bookings"):
+            last_10_incomes = df_sorted[df_sorted['Amount'] > 0].head(10)
+            st.markdown(last_10_incomes.to_html(classes='financial-table'), unsafe_allow_html=True)
+        
         with st.expander("View Last 10 Expense Bookings"):
             last_10_expenses = df_sorted[df_sorted['Amount'] < 0].head(10)
             st.markdown(last_10_expenses.to_html(classes='financial-table'), unsafe_allow_html=True)
 
-        # Expander to show last ten income bookings
-        with st.expander("View Last 10 Income Bookings"):
-            last_10_incomes = df_sorted[df_sorted['Amount'] > 0].head(10)
-            st.markdown(last_10_incomes.to_html(classes='financial-table'), unsafe_allow_html=True)
+      
 
 
     # Plot der Gesamtperformance am Ende der Account Overview
