@@ -489,8 +489,8 @@ def account_overview(df, stock_df):
         html_table = f"""
         <table class='financial-table'>
             <tr><th>Category</th><th>Amount (€)</th></tr>
-            <tr><td>Expenses</td><td>{current_month_expenses}</td></tr>
             <tr><td>Income</td><td>{current_month_income}</td></tr>
+            <tr><td>Expenses</td><td>{current_month_expenses}</td></tr>
             <tr class='highlight-row'><td>Total Account Balance</td><td>{account_balance}</td></tr>
         </table>
         """
