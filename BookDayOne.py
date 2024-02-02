@@ -387,6 +387,15 @@ def recommendation_page():
         except Exception as e:
             st.error(f"An error occurred while processing the data: {str(e)}")
 
+        invest_choice = st.radio(
+        "How would you like to proceed with your investment?",
+        ('Invest on my own', 'Consult a professional investor'))
+
+        if invest_choice == 'Invest on my own':
+        self_investing_advice()
+        elif invest_choice == 'Consult a professional investor':
+        professional_consultation()
+
 def display_total_portfolio_value(stock_df):
     # Ensure numeric types and calculate the total value
     stock_df['Amount'] = pd.to_numeric(stock_df['Amount'], errors='coerce')
@@ -397,6 +406,28 @@ def display_total_portfolio_value(stock_df):
 
     # Display the Total Portfolio Value with the 'total-row' class for dark blue background
     st.markdown(f"<div class='total-row' style='padding: 10px;'><strong>Total Portfolio Value: {formatted_total_portfolio_value}</strong></div>", unsafe_allow_html=True)
+
+def self_investing_advice():
+    st.subheader("Self-Investing Advice")
+    st.write("""
+        Investing in a mix of ETFs can be a great way to diversify your portfolio. Consider ETFs that cover a wide range of markets, such as:
+        - A global ETF (e.g., Vanguard Total World Stock ETF)
+        - Developed markets ETF (e.g., iShares MSCI EAFE ETF)
+        - A bond ETF for stability (e.g., Vanguard Total Bond Market ETF)
+    """)
+    # You can also add more interactive elements or detailed advice here.
+
+def professional_consultation():
+    st.subheader("Consult a Professional Investor")
+    st.write("Book an appointment with a professional investor to get tailored investment advice.")
+
+    # Implementing the chat box for appointment booking
+    with st.container():
+        st.write("Chat with us to book your appointment:")
+        chat_input = st.chat_input("Enter your message")
+        if chat_input:
+            # Process the chat input or send an automated response
+            st.write("Thanks for your message! We'll get back to you soon to schedule your appointment.")
 
 
 # Function to plot the historical data with Plotly
@@ -872,7 +903,7 @@ def plot_portfolio_performance(total_portfolio_history):
     st.pyplot(plt)
 
 def main():
-    st.sidebar.title("Navigation")
+    st.sidebar.title("Menu")
 
     # Define the navigation options
     navigation_options = ["Account Overview", "Analysis", "Recommendation", "Browse"]
