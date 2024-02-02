@@ -872,7 +872,7 @@ def plot_portfolio_performance(total_portfolio_history):
     st.pyplot(plt)
 
 def main():
-    st.sidebar.title("Navigation")
+    st.sidebar.title("Menu")
 
     # Define the navigation options
     navigation_options = ["Account Overview", "Analysis", "Recommendation", "Browse"]
