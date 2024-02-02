@@ -908,6 +908,9 @@ def plot_portfolio_performance(total_portfolio_history):
     st.pyplot(plt)
 
 def main():
+    if 'planning_started' not in st.session_state:
+        st.session_state['planning_started'] = False
+        
     st.sidebar.title("Menu")
 
     # Define the navigation options
@@ -925,9 +928,6 @@ def main():
 
     df = st.session_state.dataframe
     stock_df = st.session_state.stock_df
-    
-    if 'planning_started' not in st.session_state:
-        st.session_state['planning_started'] = False
     
     # Call the corresponding function based on the selected page
     if page_selection == "Account Overview":
