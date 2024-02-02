@@ -396,16 +396,6 @@ def recommendation_page():
         if st.button("Get Expertise from a Professional"):
                 # And here, actions for the second button
                 st.write("You chose to get expertise from a professional.")
-        chart_html = plot_monte_carlo_simulation(simulation_results, years_to_invest)
-        
-        # Use the Streamlit components to render the HTML
-        st.components.v1.html(chart_html, width=700, height=400)
-
-        # Description for the median
-        st.markdown("""
-        ### Understanding the Median in Monte Carlo Simulations
-        The median line represents the middle value of all simulated outcomes at each year. It's a useful indicator of the most likely scenario, separating the higher half from the lower half of all simulations. In the context of investment projections, it provides a realistic estimate of portfolio growth over time, balancing optimistic and pessimistic scenarios.
-        """)
 
 def display_total_portfolio_value(stock_df):
     # Ensure numeric types and calculate the total value
