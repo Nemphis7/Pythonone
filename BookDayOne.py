@@ -8,6 +8,7 @@ from datetime import date
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
+import plotly.io as pio
 
 INFLATION_RATE = 0.02
 
@@ -112,35 +113,33 @@ def plot_portfolio_history_plotly(portfolio_history):
 
     st.plotly_chart(fig, use_container_width=True)
         
-def monte_carlo_simulation(start_balance, monthly_savings, stock_percentage, years_to_invest, inflation_rate, simulations=1000):
-    avg_return_stock = 0.07  # Average annual return rate for stocks
-    avg_return_bond = 0.03  # Average annual return rate for bonds
-    std_dev_stock = 0.18  # Standard deviation for stock returns
-    std_dev_bond = 0.06  # Standard deviation for bond returns
+def plot_monte_carlo_simulation(simulation_results, years_to_invest):
+    traces = []
+    for simulation in simulation_results:
+        traces.append(go.Scatter(
+            x=list(range(1, years_to_invest + 1)), 
+            y=simulation, 
+            mode='lines', 
+            line=dict(width=0.5, color='blue'), 
+            showlegend=False))
 
-    # Preparing a 2D array to store simulation results
-    all_results = np.zeros((simulations, years_to_invest))
+    median_projection = np.median(simulation_results, axis=0)
+    traces.append(go.Scatter(
+        x=list(range(1, years_to_invest + 1)), 
+        y=median_projection, 
+        mode='lines', 
+        line=dict(color='red', width=2), 
+        name='Median Projection'))
 
-    for i in range(simulations):
-        balance = start_balance
-        for year in range(years_to_invest):
-            # Generating random returns for stocks and bonds
-            annual_stock_return = np.random.normal(avg_return_stock, std_dev_stock)
-            annual_bond_return = np.random.normal(avg_return_bond, std_dev_bond)
+    layout = go.Layout(
+        title="Monte Carlo Simulation of Investment Over Time",
+        xaxis=dict(title='Years'),
+        yaxis=dict(title='Portfolio Value'),
+        showlegend=True
+    )
 
-            # Calculating weighted return based on stock and bond distribution
-            weighted_return = (stock_percentage * annual_stock_return + (100 - stock_percentage) * annual_bond_return) / 100
-
-            # Updating the balance with return and monthly savings
-            balance = balance * (1 + weighted_return) + monthly_savings * 12
-
-            # Adjusting for inflation
-            balance = adjust_for_inflation(balance, 1, inflation_rate)
-
-            # Storing the year-end balance in the results array
-            all_results[i, year] = balance
-
-    return all_results
+    fig = go.Figure(data=traces, layout=layout)
+    return pio.to_html(fig, full_html=False)
 
 
 def get_fundamental_data(ticker):
@@ -397,6 +396,16 @@ def recommendation_page():
         if st.button("Get Expertise from a Professional"):
                 # And here, actions for the second button
                 st.write("You chose to get expertise from a professional.")
+        chart_html = plot_monte_carlo_simulation(simulation_results, years_to_invest)
+        
+        # Use the Streamlit components to render the HTML
+        st.components.v1.html(chart_html, width=700, height=400)
+
+        # Description for the median
+        st.markdown("""
+        ### Understanding the Median in Monte Carlo Simulations
+        The median line represents the middle value of all simulated outcomes at each year. It's a useful indicator of the most likely scenario, separating the higher half from the lower half of all simulations. In the context of investment projections, it provides a realistic estimate of portfolio growth over time, balancing optimistic and pessimistic scenarios.
+        """)
 
 def display_total_portfolio_value(stock_df):
     # Ensure numeric types and calculate the total value
