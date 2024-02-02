@@ -392,9 +392,9 @@ def recommendation_page():
         ('Invest on my own', 'Consult a professional investor'))
 
         if invest_choice == 'Invest on my own':
-        self_investing_advice()
+            self_investing_advice()
         elif invest_choice == 'Consult a professional investor':
-        professional_consultation()
+            professional_consultation()
 
 def display_total_portfolio_value(stock_df):
     # Ensure numeric types and calculate the total value
