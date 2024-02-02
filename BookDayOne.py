@@ -351,9 +351,14 @@ def recommendation_page():
     monthly_savings = st.number_input("Monthly Savings", min_value=0.0, step=1.0)
     inflation_rate = st.number_input("Expected Annual Inflation Rate", min_value=0.0, max_value=10.0, step=0.1, value=2.0) / 100
 
-    if st.button("Calculate Investment Projection"):
-        years_to_invest = retirement_age - current_age
-
+    if 'planning_started' in st.session_state and st.session_state['planning_started']:
+        invest_choice = st.radio(
+            "How would you like to proceed with your investment?",
+            ('Invest on my own', 'Consult a professional investor'))
+        if invest_choice == 'Invest on my own':
+            self_investing_advice()
+        elif invest_choice == 'Consult a professional investor':
+            professional_consultation()
         # Calculate cumulative savings without investment
         cumulative_savings = calculate_cumulative_savings(monthly_savings, years_to_invest)
 
@@ -920,7 +925,10 @@ def main():
 
     df = st.session_state.dataframe
     stock_df = st.session_state.stock_df
-
+    
+    if 'planning_started' not in st.session_state:
+        st.session_state['planning_started'] = False
+    
     # Call the corresponding function based on the selected page
     if page_selection == "Account Overview":
         account_overview(df, stock_df)
