@@ -113,34 +113,35 @@ def plot_portfolio_history_plotly(portfolio_history):
 
     st.plotly_chart(fig, use_container_width=True)
         
-def plot_monte_carlo_simulation(simulation_results, years_to_invest):
-    traces = []
-    for simulation in simulation_results:
-        traces.append(go.Scatter(
-            x=list(range(1, years_to_invest + 1)), 
-            y=simulation, 
-            mode='lines', 
-            line=dict(width=0.5, color='blue'), 
-            showlegend=False))
+def monte_carlo_simulation(start_balance, monthly_savings, stock_percentage, years_to_invest, inflation_rate, simulations=1000):
+    avg_return_stock = 0.07  # Average annual return rate for stocks
+    avg_return_bond = 0.03  # Average annual return rate for bonds
+    std_dev_stock = 0.18  # Standard deviation for stock returns
+    std_dev_bond = 0.06  # Standard deviation for bond returns
 
-    median_projection = np.median(simulation_results, axis=0)
-    traces.append(go.Scatter(
-        x=list(range(1, years_to_invest + 1)), 
-        y=median_projection, 
-        mode='lines', 
-        line=dict(color='red', width=2), 
-        name='Median Projection'))
+    # Preparing a 2D array to store simulation results
+    all_results = np.zeros((simulations, years_to_invest))
 
-    layout = go.Layout(
-        title="Monte Carlo Simulation of Investment Over Time",
-        xaxis=dict(title='Years'),
-        yaxis=dict(title='Portfolio Value'),
-        showlegend=True
-    )
+    for i in range(simulations):
+        balance = start_balance
+        for year in range(years_to_invest):
+            # Generating random returns for stocks and bonds
+            annual_stock_return = np.random.normal(avg_return_stock, std_dev_stock)
+            annual_bond_return = np.random.normal(avg_return_bond, std_dev_bond)
 
-    fig = go.Figure(data=traces, layout=layout)
-    return pio.to_html(fig, full_html=False)
+            # Calculating weighted return based on stock and bond distribution
+            weighted_return = (stock_percentage * annual_stock_return + (100 - stock_percentage) * annual_bond_return) / 100
 
+            # Updating the balance with return and monthly savings
+            balance = balance * (1 + weighted_return) + monthly_savings * 12
+
+            # Adjusting for inflation
+            balance = adjust_for_inflation(balance, 1, inflation_rate)
+
+            # Storing the year-end balance in the results array
+            all_results[i, year] = balance
+
+    return all_results
 
 def get_fundamental_data(ticker):
     stock = yf.Ticker(ticker)
