@@ -385,16 +385,17 @@ def recommendation_page():
             plt.legend()
             st.pyplot(plt)
 
-         # New buttons added after the graph plotting section
-            if st.button("I want to do my Financial Planning alone"):
+        except Exception as e:
+            st.error(f"An error occurred while processing the data: {str(e)}")
+        # New buttons added after the graph plotting section
+    
+        if st.button("I want to do my Financial Planning alone"):
                 # You can add actions here that happen when the button is clicked
                 st.write("You chose to do your Financial Planning alone.")
 
-            if st.button("Get Expertise from a Professional"):
+        if st.button("Get Expertise from a Professional"):
                 # And here, actions for the second button
                 st.write("You chose to get expertise from a professional.")
-        except Exception as e:
-            st.error(f"An error occurred while processing the data: {str(e)}")
 
 def display_total_portfolio_value(stock_df):
     # Ensure numeric types and calculate the total value
