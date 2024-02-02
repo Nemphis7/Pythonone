@@ -480,8 +480,9 @@ def account_overview(df, stock_df):
         current_month_expenses = current_month_data[current_month_data['Amount'] < 0]['Amount'].sum()
         current_month_income = current_month_data[current_month_data['Amount'] > 0]['Amount'].sum()
 
-        total_expenses = current_month_data[current_month_data['Amount'] < 0]['Amount'].sum()
         total_income = current_month_data[current_month_data['Amount'] > 0]['Amount'].sum()
+        total_expenses = current_month_data[current_month_data['Amount'] < 0]['Amount'].sum()
+
         account_balance = total_income + total_expenses
 
         # Creating an HTML table with styling for the financial summary
