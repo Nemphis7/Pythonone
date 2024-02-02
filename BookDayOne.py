@@ -366,28 +366,7 @@ def recommendation_page():
         plt.legend()
         st.pyplot(plt)
 
-        try:
-            median_projection = np.median(simulation_results, axis=0)
-            lower_bound = np.percentile(simulation_results, 5, axis=0)
-            upper_bound = np.percentile(simulation_results, 95, axis=0)
-
-            # Plotting simulations, median projection, and cumulative savings
-            plt.figure(figsize=(10, 6))
-            for simulation in simulation_results:
-                plt.plot(range(1, years_to_invest + 1), simulation, linewidth=0.5, alpha=0.3, color='lightgray')
-            plt.plot(range(1, years_to_invest + 1), median_projection, label='Median Projection', color='blue')
-            plt.plot(range(1, years_to_invest + 1), cumulative_savings, label='Cumulative Savings Without Investment', color='green', linestyle='--')
-            plt.fill_between(range(1, years_to_invest + 1), lower_bound, upper_bound, color='gray', alpha=0.5)
-
-            plt.title("Investment Projection Over Time")
-            plt.xlabel("Years")
-            plt.ylabel("Portfolio Value")
-            plt.legend()
-            st.pyplot(plt)
-
-        except Exception as e:
-            st.error(f"An error occurred while processing the data: {str(e)}")
-        # New buttons added after the graph plotting section
+       
     
         if st.button("I want to do my Financial Planning alone"):
                 # You can add actions here that happen when the button is clicked
