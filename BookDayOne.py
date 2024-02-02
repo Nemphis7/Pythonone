@@ -341,63 +341,6 @@ def display_comparison_table(ticker_a, ticker_b):
     # Display the custom styled HTML table with Streamlit markdown
     st.markdown(custom_table_style + html_comparison_table, unsafe_allow_html=True)
 
-
-def recommendation_page():
-    st.title("Investment Recommendation")
-
-    # User Inputs
-    current_age = st.number_input("Your Current Age", min_value=18, max_value=100, step=1)
-    retirement_age = st.number_input("Your Retirement Age", min_value=current_age + 1, max_value=100, step=1)
-    monthly_savings = st.number_input("Monthly Savings", min_value=0.0, step=1.0)
-    inflation_rate = st.number_input("Expected Annual Inflation Rate", min_value=0.0, max_value=10.0, step=0.1, value=2.0) / 100
-
-    if st.button("Calculate Investment Projection"):
-        years_to_invest = retirement_age - current_age
-
-        # Calculate cumulative savings without investment
-        cumulative_savings = calculate_cumulative_savings(monthly_savings, years_to_invest)
-
-        # Plotting only cumulative savings
-        plt.figure(figsize=(10, 6))
-        plt.plot(range(1, years_to_invest + 1), cumulative_savings, label='Cumulative Savings Without Investment', color='green', linestyle='--')
-        plt.title("Cumulative Savings Over Time")
-        plt.xlabel("Years")
-        plt.ylabel("Total Savings")
-        plt.legend()
-        st.pyplot(plt)
-        
-        try:
-            median_projection = np.median(simulation_results, axis=0)
-            lower_bound = np.percentile(simulation_results, 5, axis=0)
-            upper_bound = np.percentile(simulation_results, 95, axis=0)
-
-            # Plotting simulations, median projection, and cumulative savings
-            plt.figure(figsize=(10, 6))
-            for simulation in simulation_results:
-                plt.plot(range(1, years_to_invest + 1), simulation, linewidth=0.5, alpha=0.3, color='lightgray')
-            plt.plot(range(1, years_to_invest + 1), median_projection, label='Median Projection', color='blue')
-            plt.plot(range(1, years_to_invest + 1), cumulative_savings, label='Cumulative Savings Without Investment', color='green', linestyle='--')
-            plt.fill_between(range(1, years_to_invest + 1), lower_bound, upper_bound, color='gray', alpha=0.5)
-
-            plt.title("Investment Projection Over Time")
-            plt.xlabel("Years")
-            plt.ylabel("Portfolio Value")
-            plt.legend()
-            st.pyplot(plt)
-
-        except Exception as e:
-            st.error(f"An error occurred while processing the data: {str(e)}")
-        # New buttons added after the graph plotting section
-       
-    
-        if st.button("I want to do my Financial Planning alone"):
-                # You can add actions here that happen when the button is clicked
-                st.write("You chose to do your Financial Planning alone.")
-
-        if st.button("Get Expertise from a Professional"):
-                # And here, actions for the second button
-                st.write("You chose to get expertise from a professional.")
-
 def display_total_portfolio_value(stock_df):
     # Ensure numeric types and calculate the total value
     stock_df['Amount'] = pd.to_numeric(stock_df['Amount'], errors='coerce')
