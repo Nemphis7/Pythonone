@@ -874,21 +874,21 @@ def broker_overview_comparison():
 
     # Brokers information with added logo URLs for visualization
     brokers_info = {
-        "Broker A": {
-            "description": "Known for its user-friendly platform and zero commission fees.",
-            "fees": "Zero commission on trades",
-            "platform": "User-friendly, mobile and desktop",
-            "website": "https://www.brokera.com",
-            "logo": "https://path.to/brokerA_logo.png"  # Placeholder URL for Broker A's logo
+        "Trade Republik": {
+            "description": "Trade Republic is a mobile-only broker that offers a simple, streamlined trading experience. It's known for its ease of use and low fees, making it a popular choice for new and casual investors.",
+            "fees": "Offers commission-free trades, with only a €1 external fee for settlement of orders. No account management fees.",
+            "platform": "Mobile app available on both iOS and Android, focused on simplicity and ease of use. Does not offer a desktop trading platform.",
+            "website": "hhttps://app.traderepublic.com/login",
+            "logo": "https://www.bing.com/ck/a?!&&p=6943097bd099d531JmltdHM9MTcwNjkxODQwMCZpZ3VpZD0zZDFiYmU4Yi1jNjRhLTYwMjgtMTM1OC1iMGEyYzI0YTYzYzAmaW5zaWQ9NTcwNQ&ptn=3&ver=2&hsh=3&fclid=3d1bbe8b-c64a-6028-1358-b0a2c24a63c0&u=a1L2ltYWdlcy9zZWFyY2g_cT1sb2dvIFRyYWRlIHJlcHVibGlrJkZPUk09SVFGUkJBJmlkPUQ1ODZFODhBRUYzOTQxNDZBMDFDQUIxOEJCNjkwRDYzOEZFNDk1RUI&ntb=1"  # Placeholder URL for Broker A's logo
         },
-        "Broker B": {
+        "Degiro": {
             "description": "Offers a wide range of investment options and advanced trading tools.",
             "fees": "Low commission on trades",
             "platform": "Advanced tools for experienced traders",
             "website": "https://www.brokerb.com",
             "logo": "https://path.to/brokerB_logo.png"  # Placeholder URL for Broker B's logo
         },
-        "Broker C": {
+        "ING": {
             "description": "Ideal for long-term investors with robust research tools.",
             "fees": "No commission on ETFs and mutual funds",
             "platform": "Strong research tools and educational resources",
