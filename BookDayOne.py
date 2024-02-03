@@ -100,7 +100,7 @@ def upload_excel_sheet(title, key):
     
 def load_data():
     if 'uploaded_transaction_data' in st.session_state and st.session_state.uploaded_transaction_data is not None:
-        return st.session_state.uploaded_transaction_data
+        return st.session_state.get('uploaded_transaction_data', pd.read_excel('https://raw.githubusercontent.com/Nemphis7/Pythonone/main/Mappe1.xlsx', names=['Date', 'Name', 'Amount', 'Category']))
     else:
         try:
             url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/Mappe1.xlsx'
@@ -112,7 +112,7 @@ def load_data():
 
 def load_stock_portfolio():
     if 'uploaded_portfolio_data' in st.session_state and st.session_state.uploaded_portfolio_data is not None:
-        return st.session_state.uploaded_portfolio_data
+        return st.session_state.get('uploaded_portfolio_data', pd.read_excel('https://raw.githubusercontent.com/Nemphis7/Pythonone/main/StockPortfolio.xlsx', names=['Ticker', 'Amount']))
     else:
         try:
             url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/StockPortfolio.xlsx'
@@ -155,6 +155,7 @@ def process_data(df):
         return None
 
 def plot_portfolio_performance(total_portfolio_history):
+    stock_df = load_stock_portfolio()
     if total_portfolio_history.empty:
         st.error("No data available to plot portfolio performance.")
         return
@@ -186,6 +187,7 @@ def plot_portfolio_history(stock_df):
     st.pyplot(plt)
 
 def plot_financials(financial_df):
+    df = load_data()
     plt.figure(figsize=(10, 6))
     financial_df['AdjustedAmount'] = financial_df.apply(lambda x: -x['Amount'] if x['Category'] == 'Expense' else x['Amount'], axis=1)
     for category in financial_df['Category'].unique():
@@ -353,14 +355,19 @@ def plot_portfolio_history_plotly(portfolio_history):
 
 
 def account_overview():
+    # Upload functionality
     uploaded_portfolio_data = upload_excel_sheet("Upload Portfolio Excel Sheet", "portfolio")
     uploaded_transaction_data = upload_excel_sheet("Upload Transactions Excel Sheet", "transactions")
 
+    # Update session state
     if uploaded_portfolio_data is not None:
         st.session_state.uploaded_portfolio_data = uploaded_portfolio_data
-
     if uploaded_transaction_data is not None:
         st.session_state.uploaded_transaction_data = uploaded_transaction_data
+
+    # Call visualization functions to refresh data
+    plot_portfolio_performance()
+    plot_financial_overview()
 
     st.title("Financial Data Analysis")
     
@@ -1030,11 +1037,11 @@ def main():
 
     st.title("YouFinance")
 
-    if 'dataframe' not in st.session_state:
-        st.session_state.dataframe = load_data()
-    if 'stock_df' not in st.session_state:
-        st.session_state.stock_df = load_stock_portfolio()
-
+    if 'uploaded_transaction_data' not in st.session_state:
+        st.session_state.uploaded_transaction_data = None
+    if 'uploaded_portfolio_data' not in st.session_state:
+        st.session_state.uploaded_portfolio_data = None
+        
     df = st.session_state.dataframe
     stock_df = st.session_state.stock_df
 
