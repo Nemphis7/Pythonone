@@ -522,6 +522,7 @@ def analyse(df):
             value.append(net_savings)
             label.append('Savings')
 
+            # Create the Sankey diagram figure
             fig = go.Figure(data=[go.Sankey(
                 node=dict(
                     pad=15,
@@ -529,15 +530,20 @@ def analyse(df):
                     line=dict(color="black", width=0.5),
                     label=label,
                     color=["#4CAF50", "#F44336", "#2196F3", "#FFC107", "#9C27B0", "#00BCD4", "#E91E63"],
+                    font=dict(
+                        size=16,  # Increased font size
+                        color='black'  # Set font color to black for visibility
+                    ),
                 ),
                 link=dict(
                     source=source,
                     target=target,
                     value=value,
-                    color="rgba(76, 175, 80, 0.5)"
+                    color=["rgba(76, 175, 80, 0.5)", "rgba(244, 67, 54, 0.5)", "rgba(33, 150, 243, 0.5)", "rgba(255, 193, 7, 0.5)"],
                 )
             )])
 
+            # Update the layout to modernize the look
             fig.update_layout(
                 title_text="Financial Overview: Income, Expenses, and Savings Flows",
                 font=dict(size=12, color='black'),
@@ -546,9 +552,12 @@ def analyse(df):
                 width=1000,
                 height=600
             )
+
+            # Display the Sankey diagram
             st.plotly_chart(fig, use_container_width=True)
         else:
             st.error("No data available to generate Sankey Diagram")
+
         
 
 def adjust_for_inflation(value, years, inflation_rate):
