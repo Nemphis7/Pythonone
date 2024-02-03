@@ -375,7 +375,7 @@ def account_overview():
 
     # Call visualization functions with the necessary data
     plot_portfolio_performance(total_portfolio_history)
-    plot_financial_overview(financial_df)
+    plot_financials(financial_df)
 
     st.title("Financial Data Analysis")
     
