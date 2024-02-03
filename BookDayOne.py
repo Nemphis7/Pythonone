@@ -670,7 +670,7 @@ def display_comparison_table(ticker_a, ticker_b):
 
 def Aktienkurse_app():
     st.title("Stock Price Comparison")
-    col1, col2, col3 = st.columns(3)
+    
 
      # Explanation box
     st.markdown("""
@@ -681,6 +681,8 @@ def Aktienkurse_app():
         3. **Review Stock Performance Graph**: Observe the comparative index values on the graph, where the performance of each stock is normalized for an apples-to-apples comparison over the chosen time frame.
         4. **Analyze Financial Metrics**: Below the graph, a table presents critical financial ratios like P/E Ratio (price-to-earnings), Market Cap (market capitalization), Dividend Yield, ROE (Return on Equity), D/E Ratio (Debt-to-Equity), and P/B Ratio (price-to-book).
     """, unsafe_allow_html=True)
+
+    col1, col2, col3 = st.columns(3)
 
     with col1:
         aktien_ticker_a = st.text_input("Insert Stock Ticker for Stock A:", "")
