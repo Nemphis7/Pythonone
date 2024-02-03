@@ -187,7 +187,6 @@ def plot_portfolio_history(stock_df):
     st.pyplot(plt)
 
 def plot_financials(financial_df):
-    if df is not None and not df.empty:
     df = load_data()
     plt.figure(figsize=(10, 6))
     financial_df['AdjustedAmount'] = financial_df.apply(lambda x: -x['Amount'] if x['Category'] == 'Expense' else x['Amount'], axis=1)
