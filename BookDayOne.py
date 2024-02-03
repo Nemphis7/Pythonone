@@ -467,7 +467,7 @@ def analyse(df):
                 # Display the last 6 months summary excluding the current month
                 st.markdown("### Summary of Last 6 Months (Excluding Current Month)")
                 st.dataframe(monthly_summary.style.format({"Amount": "{:.2f}", "Income": "{:.2f}", "Spent": "{:.2f}"}))
-                st.markdown(f"**Average of Savings: {average_total:.2f}**")
+                st.markdown(f"<h3 style='color: blue;'>Average of Savings: {average_total:.2f}</h3>", unsafe_allow_html=True)
 
                 # Display the categories for the current month
                 st.markdown("### Categories for the Current Month")
