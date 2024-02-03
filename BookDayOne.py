@@ -24,6 +24,19 @@ def custom_format(value):
         value_str = value_str.replace(',', 'X').replace('.', ',').replace('X', '.')
         return value_str
 
+def plot_financial_overview(financial_df):
+    if financial_df is not None and not financial_df.empty:
+        plt.figure(figsize=(10, 6))
+        # Assuming 'Date' and 'Amount' are columns in financial_df
+        plt.plot(financial_df['Date'], financial_df['Amount'])
+        plt.title('Financial Overview')
+        plt.xlabel('Date')
+        plt.ylabel('Amount')
+        plt.grid(True)
+        st.pyplot(plt)
+    else:
+        st.error("No data available to plot financial overview.")
+
 def fetch_current_price(ticker):
     try:
         stock = yf.Ticker(ticker)
@@ -375,7 +388,7 @@ def account_overview():
 
     # Call visualization functions with the necessary data
     plot_portfolio_performance(total_portfolio_history)
-    plot_financials(financial_df)
+    plot_financial_overview(financial_df)
 
     st.title("Financial Data Analysis")
     
