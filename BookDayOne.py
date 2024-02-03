@@ -615,7 +615,7 @@ def recommendation_page():
             plt.figure(figsize=(10, 6))
             plt.fill_between(range(years_to_invest), lower_bound, upper_bound, color='gray', alpha=0.5)
             plt.plot(median_projection, label='Median Projection')
-             plt.title("Investment Projection Over Time")
+            plt.title("Investment Projection Over Time")
             plt.xlabel("Years")
             plt.ylabel("Portfolio Value")
             plt.legend()
