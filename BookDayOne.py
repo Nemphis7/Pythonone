@@ -597,21 +597,13 @@ def recommendation_page():
 
         # Plot each simulation
 
-        plt.figure(figsize=(10, 6))
-        for simulation in simulation_results:
-            plt.plot(range(years_to_invest), simulation, linewidth=0.5, alpha=0.3)
-        plt.title("Monte Carlo Simulation of Investment Over Time")
-        plt.xlabel("Years")
-        plt.ylabel("Portfolio Value")
-        st.pyplot(plt)
-
-        try:
+         try:
             # Calculate the median projection and bounds
             median_projection = np.median(simulation_results, axis=0)
             lower_bound = np.percentile(simulation_results, 5, axis=0)
             upper_bound = np.percentile(simulation_results, 95, axis=0)
 
-            # Plot median and confidence interval
+            # Plot median and confidence interval (second graph)
             plt.figure(figsize=(10, 6))
             plt.fill_between(range(years_to_invest), lower_bound, upper_bound, color='gray', alpha=0.5)
             plt.plot(median_projection, label='Median Projection')
@@ -620,6 +612,14 @@ def recommendation_page():
             plt.ylabel("Portfolio Value")
             plt.legend()
             st.pyplot(plt)
+
+            # Display results as text below the second graph
+            final_median_projection = median_projection[-1]
+            final_lower_bound = lower_bound[-1]
+            final_upper_bound = upper_bound[-1]
+            st.write(f"The median projected portfolio value at the end of the investment period is: ${final_median_projection:,.2f}")
+            st.write(f"The projected portfolio value range is from ${final_lower_bound:,.2f} to ${final_upper_bound:,.2f} (5th to 95th percentile)")
+
         except Exception as e:
             st.error(f"An error occurred while processing the data: {str(e)}")
 
