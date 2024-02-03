@@ -78,7 +78,7 @@ def recommendation_page():
             st.error(f"An error occurred while processing the data: {str(e)}")
 
    if st.button("I want to do my Financial Analysis"):
-        # Add the actions you want to take when the button is pressed
+        # Actions to take when the button is pressed
         pass
 
 
