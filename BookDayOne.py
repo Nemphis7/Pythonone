@@ -1036,8 +1036,9 @@ def main():
 
     st.title("YouFinance")
 
-    if 'dataframe' not in st.session_state or page_selection == "Account Overview":
+    if 'dataframe' not in st.session_state:
         st.session_state.dataframe = load_data()
+    if 'stock_df' not in st.session_state:
         st.session_state.stock_df = load_stock_portfolio()
 
     df = st.session_state.dataframe
