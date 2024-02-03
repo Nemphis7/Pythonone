@@ -355,7 +355,6 @@ def plot_portfolio_history_plotly(portfolio_history):
 
 
 def account_overview():
-    
     # Upload functionality
     uploaded_portfolio_data = upload_excel_sheet("Upload Portfolio Excel Sheet", "portfolio")
     uploaded_transaction_data = upload_excel_sheet("Upload Transactions Excel Sheet", "transactions")
@@ -370,19 +369,13 @@ def account_overview():
     stock_df = load_stock_portfolio()
     financial_df = load_data()  # Assuming this function returns the financial data DataFrame
 
-    # Choose a period for portfolio history (you can adjust this as needed)
+    # Choose a period for portfolio history
     period = "1y"  # For example, 1 year
     total_portfolio_history = get_combined_historical_data(stock_df, period)
 
     # Call visualization functions with the necessary data
     plot_portfolio_performance(total_portfolio_history)
     plot_financial_overview(financial_df)
-
-    # Choose a period for portfolio history (you can adjust this as needed)
-    period = "1y"  # For example, 1 year
-    total_portfolio_history = get_combined_historical_data(stock_df, period)
-
-
 
     st.title("Financial Data Analysis")
     
@@ -402,16 +395,13 @@ def account_overview():
     # Apply the style at the beginning so it affects all tables
     st.markdown(table_style, unsafe_allow_html=True)
 
-    if df is not None:
-        df_sorted = df.sort_values(by='Date', ascending=False)
-        current_month_data = df[df['Date'].dt.to_period('M') == current_month_period]
+    if financial_df is not None:
+        financial_df_sorted = financial_df.sort_values(by='Date', ascending=False)
+        current_month_data = financial_df[financial_df['Date'].dt.to_period('M') == current_month_period]
         current_month_expenses = current_month_data[current_month_data['Amount'] < 0]['Amount'].sum()
         current_month_income = current_month_data[current_month_data['Amount'] > 0]['Amount'].sum()
 
-        total_income = current_month_data[current_month_data['Amount'] > 0]['Amount'].sum()
-        total_expenses = current_month_data[current_month_data['Amount'] < 0]['Amount'].sum()
-
-        account_balance = total_income + total_expenses
+        account_balance = current_month_income + current_month_expenses
 
         # Creating an HTML table with styling for the financial summary
         html_table = f"""
@@ -427,17 +417,14 @@ def account_overview():
         st.markdown(html_table, unsafe_allow_html=True)
 
         with st.expander("View Last 10 Income Bookings"):
-            last_10_incomes = df_sorted[df_sorted['Amount'] > 0].head(10)
+            last_10_incomes = financial_df_sorted[financial_df_sorted['Amount'] > 0].head(10)
             st.markdown(last_10_incomes.to_html(classes='financial-table'), unsafe_allow_html=True)
         
         with st.expander("View Last 10 Expense Bookings"):
-            last_10_expenses = df_sorted[df_sorted['Amount'] < 0].head(10)
+            last_10_expenses = financial_df_sorted[financial_df_sorted['Amount'] < 0].head(10)
             st.markdown(last_10_expenses.to_html(classes='financial-table'), unsafe_allow_html=True)
 
-      
-
-
-    # Plot der Gesamtperformance am Ende der Account Overview
+    # Plot the overall portfolio performance at the end of the Account Overview
     if stock_df is not None:
         st.subheader("Stocks in Portfolio:")
 
