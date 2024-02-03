@@ -369,6 +369,10 @@ def account_overview():
     stock_df = load_stock_portfolio()
     financial_df = load_data()  # Assuming this function returns the financial data DataFrame
 
+    # Choose a period for portfolio history (you can adjust this as needed)
+    period = "1y"  # For example, 1 year
+    total_portfolio_history = get_combined_historical_data(stock_df, period)
+
     # Call visualization functions with the necessary data
     plot_portfolio_performance(total_portfolio_history)
     plot_financial_overview(financial_df)
