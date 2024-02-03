@@ -582,7 +582,7 @@ def recommendation_page():
         total_invested = monthly_savings * 12 * years_to_invest
         stock_percentage, _ = calculate_portfolio_distribution(current_age)
 
-      col1, col2 = st.columns(2)
+        col1, col2 = st.columns(2)
         with col1:
             if st.button("Do the Financial Planning Yourself"):
                 st.write("You chose to do the financial planning yourself.")
