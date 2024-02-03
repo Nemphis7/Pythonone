@@ -354,7 +354,7 @@ def plot_portfolio_history_plotly(portfolio_history):
     st.plotly_chart(fig, use_container_width=True)
 
 
-def account_overview(df, stock_df):
+def account_overview():
     
     # Upload functionality
     uploaded_portfolio_data = upload_excel_sheet("Upload Portfolio Excel Sheet", "portfolio")
