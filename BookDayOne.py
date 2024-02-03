@@ -474,7 +474,7 @@ def analyse(df):
                 monthly_summary_formatted = pd.concat([monthly_summary, total_row])
                 
                 # Display the last 6 months summary excluding the current month
-                st.markdown("### Summary of Last 6 Months (Excluding Current Month)")
+                st.markdown("### Summary of Last 6 Months")
                 st.dataframe(monthly_summary_formatted.style.format({"Amount": "{:.2f}", "Income": "{:.2f}", "Spent": "{:.2f}"}))
                 st.markdown(f"**Average of Savings: {average_total:.2f}**")
 
