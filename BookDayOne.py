@@ -911,7 +911,7 @@ def broker_overview_comparison():
                 "Offers an easy-to-use web-based platform and mobile app.",
                 "Provides access to a broad spectrum of investment products."
 
-                "JP Morgan": {
+        "JP Morgan": {
             "description": "JP Morgan offers a robust trading platform with a wide range of investment options, tailored for both novice and experienced investors looking for comprehensive financial services.",
             "fees": "Varies by account type and services used. Offers some commission-free options.",
             "platform": "Advanced web and mobile trading platforms with access to extensive research and tools.",
