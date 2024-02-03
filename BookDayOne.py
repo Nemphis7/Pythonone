@@ -626,7 +626,7 @@ def recommendation_page():
             final_median_projection = median_projection[-1]
             final_lower_bound = lower_bound[-1]
             final_upper_bound = upper_bound[-1]
-            st.write(f"Total amount invested over {years_to_invest} years (adjusted for inflation): €{total_invested:,.2f}")
+            st.write(f"Total amount invested over {years_to_invest} years (adjusted for inflation): € {total_invested:,.2f}")
             st.write(f"The median projected portfolio value at the end of the investment period (considering inflation) is: €{median_projection[-1]:,.2f}")
             st.write(f"The projected portfolio value range is from €{lower_bound[-1]:,.2f} to €{upper_bound[-1]:,.2f} (5th to 95th percentile)")
             col1, col2 = st.columns(2)
