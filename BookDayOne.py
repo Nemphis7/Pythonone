@@ -13,7 +13,8 @@ import plotly.io as pio
 import time
 
 INFLATION_RATE = 0.02
-
+uploaded_portfolio_data = None
+uploaded_transaction_data = None
 
 def custom_format(value):
     if pd.isna(value):
@@ -87,28 +88,34 @@ def get_fundamental_data(ticker):
 
 
 def load_data():
-    try:
-        url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/Mappe1.xlsx'
-        df = pd.read_excel(url, names=['Date', 'Name', 'Amount', 'Category'])
-        return df
-    except Exception as e:
-        st.error(f"Error reading financial data file: {e}")
-        return None
+    if uploaded_transaction_data is not None:
+        return uploaded_transaction_data
+    else:
+        try:
+            url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/Mappe1.xlsx'
+            df = pd.read_excel(url, names=['Date', 'Name', 'Amount', 'Category'])
+            return df
+        except Exception as e:
+            st.error(f"Error reading financial data file: {e}")
+            return None
 
 def load_stock_portfolio():
-    try:
-        url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/StockPortfolio.xlsx'
-        stock_df = pd.read_excel(url, names=['Ticker', 'Amount'])
-        stock_df['CurrentPrice'] = stock_df['Ticker'].apply(fetch_current_price)
-        stock_df.dropna(subset=['CurrentPrice'], inplace=True)
-        stock_df = stock_df[stock_df['CurrentPrice'] != 0]
-        stock_df['TotalValue'] = stock_df['Amount'] * stock_df['CurrentPrice']
-        stock_df['CurrentPrice'] = stock_df['CurrentPrice'].round(2).apply(custom_format)
-        stock_df['TotalValue'] = stock_df['TotalValue'].round(2).apply(custom_format)
-        return stock_df
-    except Exception as e:
-        st.error(f"Error processing stock portfolio file: {e}")
-        return None
+    if uploaded_portfolio_data is not None:
+        return uploaded_portfolio_data
+    else:
+        try:
+            url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/StockPortfolio.xlsx'
+            stock_df = pd.read_excel(url, names=['Ticker', 'Amount'])
+            stock_df['CurrentPrice'] = stock_df['Ticker'].apply(fetch_current_price)
+            stock_df.dropna(subset=['CurrentPrice'], inplace=True)
+            stock_df = stock_df[stock_df['CurrentPrice'] != 0]
+            stock_df['TotalValue'] = stock_df['Amount'] * stock_df['CurrentPrice']
+            stock_df['CurrentPrice'] = stock_df['CurrentPrice'].round(2).apply(custom_format)
+            stock_df['TotalValue'] = stock_df['TotalValue'].round(2).apply(custom_format)
+            return stock_df
+        except Exception as e:
+            st.error(f"Error processing stock portfolio file: {e}")
+            return None
 
 def get_combined_historical_data(stock_df, period="1y"):
     portfolio_history = pd.DataFrame()
@@ -335,6 +342,12 @@ def plot_portfolio_history_plotly(portfolio_history):
 
 def account_overview(df, stock_df):
     st.title("Financial Data Analysis")
+    
+    # Upload functionality
+    global uploaded_portfolio_data, uploaded_transaction_data
+    uploaded_portfolio_data = upload_excel_sheet("Upload Portfolio Excel Sheet", "portfolio")
+    uploaded_transaction_data = upload_excel_sheet("Upload Transactions Excel Sheet", "transactions")
+
     current_month = datetime.now().strftime('%Y-%m')
     current_month_period = pd.Period(current_month)
 
