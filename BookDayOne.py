@@ -601,12 +601,14 @@ def recommendation_page():
     inflation_rate = st.number_input("Expected Annual Inflation Rate", min_value=0.0, max_value=10.0, step=0.1, value=2.0) / 100
 
     if st.button("Calculate Investment Projection"):
+        
         years_to_invest = retirement_age - current_age
         total_invested = sum([monthly_savings * 12 / ((1 + inflation_rate) ** year) for year in range(1, years_to_invest + 1)])
-        stock_percentage, _ = calculate_portfolio_distribution(current_age)
+        
        
     try:
             # Calculate the median projection and bounds
+            stock_percentage, _ = calculate_portfolio_distribution(current_age)
             simulation_results = monte_carlo_simulation(0, monthly_savings, stock_percentage, years_to_invest, inflation_rate)
             median_projection = np.median(simulation_results, axis=0)
             lower_bound = np.percentile(simulation_results, 5, axis=0)
