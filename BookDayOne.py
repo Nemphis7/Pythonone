@@ -453,18 +453,16 @@ def analyse(df):
                 monthly_summary['Spent'] = df_past_six_months[df_past_six_months['Amount'] < 0].groupby(df_past_six_months['Date'].dt.strftime('%B %Y'))['Amount'].sum()
                 monthly_summary.fillna(0, inplace=True)
 
+                # Sort by the index, which is the date in string format
+                monthly_summary.sort_index(inplace=True)
+
                 # Calculate the average total for the last six months
                 average_total = monthly_summary['Amount'].mean()
 
-                # Convert date strings to datetime to sort by month correctly
-                monthly_summary['Date'] = pd.to_datetime(monthly_summary.index)
-                monthly_summary.sort_values('Date', inplace=True)
-                monthly_summary['Date'] = monthly_summary['Date'].dt.strftime('%B %Y')
-
                 # Add a row for the total
-                total_row = pd.DataFrame(monthly_summary[['Amount', 'Income', 'Spent']].sum()).transpose()
-                total_row['Date'] = 'Total'
-                monthly_summary = pd.concat([monthly_summary, total_row], ignore_index=True)
+                total_row = pd.DataFrame(monthly_summary.sum()).transpose()
+                total_row.index = ['Total']
+                monthly_summary = pd.concat([monthly_summary, total_row])
 
                 # Display the last 6 months summary excluding the current month
                 st.markdown("### Summary of Last 6 Months (Excluding Current Month)")
@@ -481,6 +479,7 @@ def analyse(df):
 
             else:
                 st.error("No data to analyse")
+
 
 
 def adjust_for_inflation(value, years, inflation_rate):
