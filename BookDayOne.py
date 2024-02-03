@@ -910,9 +910,64 @@ def broker_overview_comparison():
                 "Affordable pricing structure for trading across a wide range of markets.",
                 "Offers an easy-to-use web-based platform and mobile app.",
                 "Provides access to a broad spectrum of investment products."
+
+                "JP Morgan": {
+            "description": "JP Morgan offers a robust trading platform with a wide range of investment options, tailored for both novice and experienced investors looking for comprehensive financial services.",
+            "fees": "Varies by account type and services used. Offers some commission-free options.",
+            "platform": "Advanced web and mobile trading platforms with access to extensive research and tools.",
+            "website": "https://www.jpmorgan.com",
+            "key_features": [
+                "Access to global markets and a wide range of investment products.",
+                "Robust research and analysis tools.",
+                "Personalized financial advisory services."
+            ]
+        },
+        "Sparkasse": {
+            "description": "Sparkasse's brokerage arm provides a user-friendly trading experience, focusing on German and European markets with competitive fees for casual and intermediate investors.",
+            "fees": "Competitive trading fees, with special offers for savings plans on ETFs and stocks.",
+            "platform": "Web-based platform and mobile app offering easy access to trade executions and account management.",
+            "website": "https://www.sparkasse.de",
+            "key_features": [
+                "Easy access to European markets.",
+                "Offers a variety of savings and investment plans.",
+                "Reliable customer service with a strong local presence."
+            ]
+        },
+        "VR Bank": {
+            "description": "VR Bank provides comprehensive banking and brokerage services with a focus on cooperative values, offering personalized advice and a range of investment products for its members.",
+            "fees": "Fees depend on services and products chosen, often offering lower fees for members.",
+            "platform": "Combines online banking and brokerage services in a single platform, with mobile app support.",
+            "website": "https://www.vrbank.de",
+            "key_features": [
+                "Member-focused banking and investment services.",
+                "Access to a wide range of financial products, including sustainable investment options.",
+                "Personalized advisory services."
+            ]
+        },
+        "Deutsche Postbank": {
+            "description": "Part of the Deutsche Bank Group, Postbank offers online brokerage services with a focus on affordability and accessibility, catering to the needs of everyday investors.",
+            "fees": "Competitive pricing structure with low order fees and no custody account fees.",
+            "platform": "User-friendly web and mobile platforms, designed for straightforward trading and account management.",
+            "website": "https://www.postbank.de",
+            "key_features": [
+                "Affordable access to German and international markets.",
+                "Simple and transparent fee structure.",
+                "Integrates with Postbank's broader banking services."
+            ]
+        },
+        "eToro": {
+            "description": "eToro is renowned for its social trading platform, allowing investors to copy trades of successful peers, and offering a wide range of cryptocurrencies, stocks, and other financial instruments.",
+            "fees": "Zero-commission stock trading; other fees include spread fees for crypto and varying fees for other assets.",
+            "platform": "Innovative platform that emphasizes social trading aspects, alongside traditional investment options.",
+            "website": "https://www.etoro.com",
+            "key_features": [
+                "Unique social trading features.",
+                "Wide range of cryptocurrencies alongside traditional investment options.",
+                "User-friendly interface suitable for beginners and experienced traders alike."
             ]
         }
     }
+
 
     broker_selection = st.selectbox("Select a Broker to Learn More:", list(brokers_info.keys()))
     broker = brokers_info[broker_selection]
