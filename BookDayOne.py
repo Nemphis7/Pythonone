@@ -604,10 +604,10 @@ def recommendation_page():
         years_to_invest = retirement_age - current_age
         total_invested = sum([monthly_savings * 12 / ((1 + inflation_rate) ** year) for year in range(1, years_to_invest + 1)])
         stock_percentage, _ = calculate_portfolio_distribution(current_age)
-        simulation_results = monte_carlo_simulation(0, monthly_savings, stock_percentage, years_to_invest, inflation_rate)
-
+       
     try:
             # Calculate the median projection and bounds
+            simulation_results = monte_carlo_simulation(0, monthly_savings, stock_percentage, years_to_invest, inflation_rate)
             median_projection = np.median(simulation_results, axis=0)
             lower_bound = np.percentile(simulation_results, 5, axis=0)
             upper_bound = np.percentile(simulation_results, 95, axis=0)
