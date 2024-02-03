@@ -582,16 +582,7 @@ def recommendation_page():
         total_invested = monthly_savings * 12 * years_to_invest
         stock_percentage, _ = calculate_portfolio_distribution(current_age)
 
-        col1, col2 = st.columns(2)
-        with col1:
-            if st.button("Do the Financial Planning Yourself"):
-                st.write("You chose to do the financial planning yourself.")
-                # You can add additional actions here
-
-        with col2:
-            if st.button("Get Professional Advisory"):
-                st.write("You chose to get professional advisory.")
-
+    
         # Run Monte Carlo Simulation
         simulation_results = monte_carlo_simulation(0, monthly_savings, stock_percentage, years_to_invest, inflation_rate)
 
@@ -621,6 +612,17 @@ def recommendation_page():
             st.write(f"The median projected portfolio value at the end of the investment period is: ${final_median_projection:,.2f}")
             st.write(f"The projected portfolio value range is from ${final_lower_bound:,.2f} to ${final_upper_bound:,.2f} (5th to 95th percentile)")
 
+            col1, col2 = st.columns(2)
+        with col1:
+            if st.button("Do the Financial Planning Yourself"):
+                st.write("You chose to do the financial planning yourself.")
+                # You can add additional actions here
+
+        with col2:
+            if st.button("Get Professional Advisory"):
+                st.write("You chose to get professional advisory.")
+
+    
     except Exception as e:
             st.error(f"An error occurred while processing the data: {str(e)}")
 
