@@ -494,6 +494,12 @@ def analyse(df):
     # ... previous code ...
 
     if st.button("Generate Sankey Diagram"):
+        st.header("Sankey Diagram")
+        st.write("""
+            A Sankey diagram is a type of flow diagram, in which the width of the arrows is proportional to the flow rate. 
+            In financial analysis, it is used to depict the flow of income and shows how the initial income is allocated 
+            to different expenses and savings.
+        """)
         if not current_month_summary.empty:
             total_income = current_month_summary[current_month_summary['Amount'] > 0]['Amount'].sum()
             total_expenses = -current_month_summary[current_month_summary['Amount'] < 0]['Amount'].sum()
