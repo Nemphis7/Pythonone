@@ -596,7 +596,7 @@ def recommendation_page():
 
     # User Inputs
     current_age = st.number_input("Your Current Age", min_value=18, max_value=100, step=1)
-    retirement_age = st.number_input("Your Retirement Age", min_value=current_age + 1, max_value=100, step=1)
+    retirement_age = st.number_input("Your Retirement Age", min_value=current_age + 15, max_value=100, step=1)
     monthly_savings = st.number_input("Monthly Savings", min_value=0.0, step=1.0, value=default_monthly_savings)
     inflation_rate = st.number_input("Expected Annual Inflation Rate", min_value=0.0, max_value=10.0, step=0.1, value=2.0) / 100
 
