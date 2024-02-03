@@ -1017,13 +1017,21 @@ def broker_overview_comparison():
     st.write("**Key Features:**")
     for feature in broker['key_features']:
         st.markdown(f"- {feature}")
+        
+def resources_page():
+    st.title("Resources")
+    st.write("Download the initial Excel sheets as formatting examples.")
+
+    # Links to your GitHub raw content
+    portfolio_excel_url = "https://raw.githubusercontent.com/Nemphis7/Pythonone/main/StockPortfolio.xlsx"
+    transaction_excel_url = "https://raw.githubusercontent.com/Nemphis7/Pythonone/main/Mappe1.xlsx"
+
+    st.markdown(f"[Download Portfolio Excel Template]({portfolio_excel_url})", unsafe_allow_html=True)
+    st.markdown(f"[Download Transaction Excel Template]({transaction_excel_url})", unsafe_allow_html=True)
 
 def main():
     st.sidebar.title("Menu")
-
-    # Updated to include "Brokers" as a new navigation option
-    navigation_options = ["Account Overview", "Analysis", "Recommendation", "Browse", "Brokers"]
-
+    navigation_options = ["Account Overview", "Analysis", "Recommendation", "Browse", "Brokers", "Resources"]
     page_selection = st.sidebar.radio("Choose a page", navigation_options)
 
     st.title("YouFinance")
@@ -1043,8 +1051,10 @@ def main():
         recommendation_page()
     elif page_selection == "Browse":
         Aktienkurse_app()
-    elif page_selection == "Brokers":  # Corrected to match the navigation option
-        broker_overview_comparison()  # Correct function call
+    elif page_selection == "Brokers":
+        broker_overview_comparison()
+    elif page_selection == "Resources":
+        resources_page()
 
 if __name__ == "__main__":
     main()
