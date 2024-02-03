@@ -491,20 +491,21 @@ def analyse(df):
             else:
                 st.error("No data to analyse")
 
-    # This button should be at the same level of indentation as the "Start Analysis" button
+    # ... previous code ...
+
     if st.button("Generate Sankey Diagram"):
         if not current_month_summary.empty:
             # Compute the totals for income and expenses
             total_income = current_month_summary[current_month_summary['Amount'] > 0]['Amount'].sum()
             total_expenses = -current_month_summary[current_month_summary['Amount'] < 0]['Amount'].sum()
             net_savings = total_income - total_expenses
-
+    
             # Initialize lists for source, target, and values
             source = []
             target = []
             value = []
             label = ['Income']  # Initialize with Income label
-
+    
             # Add flows from Income to each expense category
             for i, row in current_month_summary.iterrows():
                 if row['Amount'] < 0:  # For expenses
@@ -512,13 +513,13 @@ def analyse(df):
                     target.append(len(label))  # Target is the next index for the new label
                     value.append(-row['Amount'])  # Expenses are negative, so make positive
                     label.append(row['Category'])
-
+    
             # Add the savings flow
             source.append(0)  # Income is the only source
             target.append(len(label))  # Target is the next index for the new label, which will be 'Savings'
             value.append(net_savings)
             label.append('Savings')
-
+    
             # Define the Sankey diagram with customized colors and layout
             fig = go.Figure(data=[go.Sankey(
                 node=dict(
@@ -534,16 +535,19 @@ def analyse(df):
                     value=value,
                     color=["rgba(76, 175, 80, 0.5)", "rgba(244, 67, 54, 0.5)"]  # Custom link colors
                 ))])
-
+    
             fig.update_layout(
                 title_text="Financial Overview: Income, Expenses, and Savings Flows",
-                font=dict(size=10, color='black'),
+                font=dict(size=12, color='black'),
                 paper_bgcolor='white',
-                plot_bgcolor='white'
+                plot_bgcolor='white',
+                width=1000,
+                height=600
             )
             st.plotly_chart(fig, use_container_width=True)
         else:
             st.error("No data available to generate Sankey Diagram")
+    
 
 def adjust_for_inflation(value, years, inflation_rate):
     return value / ((1 + inflation_rate) ** years)
