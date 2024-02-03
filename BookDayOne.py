@@ -672,6 +672,16 @@ def Aktienkurse_app():
     st.title("Stock Price Comparison")
     col1, col2, col3 = st.columns(3)
 
+     # Explanation box
+    st.markdown("""
+        ### How to use the Stock Price Comparison tool:
+        
+        1. **Enter Stock Tickers**: Type in the ticker symbols for the two companies you're interested in. For example, 'tsla' for Tesla, Inc., and 'msft' for Microsoft Corporation.
+        2. **Select Time Frame**: Choose the duration of the comparison, such as '5y' for a five-year period.
+        3. **Review Stock Performance Graph**: Observe the comparative index values on the graph, where the performance of each stock is normalized for an apples-to-apples comparison over the chosen time frame.
+        4. **Analyze Financial Metrics**: Below the graph, a table presents critical financial ratios like P/E Ratio (price-to-earnings), Market Cap (market capitalization), Dividend Yield, ROE (Return on Equity), D/E Ratio (Debt-to-Equity), and P/B Ratio (price-to-book).
+    """, unsafe_allow_html=True)
+
     with col1:
         aktien_ticker_a = st.text_input("Insert Stock Ticker for Stock A:", "")
     with col2:
