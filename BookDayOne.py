@@ -868,19 +868,50 @@ def plot_portfolio_performance(total_portfolio_history):
     plt.ylabel('Total Value')
     plt.legend()
     st.pyplot(plt)
+    
+def broker_options_page():
+    st.title("Broker Options")
+
+    brokers_info = {
+        "Broker A": {
+            "description": "Known for its user-friendly platform and zero commission fees.",
+            "fees": "Zero commission on trades",
+            "platform": "User-friendly, mobile and desktop",
+            "website": "https://www.brokera.com"
+        },
+        "Broker B": {
+            "description": "Offers a wide range of investment options and advanced trading tools.",
+            "fees": "Low commission on trades",
+            "platform": "Advanced tools for experienced traders",
+            "website": "https://www.brokerb.com"
+        },
+        "Broker C": {
+            "description": "Ideal for long-term investors with robust research tools.",
+            "fees": "No commission on ETFs and mutual funds",
+            "platform": "Strong research tools and educational resources",
+            "website": "https://www.brokerc.com"
+        }
+    }
+
+    broker_selection = st.selectbox("Select a Broker to Learn More:", list(brokers_info.keys()))
+
+    broker = brokers_info[broker_selection]
+    st.subheader(broker_selection)
+    st.write(f"**Description**: {broker['description']}")
+    st.write(f"**Fees**: {broker['fees']}")
+    st.write(f"**Platform**: {broker['platform']}")
+    st.markdown(f"**Website**: [Visit]({broker['website']})", unsafe_allow_html=True)
 
 def main():
     st.sidebar.title("Menu")
 
-    # Define the navigation options
-    navigation_options = ["Account Overview", "Analysis", "Recommendation", "Browse"]
+    # Updated to include "Brokers" as a new navigation option
+    navigation_options = ["Account Overview", "Analysis", "Recommendation", "Browse", "Brokers"]
 
-    # Radio buttons for navigation
     page_selection = st.sidebar.radio("Choose a page", navigation_options)
 
     st.title("YouFinance")
 
-    # Load data when the app starts or when "Account Overview" is selected
     if 'dataframe' not in st.session_state or page_selection == "Account Overview":
         st.session_state.dataframe = load_data()
         st.session_state.stock_df = load_stock_portfolio()
@@ -888,7 +919,6 @@ def main():
     df = st.session_state.dataframe
     stock_df = st.session_state.stock_df
 
-    # Call the corresponding function based on the selected page
     if page_selection == "Account Overview":
         account_overview(df, stock_df)
     elif page_selection == "Analysis":
@@ -897,7 +927,9 @@ def main():
         recommendation_page()
     elif page_selection == "Browse":
         Aktienkurse_app()
+    elif page_selection == "Brokers":  # Added new condition for the Brokers page
+        broker_options_page()
 
 if __name__ == "__main__":
     main()
-    
+
