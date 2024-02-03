@@ -612,6 +612,9 @@ def recommendation_page():
             simulation_results = monte_carlo_simulation(0, monthly_savings, stock_percentage, years_to_invest, inflation_rate)
 
             # Plot median and confidence interval (second graph)
+            median_projection = np.median(simulation_results, axis=0)
+            lower_bound = np.percentile(simulation_results, 5, axis=0)
+            upper_bound = np.percentile(simulation_results, 95, axis=0)
             plt.figure(figsize=(10, 6))
             plt.fill_between(range(years_to_invest), lower_bound, upper_bound, color='gray', alpha=0.5)
             plt.plot(median_projection, label='Median Projection')
