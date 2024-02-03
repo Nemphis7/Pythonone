@@ -356,24 +356,19 @@ def plot_portfolio_history_plotly(portfolio_history):
     st.plotly_chart(fig, use_container_width=True)
 
 
-def account_overview(df, stock_df):
-    global uploaded_portfolio_data, uploaded_transaction_data
-
-    st.title("Financial Data Analysis")
-
-    st.subheader("Upload Your Portfolio Data")
+def account_overview():
     uploaded_portfolio_data = upload_excel_sheet("Upload Portfolio Excel Sheet", "portfolio")
-
-    st.subheader("Upload Your Transaction Data")
     uploaded_transaction_data = upload_excel_sheet("Upload Transactions Excel Sheet", "transactions")
 
-    if uploaded_transaction_data is not None:
-        st.session_state.dataframe = uploaded_transaction_data  # Update session state
-
-    # Check if new portfolio data is uploaded
     if uploaded_portfolio_data is not None:
-        st.session_state.stock_df = uploaded_portfolio_data  # Update session state
+        st.session_state.stock_df = uploaded_portfolio_data
+        generate_stock_table_and_graphs()  # Call a function to regenerate tables/graphs
 
+    if uploaded_transaction_data is not None:
+        st.session_state.dataframe = uploaded_transaction_data
+        generate_financial_table_and_graphs()  # Call a function to regenerate tables/graphs
+
+    st.title("Financial Data Analysis")
     
     current_month = datetime.now().strftime('%Y-%m')
     current_month_period = pd.Period(current_month)
