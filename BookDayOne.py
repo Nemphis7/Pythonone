@@ -597,7 +597,7 @@ def recommendation_page():
 
         # Plot each simulation
 
-         try:
+    try:
             # Calculate the median projection and bounds
             median_projection = np.median(simulation_results, axis=0)
             lower_bound = np.percentile(simulation_results, 5, axis=0)
@@ -620,7 +620,7 @@ def recommendation_page():
             st.write(f"The median projected portfolio value at the end of the investment period is: ${final_median_projection:,.2f}")
             st.write(f"The projected portfolio value range is from ${final_lower_bound:,.2f} to ${final_upper_bound:,.2f} (5th to 95th percentile)")
 
-        except Exception as e:
+    except Exception as e:
             st.error(f"An error occurred while processing the data: {str(e)}")
 
 def custom_format_large_number(value):
