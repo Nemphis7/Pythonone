@@ -572,44 +572,6 @@ import streamlit as st
 
 def recommendation_page():
     
-def display_broker_options():
-        st.subheader("Choose a Stock Broker")
-
-        # List of brokers and their key features
-        brokers_info = {
-            "Broker A": {
-                "description": "Broker A is known for its user-friendly platform and zero commission fees.",
-                "fees": "Zero commission on trades",
-                "platform": "User-friendly, mobile and desktop",
-                "website": "https://www.brokera.com"
-            },
-            "Broker B": {
-                "description": "Broker B offers a wide range of investment options and advanced trading tools.",
-                "fees": "Low commission on trades",
-                "platform": "Advanced tools for experienced traders",
-                "website": "https://www.brokerb.com"
-            },
-            "Broker C": {
-                "description": "Broker C is ideal for long-term investors with its robust research tools.",
-                "fees": "No commission on ETFs and mutual funds",
-                "platform": "Strong research tools and educational resources",
-                "website": "https://www.brokerc.com"
-            }
-        }
-
-        # Allow the user to select a broker
-        broker_selection = st.selectbox("Select a broker to learn more:", brokers_info.keys())
-
-        # Display the information of the selected broker
-        broker = brokers_info[broker_selection]
-        st.markdown(f"**{broker_selection}**")
-        st.markdown(f"*{broker['description']}*")
-        st.markdown(f"- **Fees**: {broker['fees']}")
-        st.markdown(f"- **Platform**: {broker['platform']}")
-        # Create a clickable link for the website
-        st.markdown(f"- [Visit Website]({broker['website']})", unsafe_allow_html=True)
-
-    
 
     st.write("Please conduct your own research before opening an account with any of the listed brokers.")
     st.title("Investment Recommendation")
