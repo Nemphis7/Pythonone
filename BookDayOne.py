@@ -359,15 +359,16 @@ def plot_portfolio_history_plotly(portfolio_history):
 def account_overview(df, stock_df):
     st.title("Financial Data Analysis")
 
+    # Upload Portfolio Data
     st.subheader("Upload Your Portfolio Data")
-    upload_excel_sheet("Upload Portfolio Excel Sheet", "portfolio")
+    global uploaded_portfolio_data
+    uploaded_portfolio_data = upload_excel_sheet("Upload Portfolio Excel Sheet", "portfolio_data")
 
+    # Upload Transaction Data
     st.subheader("Upload Your Transaction Data")
-    upload_excel_sheet("Upload Transactions Excel Sheet", "transactions")
-    # Upload functionality
-    global uploaded_portfolio_data, uploaded_transaction_data
-    uploaded_portfolio_data = upload_excel_sheet("Upload Portfolio Excel Sheet", "portfolio")
-    uploaded_transaction_data = upload_excel_sheet("Upload Transactions Excel Sheet", "transactions")
+    global uploaded_transaction_data
+    uploaded_transaction_data = upload_excel_sheet("Upload Transactions Excel Sheet", "transaction_data")
+
 
     current_month = datetime.now().strftime('%Y-%m')
     current_month_period = pd.Period(current_month)
