@@ -873,27 +873,27 @@ def broker_overview_comparison():
     st.title("Broker Overview/Comparison")
 
     # Brokers information with added logo URLs for visualization
-    brokers_info = {
-        "Trade Republik": {
-            "description": "Trade Republic is a mobile-only broker that offers a simple, streamlined trading experience. It's known for its ease of use and low fees, making it a popular choice for new and casual investors.",
+      brokers_info = {
+        "Trade Republic": {
+            "description": "Trade Republic is a mobile-only broker that offers a simple, streamlined trading experience. Known for its ease of use and low fees, making it a popular choice for new and casual investors.",
             "fees": "Offers commission-free trades, with only a €1 external fee for settlement of orders. No account management fees.",
             "platform": "Mobile app available on both iOS and Android, focused on simplicity and ease of use. Does not offer a desktop trading platform.",
             "website": "https://www.traderepublic.com",
-            "logo": ""  # Placeholder URL for Broker A's logo
+            "logo": "https://path.to/traderepublic_logo.png"  # Placeholder for Trade Republic's logo
         },
         "Degiro": {
-            "description": "Offers a wide range of investment options and advanced trading tools.",
-            "fees": "Low commission on trades",
-            "platform": "Advanced tools for experienced traders",
-            "website": "https://www.brokerb.com",
-            "logo": "https://path.to/brokerB_logo.png"  # Placeholder URL for Broker B's logo
+            "description": "DEGIRO is a Dutch online brokerage company, offering low-cost trading on global financial markets. Known for its low fees and extensive access to international exchanges.",
+            "fees": "Competitive low fees for a wide range of products, including stocks, bonds, ETFs, and more.",
+            "platform": "Web-based platform and mobile app, offering comprehensive tools and features for traders of all levels.",
+            "website": "https://www.degiro.eu",
+            "logo": "https://path.to/degiro_logo.png"  # Placeholder for DEGIRO's logo
         },
         "ING": {
-            "description": "Ideal for long-term investors with robust research tools.",
-            "fees": "No commission on ETFs and mutual funds",
-            "platform": "Strong research tools and educational resources",
-            "website": "https://www.brokerc.com",
-            "logo": "https://path.to/brokerC_logo.png"  # Placeholder URL for Broker C's logo
+            "description": "ING offers brokerage services through its banking app, combining banking and investment solutions in one platform. Suited for clients looking for banking and investment services under one roof.",
+            "fees": "Varies by market and product; often includes free trades for certain ETFs and competitive rates for stock trading.",
+            "platform": "Integrated into ING's mobile banking app, offering a convenient way for bank clients to invest.",
+            "website": "https://www.ing.de",
+            "logo": "https://path.to/ing_logo.png"  # Placeholder for ING's logo
         }
     }
 
