@@ -636,11 +636,13 @@ def recommendation_page():
             col1, col2 = st.columns(2)
             with col1:
                 if st.button("Do the Financial Planning Yourself"):
+                    st.write("You chose to do the financial planning yourself.")
 
                     # You can add additional actions here
 
             with col2:
                 if st.button("Get Professional Advisory"):
+                    st.write("You chose to do the financial planning yourself.")
 
     
         except Exception as e:
