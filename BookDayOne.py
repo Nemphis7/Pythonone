@@ -445,34 +445,34 @@ def analyse(df):
                 # Exclude the current month's data for the last 6 months summary
                 current_month = pd.to_datetime('now').to_period('M')
                 df_past_six_months = df[df['Date'].dt.to_period('M') < current_month].copy()
-                df_past_six_months['Date'] = df_past_six_months['Date'].dt.to_period('M').dt.to_timestamp()
                 df_past_six_months = df_past_six_months[df_past_six_months['Date'] >= df_past_six_months['Date'].max() - pd.DateOffset(months=6)]
-
-                # Calculate the monthly summary
-                monthly_summary = df_past_six_months.groupby(df_past_six_months['Date'].dt.to_period('M')).agg({'Amount': 'sum'})
-                monthly_summary['Income'] = df_past_six_months[df_past_six_months['Amount'] > 0].groupby(df_past_six_months['Date'].dt.to_period('M'))['Amount'].sum()
-                monthly_summary['Spent'] = df_past_six_months[df_past_six_months['Amount'] < 0].groupby(df_past_six_months['Date'].dt.to_period('M'))['Amount'].sum()
-                monthly_summary.fillna(0, inplace=True)
-
-                # Sort by date correctly
-                monthly_summary.sort_index(inplace=True)
-
-                # Convert index to column for display
+                
+                # Group by month and calculate the sums for 'Amount', 'Income', and 'Spent'
+                monthly_summary = df_past_six_months.groupby(df_past_six_months['Date'].dt.to_period('M')).agg({'Amount': 'sum', 'Income': 'sum', 'Spent': 'sum'})
                 monthly_summary.reset_index(inplace=True)
                 monthly_summary['Date'] = monthly_summary['Date'].dt.strftime('%B %Y')
 
                 # Calculate the average total for the last six months
                 average_total = monthly_summary['Amount'].mean()
 
-                # Add a row for the total
-                total_row = pd.DataFrame(monthly_summary.sum()).transpose()
-                total_row.index = ['Total']
-                monthly_summary = pd.concat([monthly_summary, total_row])
+                # Sort by the 'Date' column
+                monthly_summary.sort_values(by='Date', inplace=True)
 
+                # Create the total row separately without 'Date'
+                total_values = {
+                    'Amount': monthly_summary['Amount'].sum(),
+                    'Income': monthly_summary['Income'].sum(),
+                    'Spent': monthly_summary['Spent'].sum()
+                }
+                total_row = pd.DataFrame(total_values, index=['Total'])
+
+                # Concatenate the total row and format the DataFrame for display
+                monthly_summary_formatted = pd.concat([monthly_summary, total_row])
+                
                 # Display the last 6 months summary excluding the current month
                 st.markdown("### Summary of Last 6 Months (Excluding Current Month)")
-                st.dataframe(monthly_summary.style.format({"Amount": "{:.2f}", "Income": "{:.2f}", "Spent": "{:.2f}"}))
-                st.markdown(f"<h3 style='color: blue;'>Average of Savings: {average_total:.2f}</h3>", unsafe_allow_html=True)
+                st.dataframe(monthly_summary_formatted.style.format({"Amount": "{:.2f}", "Income": "{:.2f}", "Spent": "{:.2f}"}))
+                st.markdown(f"**Average of Savings: {average_total:.2f}**")
 
                 # Display the categories for the current month
                 st.markdown("### Categories for the Current Month")
@@ -484,6 +484,7 @@ def analyse(df):
 
             else:
                 st.error("No data to analyse")
+
 
 
 
