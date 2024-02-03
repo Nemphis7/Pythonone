@@ -357,10 +357,7 @@ def plot_portfolio_history_plotly(portfolio_history):
 
 
 def account_overview(df, stock_df):
-    st.title("Financial Data Analysis")
-
-    # Upload Portfolio Data
-   global uploaded_portfolio_data, uploaded_transaction_data
+    global uploaded_portfolio_data, uploaded_transaction_data
 
     st.title("Financial Data Analysis")
 
