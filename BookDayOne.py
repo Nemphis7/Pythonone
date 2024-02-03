@@ -872,28 +872,37 @@ def plot_portfolio_performance(total_portfolio_history):
 def broker_overview_comparison():
     st.title("Broker Overview/Comparison")
 
-    # Brokers information with added logo URLs for visualization
-      brokers_info = {
+    # Introduction emphasizing the importance of choosing the right broker
+    st.write("""
+    ### Selecting the Right Broker for Your Investment Journey
+    
+    Whether you're embarking on your investment journey or you're an experienced investor, choosing the right broker is crucial for your success in the financial markets. The ideal broker aligns with your investment goals, preferences, and strategies. It's essential to consider various factors, including fees, platform usability, available investment options, and educational resources. Each broker has its unique advantages and drawbacks, making it vital to conduct thorough research to find the one that best suits your needs.
+    
+    Below is a comparison of three popular brokers: Trade Republic, ING, and Degiro. This overview aims to highlight key aspects of each broker to assist you in making an informed decision. Remember, the best choice depends on your personal investment strategy and financial goals.
+    """)
+
+    # Brokers information with placeholders for logos
+    brokers_info = {
         "Trade Republic": {
-            "description": "Trade Republic is a mobile-only broker that offers a simple, streamlined trading experience. Known for its ease of use and low fees, making it a popular choice for new and casual investors.",
-            "fees": "Offers commission-free trades, with only a €1 external fee for settlement of orders. No account management fees.",
-            "platform": "Mobile app available on both iOS and Android, focused on simplicity and ease of use. Does not offer a desktop trading platform.",
+            "description": "Trade Republic is a mobile-only broker known for its simplicity and low fees, making it appealing for new and casual investors.",
+            "fees": "€1 settlement fee per trade, no account fees.",
+            "platform": "Mobile app available on iOS and Android, focusing on a straightforward trading experience.",
             "website": "https://www.traderepublic.com",
-            "logo": "https://path.to/traderepublic_logo.png"  # Placeholder for Trade Republic's logo
-        },
-        "Degiro": {
-            "description": "DEGIRO is a Dutch online brokerage company, offering low-cost trading on global financial markets. Known for its low fees and extensive access to international exchanges.",
-            "fees": "Competitive low fees for a wide range of products, including stocks, bonds, ETFs, and more.",
-            "platform": "Web-based platform and mobile app, offering comprehensive tools and features for traders of all levels.",
-            "website": "https://www.degiro.eu",
-            "logo": "https://path.to/degiro_logo.png"  # Placeholder for DEGIRO's logo
+            "logo": "https://path.to/traderepublic_logo.png"  # Placeholder for the actual logo URL
         },
         "ING": {
-            "description": "ING offers brokerage services through its banking app, combining banking and investment solutions in one platform. Suited for clients looking for banking and investment services under one roof.",
-            "fees": "Varies by market and product; often includes free trades for certain ETFs and competitive rates for stock trading.",
-            "platform": "Integrated into ING's mobile banking app, offering a convenient way for bank clients to invest.",
+            "description": "ING offers a comprehensive banking and brokerage experience with a wide range of investment options and tools for both beginners and experienced investors.",
+            "fees": "Varies by market; generally includes a flat fee plus a percentage of the trade volume.",
+            "platform": "Web-based platform and mobile app with extensive tools and resources.",
             "website": "https://www.ing.de",
-            "logo": "https://path.to/ing_logo.png"  # Placeholder for ING's logo
+            "logo": "https://path.to/ing_logo.png"  # Placeholder for the actual logo URL
+        },
+        "Degiro": {
+            "description": "Degiro is known for its low fees and wide range of investment options, catering to traders looking for global market access.",
+            "fees": "Low trading fees with no minimum deposit required. Fees vary by product and market.",
+            "platform": "Web-based platform and mobile app offering comprehensive tools and market access.",
+            "website": "https://www.degiro.eu",
+            "logo": "https://path.to/degiro_logo.png"  # Placeholder for the actual logo URL
         }
     }
 
@@ -903,7 +912,7 @@ def broker_overview_comparison():
     # Display selected broker's information and logo
     broker = brokers_info[broker_selection]
     st.subheader(broker_selection)
-    st.image(broker['logo'], width=100)  # Display the broker's logo
+    st.image(broker['logo'], width=100)  # Display the broker's logo with a placeholder width
     st.write(f"**Description**: {broker['description']}")
     st.write(f"**Fees**: {broker['fees']}")
     st.write(f"**Platform**: {broker['platform']}")
