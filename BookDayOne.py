@@ -36,7 +36,7 @@ def fetch_current_price(ticker):
 # Function to plot the historical data with Plotly
         
 def monte_carlo_simulation(start_balance, monthly_savings, stock_percentage, years_to_invest, inflation_rate, simulations=1000):
-    avg_return_stock = 0.07  # Average annual return rate for stocks
+    avg_return_stock = 0.08  # Average annual return rate for stocks
     avg_return_bond = 0.03  # Average annual return rate for bonds
     std_dev_stock = 0.18  # Standard deviation for stock returns
     std_dev_bond = 0.06  # Standard deviation for bond returns
@@ -579,7 +579,7 @@ def recommendation_page():
 
     if st.button("Calculate Investment Projection"):
         years_to_invest = retirement_age - current_age
-        total_invested = monthly_savings * 12 * years_to_invest
+        total_invested = sum([monthly_savings * 12 / ((1 + inflation_rate) ** year) for year in range(1, years_to_invest + 1)])
         stock_percentage, _ = calculate_portfolio_distribution(current_age)
         simulation_results = monte_carlo_simulation(0, monthly_savings, stock_percentage, years_to_invest, inflation_rate)
 
@@ -603,10 +603,9 @@ def recommendation_page():
             final_median_projection = median_projection[-1]
             final_lower_bound = lower_bound[-1]
             final_upper_bound = upper_bound[-1]
-            st.write(f"Total amount invested over {years_to_invest} years: ${total_invested:,.2f}")
-            st.write(f"The median projected portfolio value at the end of the investment period is: ${final_median_projection:,.2f}")
-            st.write(f"The projected portfolio value range is from ${final_lower_bound:,.2f} to ${final_upper_bound:,.2f} (5th to 95th percentile)")
-
+            st.write(f"Total amount invested over {years_to_invest} years (adjusted for inflation): ${total_invested:,.2f}")
+            st.write(f"The median projected portfolio value at the end of the investment period (considering inflation) is: ${median_projection[-1]:,.2f}")
+            st.write(f"The projected portfolio value range is from ${lower_bound[-1]:,.2f} to ${upper_bound[-1]:,.2f} (5th to 95th percentile)")
             col1, col2 = st.columns(2)
             with col1:
                 if st.button("Do the Financial Planning Yourself"):
