@@ -934,7 +934,7 @@ def main():
         recommendation_page()
     elif page_selection == "Browse":
         Aktienkurse_app()
-    elif page_selection == "Broker overview/comparison":  # Added new condition for the Brokers page
+    elif page_selection == "Broker overview comparison":  # Added new condition for the Brokers page
         broker_options_page()
 
 if __name__ == "__main__":
