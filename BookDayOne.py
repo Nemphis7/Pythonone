@@ -445,16 +445,21 @@ def analyse(df):
                 # Exclude the current month's data for the last 6 months summary
                 current_month = pd.to_datetime('now').to_period('M')
                 df_past_six_months = df[df['Date'].dt.to_period('M') < current_month].copy()
+                df_past_six_months['Date'] = df_past_six_months['Date'].dt.to_period('M').dt.to_timestamp()
                 df_past_six_months = df_past_six_months[df_past_six_months['Date'] >= df_past_six_months['Date'].max() - pd.DateOffset(months=6)]
-                
+
                 # Calculate the monthly summary
-                monthly_summary = df_past_six_months.groupby(df_past_six_months['Date'].dt.strftime('%B %Y')).agg({'Amount': 'sum'})
-                monthly_summary['Income'] = df_past_six_months[df_past_six_months['Amount'] > 0].groupby(df_past_six_months['Date'].dt.strftime('%B %Y'))['Amount'].sum()
-                monthly_summary['Spent'] = df_past_six_months[df_past_six_months['Amount'] < 0].groupby(df_past_six_months['Date'].dt.strftime('%B %Y'))['Amount'].sum()
+                monthly_summary = df_past_six_months.groupby(df_past_six_months['Date'].dt.to_period('M')).agg({'Amount': 'sum'})
+                monthly_summary['Income'] = df_past_six_months[df_past_six_months['Amount'] > 0].groupby(df_past_six_months['Date'].dt.to_period('M'))['Amount'].sum()
+                monthly_summary['Spent'] = df_past_six_months[df_past_six_months['Amount'] < 0].groupby(df_past_six_months['Date'].dt.to_period('M'))['Amount'].sum()
                 monthly_summary.fillna(0, inplace=True)
 
-                # Sort by the index, which is the date in string format
+                # Sort by date correctly
                 monthly_summary.sort_index(inplace=True)
+
+                # Convert index to column for display
+                monthly_summary.reset_index(inplace=True)
+                monthly_summary['Date'] = monthly_summary['Date'].dt.strftime('%B %Y')
 
                 # Calculate the average total for the last six months
                 average_total = monthly_summary['Amount'].mean()
