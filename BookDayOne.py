@@ -91,21 +91,16 @@ def upload_excel_sheet(title, key):
     if uploaded_file is not None:
         try:
             df = pd.read_excel(uploaded_file)
-            # Differentiate the upload type and update the corresponding global variable
-            if key == "portfolio":
-                global uploaded_portfolio_data
-                uploaded_portfolio_data = df
-            elif key == "transactions":
-                global uploaded_transaction_data
-                uploaded_transaction_data = df
+            st.session_state[key] = df  # Store in session state
             return df
         except Exception as e:
             st.error(f"Error processing file: {e}")
     return None
+
     
 def load_data():
-    if uploaded_transaction_data is not None:
-        return uploaded_transaction_data
+    if 'uploaded_transaction_data' in st.session_state and st.session_state.uploaded_transaction_data is not None:
+        return st.session_state.uploaded_transaction_data
     else:
         try:
             url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/Mappe1.xlsx'
@@ -116,8 +111,8 @@ def load_data():
             return None
 
 def load_stock_portfolio():
-    if uploaded_portfolio_data is not None:
-        return uploaded_portfolio_data
+    if 'uploaded_portfolio_data' in st.session_state and st.session_state.uploaded_portfolio_data is not None:
+        return st.session_state.uploaded_portfolio_data
     else:
         try:
             url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/StockPortfolio.xlsx'
@@ -173,6 +168,7 @@ def plot_portfolio_performance(total_portfolio_history):
     st.pyplot(plt)
 
 def plot_portfolio_history(stock_df):
+    stock_df = load_stock_portfolio()
     end = datetime.now()
     start = end - pd.DateOffset(years=3)
     portfolio_history = pd.DataFrame()
@@ -361,12 +357,10 @@ def account_overview():
     uploaded_transaction_data = upload_excel_sheet("Upload Transactions Excel Sheet", "transactions")
 
     if uploaded_portfolio_data is not None:
-        st.session_state.stock_df = uploaded_portfolio_data
-        generate_stock_table_and_graphs()  # Call a function to regenerate tables/graphs
+        st.session_state.uploaded_portfolio_data = uploaded_portfolio_data
 
     if uploaded_transaction_data is not None:
-        st.session_state.dataframe = uploaded_transaction_data
-        generate_financial_table_and_graphs()  # Call a function to regenerate tables/graphs
+        st.session_state.uploaded_transaction_data = uploaded_transaction_data
 
     st.title("Financial Data Analysis")
     
