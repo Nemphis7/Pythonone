@@ -497,7 +497,7 @@ def analyse(df):
             # Compute the totals for income and expenses
             total_income = current_month_summary[current_month_summary['Amount'] > 0]['Amount'].sum()
             total_expenses = -current_month_summary[current_month_summary['Amount'] < 0]['Amount'].sum()
-            net_savings = total_income - total_expenses  # Total income minus total expenses
+            net_savings = total_income - total_expenses
 
             # Initialize lists for source, target, and values
             source = []
@@ -519,22 +519,28 @@ def analyse(df):
             value.append(net_savings)
             label.append('Savings')
 
-            # Define the Sankey diagram
+            # Define the Sankey diagram with customized colors and layout
             fig = go.Figure(data=[go.Sankey(
                 node=dict(
                     pad=15,
                     thickness=20,
                     line=dict(color="black", width=0.5),
                     label=label,
-                    color="blue"
+                    color=["#4CAF50", "#F44336", "#2196F3", "#FFC107", "#9C27B0", "#00BCD4", "#E91E63"],  # Custom colors
                 ),
                 link=dict(
                     source=source,
                     target=target,
-                    value=value
+                    value=value,
+                    color=["rgba(76, 175, 80, 0.5)", "rgba(244, 67, 54, 0.5)"]  # Custom link colors
                 ))])
 
-            fig.update_layout(title_text="Income, Expenses, and Savings Flows", font_size=10)
+            fig.update_layout(
+                title_text="Financial Overview: Income, Expenses, and Savings Flows",
+                font=dict(size=10, color='black'),
+                paper_bgcolor='white',
+                plot_bgcolor='white'
+            )
             st.plotly_chart(fig, use_container_width=True)
         else:
             st.error("No data available to generate Sankey Diagram")
