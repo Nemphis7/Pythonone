@@ -589,47 +589,47 @@ def recommendation_page():
 
     default_monthly_savings = 0.0
 
-    current_age = st.number_input("Your Current Age", min_value=18, max_value=100, step=1)
-    retirement_age = st.number_input("Your Retirement Age", min_value=current_age + 15, max_value=100, step=1)
-    monthly_savings = st.number_input("Monthly Savings", min_value=0.0, step=1.0, value=default_monthly_savings)
-    inflation_rate = st.number_input("Expected Annual Inflation Rate", min_value=0.0, max_value=10.0, step=0.1, value=2.0) / 100
 
     if 'average_monthly_savings' in st.session_state:
         # Set to 70% of the average monthly savings
         default_monthly_savings = st.session_state['average_monthly_savings'] * 0.7
 
 
-    if st.button("Calculate Investment Projection"):
-        
-        total_invested = sum([monthly_savings * 12 / ((1 + inflation_rate) ** year) for year in range(1, years_to_invest + 1)])
-        years_to_invest = retirement_age - current_age
-        stock_percentage, _ = calculate_portfolio_distribution(current_age)
-        simulation_results = monte_carlo_simulation(0, monthly_savings, stock_percentage, years_to_invest, inflation_rate)
-       
+
+    current_age = st.number_input("Your Current Age", min_value=18, max_value=100, step=1)
+    retirement_age = st.number_input("Your Retirement Age", min_value=current_age + 15, max_value=100, step=1)
+    monthly_savings = st.number_input("Monthly Savings", min_value=0.0, step=1.0, value=default_monthly_savings)
+    inflation_rate = st.number_input("Expected Annual Inflation Rate", min_value=0.0, max_value=10.0, step=0.1, value=2.0) / 100
+
+
+if st.button("Calculate Investment Projection"):
+    years_to_invest = retirement_age - current_age
+    total_invested = sum([monthly_savings * 12 / ((1 + inflation_rate) ** year) for year in range(1, years_to_invest + 1)])
+    stock_percentage, _ = calculate_portfolio_distribution(current_age)
+
     try:
-            # Calculate the median projection and bounds
-            median_projection = np.median(simulation_results, axis=0)
-            lower_bound = np.percentile(simulation_results, 5, axis=0)
-            upper_bound = np.percentile(simulation_results, 95, axis=0)
+        # Calculate the median projection and bounds
+        simulation_results = monte_carlo_simulation(0, monthly_savings, stock_percentage, years_to_invest, inflation_rate)
 
-            # Plot median and confidence interval (second graph)
-            plt.figure(figsize=(10, 6))
-            plt.fill_between(range(years_to_invest), lower_bound, upper_bound, color='gray', alpha=0.5)
-            plt.plot(median_projection, label='Median Projection')
-            plt.title("Investment Projection Over Time")
-            plt.xlabel("Years")
-            plt.ylabel("Portfolio Value")
-            plt.legend()
-            st.pyplot(plt)
+        # Plot median and confidence interval (second graph)
+        plt.figure(figsize=(10, 6))
+        plt.fill_between(range(years_to_invest), lower_bound, upper_bound, color='gray', alpha=0.5)
+        plt.plot(median_projection, label='Median Projection')
+        plt.title("Investment Projection Over Time")
+        plt.xlabel("Years")
+        plt.ylabel("Portfolio Value")
+        plt.legend()
+        st.pyplot(plt)
 
-            # Display results as text below the second graph
-            final_median_projection = median_projection[-1]
-            final_lower_bound = lower_bound[-1]
-            final_upper_bound = upper_bound[-1]
-            st.write(f"Total amount invested over {years_to_invest} years (adjusted for inflation): € {total_invested:,.2f}")
-            st.write(f"The median projected portfolio value at the end of the investment period (considering inflation) is: € {median_projection[-1]:,.2f}")
-            st.write(f"The projected portfolio value range is from € {lower_bound[-1]:,.2f} to € {upper_bound[-1]:,.2f} (5th to 95th percentile)")
-            col1, col2 = st.columns(2)
+        # Display results as text below the second graph
+        final_median_projection = median_projection[-1]
+        final_lower_bound = lower_bound[-1]
+        final_upper_bound = upper_bound[-1]
+        st.write(f"Total amount invested over {years_to_invest} years (adjusted for inflation): ${total_invested:,.2f}")
+        st.write(f"The median projected portfolio value at the end of the investment period (considering inflation) is: ${final_median_projection:,.2f}")
+        st.write(f"The projected portfolio value range is from ${final_lower_bound:,.2f} to ${final_upper_bound:,.2f} (5th to 95th percentile)")
+
+        col1, col2 = st.columns(2)
             with col1:
                 if st.button("Do the Financial Planning Yourself"):
                     st.write("You chose to do the financial planning yourself.")
