@@ -79,7 +79,7 @@ def recommendation_page():
 
     if st.button("I want to do my Financial Analysis"):
     # Add the actions you want to take when the button is pressed
-    pass
+        pass
 
 
 def get_fundamental_data(ticker):
