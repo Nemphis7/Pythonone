@@ -869,34 +869,41 @@ def plot_portfolio_performance(total_portfolio_history):
     plt.legend()
     st.pyplot(plt)
     
-def broker_options_page():
-    st.title("Broker Options")
+def broker_overview_comparison():
+    st.title("Broker Overview/Comparison")
 
+    # Brokers information with added logo URLs for visualization
     brokers_info = {
         "Broker A": {
             "description": "Known for its user-friendly platform and zero commission fees.",
             "fees": "Zero commission on trades",
             "platform": "User-friendly, mobile and desktop",
-            "website": "https://www.brokera.com"
+            "website": "https://www.brokera.com",
+            "logo": "https://path.to/brokerA_logo.png"  # Placeholder URL for Broker A's logo
         },
         "Broker B": {
             "description": "Offers a wide range of investment options and advanced trading tools.",
             "fees": "Low commission on trades",
             "platform": "Advanced tools for experienced traders",
-            "website": "https://www.brokerb.com"
+            "website": "https://www.brokerb.com",
+            "logo": "https://path.to/brokerB_logo.png"  # Placeholder URL for Broker B's logo
         },
         "Broker C": {
             "description": "Ideal for long-term investors with robust research tools.",
             "fees": "No commission on ETFs and mutual funds",
             "platform": "Strong research tools and educational resources",
-            "website": "https://www.brokerc.com"
+            "website": "https://www.brokerc.com",
+            "logo": "https://path.to/brokerC_logo.png"  # Placeholder URL for Broker C's logo
         }
     }
 
+    # User selects a broker
     broker_selection = st.selectbox("Select a Broker to Learn More:", list(brokers_info.keys()))
 
+    # Display selected broker's information and logo
     broker = brokers_info[broker_selection]
     st.subheader(broker_selection)
+    st.image(broker['logo'], width=100)  # Display the broker's logo
     st.write(f"**Description**: {broker['description']}")
     st.write(f"**Fees**: {broker['fees']}")
     st.write(f"**Platform**: {broker['platform']}")
@@ -927,7 +934,7 @@ def main():
         recommendation_page()
     elif page_selection == "Browse":
         Aktienkurse_app()
-    elif page_selection == "Brokers":  # Added new condition for the Brokers page
+    elif page_selection == "Broker overview/comparison":  # Added new condition for the Brokers page
         broker_options_page()
 
 if __name__ == "__main__":
