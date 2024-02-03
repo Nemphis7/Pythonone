@@ -187,6 +187,7 @@ def plot_portfolio_history(stock_df):
     st.pyplot(plt)
 
 def plot_financials(financial_df):
+    if df is not None and not df.empty:
     df = load_data()
     plt.figure(figsize=(10, 6))
     financial_df['AdjustedAmount'] = financial_df.apply(lambda x: -x['Amount'] if x['Category'] == 'Expense' else x['Amount'], axis=1)
@@ -355,16 +356,21 @@ def plot_portfolio_history_plotly(portfolio_history):
 
 
 def account_overview():
-    # Upload functionality
     uploaded_portfolio_data = upload_excel_sheet("Upload Portfolio Excel Sheet", "portfolio")
     uploaded_transaction_data = upload_excel_sheet("Upload Transactions Excel Sheet", "transactions")
 
-    # Update session state
     if uploaded_portfolio_data is not None:
         st.session_state.uploaded_portfolio_data = uploaded_portfolio_data
     if uploaded_transaction_data is not None:
         st.session_state.uploaded_transaction_data = uploaded_transaction_data
 
+    # Use session state data for visualizations
+    if st.session_state.uploaded_portfolio_data is not None:
+        plot_portfolio_performance(st.session_state.uploaded_portfolio_data)
+
+    if st.session_state.uploaded_transaction_data is not None:
+        plot_financials(st.session_state.uploaded_transaction_data)
+        
     # Call visualization functions to refresh data
     plot_portfolio_performance()
     plot_financial_overview()
@@ -601,10 +607,6 @@ def calculate_portfolio_distribution(current_age):
     stock_percentage = 100 - current_age
     return stock_percentage, None  # The second value is a placeholder
 
-
-import numpy as np
-import matplotlib.pyplot as plt
-import streamlit as st
 
 def recommendation_page():
     
@@ -897,6 +899,7 @@ def get_combined_historical_data(stock_df, period="1y"):
 
 def plot_portfolio_performance(total_portfolio_history):
     # Plottet die Gesamtperformance des Portfolios
+    if stock_df is not None and not stock_df.empty:
     plt.figure(figsize=(10, 5))
     plt.plot(total_portfolio_history.index, total_portfolio_history, label='Total Portfolio Value')
     plt.title('Total Portfolio Performance Over Time')
@@ -1038,9 +1041,9 @@ def main():
     st.title("YouFinance")
 
     if 'uploaded_transaction_data' not in st.session_state:
-        st.session_state.uploaded_transaction_data = None
+        st.session_state.uploaded_transaction_data = load_data()
     if 'uploaded_portfolio_data' not in st.session_state:
-        st.session_state.uploaded_portfolio_data = None
+        st.session_state.uploaded_portfolio_data = load_stock_portfolio()
         
     df = st.session_state.dataframe
     stock_df = st.session_state.stock_df
