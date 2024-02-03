@@ -77,9 +77,8 @@ def recommendation_page():
         except Exception as e:
             st.error(f"An error occurred while processing the data: {str(e)}")
 
-   if st.button("I want to do my Financial Analysis"):
-        # Actions to take when the button is pressed
-        pass
+    # Add your buttons here
+    if st.button("I want to do my Financial
 
 
 def get_fundamental_data(ticker):
@@ -795,4 +794,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
+
