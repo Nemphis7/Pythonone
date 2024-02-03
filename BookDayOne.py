@@ -602,45 +602,45 @@ def recommendation_page():
     inflation_rate = st.number_input("Expected Annual Inflation Rate", min_value=0.0, max_value=10.0, step=0.1, value=2.0) / 100
 
 
-if st.button("Calculate Investment Projection"):
-    years_to_invest = retirement_age - current_age
-    total_invested = sum([monthly_savings * 12 / ((1 + inflation_rate) ** year) for year in range(1, years_to_invest + 1)])
-    stock_percentage, _ = calculate_portfolio_distribution(current_age)
+    if st.button("Calculate Investment Projection"):
+        years_to_invest = retirement_age - current_age
+        total_invested = sum([monthly_savings * 12 / ((1 + inflation_rate) ** year) for year in range(1, years_to_invest + 1)])
+        stock_percentage, _ = calculate_portfolio_distribution(current_age)
 
-    try:
-        # Calculate the median projection and bounds
-        simulation_results = monte_carlo_simulation(0, monthly_savings, stock_percentage, years_to_invest, inflation_rate)
+        try:
+            # Calculate the median projection and bounds
+            simulation_results = monte_carlo_simulation(0, monthly_savings, stock_percentage, years_to_invest, inflation_rate)
 
-        # Plot median and confidence interval (second graph)
-        plt.figure(figsize=(10, 6))
-        plt.fill_between(range(years_to_invest), lower_bound, upper_bound, color='gray', alpha=0.5)
-        plt.plot(median_projection, label='Median Projection')
-        plt.title("Investment Projection Over Time")
-        plt.xlabel("Years")
-        plt.ylabel("Portfolio Value")
-        plt.legend()
-        st.pyplot(plt)
+            # Plot median and confidence interval (second graph)
+            plt.figure(figsize=(10, 6))
+            plt.fill_between(range(years_to_invest), lower_bound, upper_bound, color='gray', alpha=0.5)
+            plt.plot(median_projection, label='Median Projection')
+             plt.title("Investment Projection Over Time")
+            plt.xlabel("Years")
+            plt.ylabel("Portfolio Value")
+            plt.legend()
+            st.pyplot(plt)
 
-        # Display results as text below the second graph
-        final_median_projection = median_projection[-1]
-        final_lower_bound = lower_bound[-1]
-        final_upper_bound = upper_bound[-1]
-        st.write(f"Total amount invested over {years_to_invest} years (adjusted for inflation): ${total_invested:,.2f}")
-        st.write(f"The median projected portfolio value at the end of the investment period (considering inflation) is: ${final_median_projection:,.2f}")
-        st.write(f"The projected portfolio value range is from ${final_lower_bound:,.2f} to ${final_upper_bound:,.2f} (5th to 95th percentile)")
+            # Display results as text below the second graph
+            final_median_projection = median_projection[-1]
+            final_lower_bound = lower_bound[-1]
+            final_upper_bound = upper_bound[-1]
+            st.write(f"Total amount invested over {years_to_invest} years (adjusted for inflation): ${total_invested:,.2f}")
+            st.write(f"The median projected portfolio value at the end of the investment period (considering inflation) is: ${final_median_projection:,.2f}")
+            st.write(f"The projected portfolio value range is from ${final_lower_bound:,.2f} to ${final_upper_bound:,.2f} (5th to 95th percentile)")
 
-        col1, col2 = st.columns(2)
-        with col1:
+            col1, col2 = st.columns(2)
+            with col1:
                 if st.button("Do the Financial Planning Yourself"):
                     st.write("You chose to do the financial planning yourself.")
                     # You can add additional actions here
 
-        with col2:
+            with col2:
                 if st.button("Get Professional Advisory"):
                     st.write("You chose to get professional advisory.")
 
     
-    except Exception as e:
+        except Exception as e:
             st.error(f"An error occurred while processing the data: {str(e)}")
 
 def custom_format_large_number(value):
