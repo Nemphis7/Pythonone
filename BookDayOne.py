@@ -360,14 +360,15 @@ def account_overview(df, stock_df):
     st.title("Financial Data Analysis")
 
     # Upload Portfolio Data
-    st.subheader("Upload Your Portfolio Data")
-    global uploaded_portfolio_data
-    uploaded_portfolio_data = upload_excel_sheet("Upload Portfolio Excel Sheet", "portfolio_data")
+   global uploaded_portfolio_data, uploaded_transaction_data
 
-    # Upload Transaction Data
+    st.title("Financial Data Analysis")
+
+    st.subheader("Upload Your Portfolio Data")
+    uploaded_portfolio_data = upload_excel_sheet("Upload Portfolio Excel Sheet", "portfolio")
+
     st.subheader("Upload Your Transaction Data")
-    global uploaded_transaction_data
-    uploaded_transaction_data = upload_excel_sheet("Upload Transactions Excel Sheet", "transaction_data")
+    uploaded_transaction_data = upload_excel_sheet("Upload Transactions Excel Sheet", "transactions")
 
 
     current_month = datetime.now().strftime('%Y-%m')
@@ -443,7 +444,12 @@ def account_overview(df, stock_df):
     # Plot the historical data with Plotly
     plot_portfolio_history_plotly(portfolio_history)
 
+    if uploaded_transaction_data is not None:
+        df = uploaded_transaction_data
 
+    if uploaded_portfolio_data is not None:
+        stock_df = uploaded_portfolio_data
+        
 def get_portfolio_historical_data(stock_df, period="1y"):
     portfolio_history = pd.DataFrame()
     for index, row in stock_df.iterrows():
