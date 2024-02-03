@@ -434,54 +434,51 @@ def analyse(df):
     st.title("Analyse")
 
     if st.button("Start Analysis"):
-        # This will show a loading spinner
         with st.spinner('Loading...'):
-            # Simulate a time-consuming task
-            time.sleep(2)
+            time.sleep(2)  # Simulate a long-running operation
 
             if df is not None and 'Amount' in df.columns and 'Date' in df.columns:
                 # Ensure correct data types
                 df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
                 df['Amount'] = pd.to_numeric(df['Amount'], errors='coerce')
                 
-                
-                # Current month's data
-                current_month = datetime.now().month
-                current_year = datetime.now().year
-                current_month_data = df[(df['Date'].dt.month == current_month) & (df['Date'].dt.year == current_year)]
-    
-                # Summarize current month's expenses and income by category
-                current_month_summary = current_month_data.groupby('Category')['Amount'].sum().reset_index()
-                
-                # Display the current month's summary with caption
-                st.markdown("### Categories for the Current Month")
-                st.dataframe(current_month_summary.style.format({"Amount": "{:.2f}"}))
-    
-                # Last 6 months' data
-                six_months_ago = datetime.now() - pd.DateOffset(months=6)
-                six_months_data = df[(df['Date'] >= six_months_ago) & (df['Date'] < datetime.now())]
-    
-                # Group by month and calculate total spent and income
-                monthly_summary = six_months_data.groupby(six_months_data['Date'].dt.to_period('M')).agg({'Amount': 'sum'}).rename(columns={'Amount': 'Total'})
-                monthly_summary['Income'] = six_months_data[six_months_data['Amount'] > 0].groupby(six_months_data['Date'].dt.to_period('M')).agg({'Amount': 'sum'})
-                monthly_summary['Spent'] = six_months_data[six_months_data['Amount'] < 0].groupby(six_months_data['Date'].dt.to_period('M')).agg({'Amount': 'sum'})
+                # Filter out the data for the current month
+                current_month = pd.to_datetime('now').to_period('M')
+                df_past = df[df['Date'].dt.to_period('M') < current_month]
+
+                # Get last 6 months excluding current month
+                six_months_ago = current_month - 6
+                df_six_months = df_past[df_past['Date'].dt.to_period('M') >= six_months_ago]
+
+                # Group by month and calculate total, income, and expenses
+                monthly_summary = df_six_months.groupby(df_six_months['Date'].dt.to_period('M')).agg({'Amount': 'sum'})
+                monthly_summary['Income'] = df_six_months[df_six_months['Amount'] > 0].groupby(df_six_months['Date'].dt.to_period('M')).agg({'Amount': 'sum'})
+                monthly_summary['Expenses'] = df_six_months[df_six_months['Amount'] < 0].groupby(df_six_months['Date'].dt.to_period('M')).agg({'Amount': 'sum'})
                 monthly_summary.fillna(0, inplace=True)
-    
-                # Calculate the total sum for spent and income
-                monthly_summary.loc['Total', 'Income'] = monthly_summary['Income'].sum()
-                monthly_summary.loc['Total', 'Spent'] = monthly_summary['Spent'].sum()
-                monthly_summary.loc['Total', 'Total'] = monthly_summary['Total'].sum()
-    
-                # Convert Date to string for displaying as a column
-                monthly_summary = monthly_summary.reset_index()
-                monthly_summary['Date'] = monthly_summary['Date'].astype(str)
-    
-                # Display the last 6 months' summary with caption
-                st.markdown("### Summary of Last 6 Months")
-                st.dataframe(monthly_summary.style.format({"Total": "{:.2f}", "Income": "{:.2f}", "Spent": "{:.2f}"}))
-    
+
+                # Convert PeriodIndex back to Timestamp to get the month names and sort by date
+                monthly_summary.index = monthly_summary.index.to_timestamp()
+                monthly_summary.sort_index(inplace=True)
+                monthly_summary.index = monthly_summary.index.strftime('%B %Y')
+
+                # Calculate the average of the total for the last six months
+                average_total = monthly_summary['Amount'].mean()
+
+                # Display the last 6 months summary excluding the current month
+                st.markdown("### Summary of Last 6 Months (Excluding Current Month)")
+                st.dataframe(monthly_summary.style.format("{:.2f}"))
+                st.markdown(f"**Average of Total for Last 6 Months: {average_total:.2f}**")
+
+                # Display the categories for the current month
+                st.markdown("### Categories for the Current Month")
+                current_month_data = df[df['Date'].dt.to_period('M') == current_month]
+                current_month_summary = current_month_data.groupby('Category')['Amount'].sum().reset_index()
+                st.dataframe(current_month_summary.style.format("{:.2f}"))
+
+                st.success('Analysis complete!')
+
             else:
-                st.error("No Data to analyse")
+                st.error("No data to analyse")
 
 
 def adjust_for_inflation(value, years, inflation_rate):
