@@ -435,7 +435,7 @@ def analyse(df):
 
     if st.button("Start Analysis"):
         with st.spinner('Loading...'):
-            time.sleep(2)  # Simulate a long-running operation
+            time.sleep(1)  # Simulate a long-running operation
 
             if df is not None and 'Amount' in df.columns and 'Date' in df.columns:
                 # Ensure correct data types
