@@ -637,14 +637,12 @@ def recommendation_page():
             col1, col2 = st.columns(2)
             with col1:
                 if st.button("Do the Financial Planning Yourself"):
-                    st.write("You chose to do the financial planning yourself.")
                     st.markdown("[Click here for more investment recommendations](https://www.depot-vergleichen.de/?device=m&_%24ja=tsid%3A23190%7Ccid%3A68847590%7Cagid%3A1935817910%7Ctid%3Akwd-360263709087%7Ccrid%3A481496890302%7Cnw%3Ag%7Crnd%3A7626169502132342313%7Cdvc%3Am%7Cadp%3A%7Cmt%3Ae%7Cloc%3A9042756&gad_source=1&gclid=Cj0KCQiAwvKtBhDrARIsAJj-kTjRSRFfAudWsL3WkBQptn6hPONcO1McnUuR0YBgRbBnc8UYnXQdFK0aAvylEALw_wcB)", target="_blank")
 
                     # You can add additional actions here
 
             with col2:
                 if st.button("Get Professional Advisory"):
-                    st.write("You chose to get professional advisory.")
                     st.markdown("[Click here for professional financial advice](https://calendly.com/?utm_source=google&utm_medium=cpc&utm_campaign=Sign-Ups_Intl-Brand_EMEA-English_Search&utm_adgroup=calendly-exact-EMEA-English&utm_content=calendly-exact-EMEA-English&utm_term=calendly&utm_matchtype=e&utm_targetid=kwd-309663638777&utm_location=2276&utm_placement=&utm_device=c&gad_source=1&gclid=Cj0KCQiA5fetBhC9ARIsAP1UMgFgcsuC1LyI8UDIDU1oOjLL3yrUArHwie6K1r_6jAMFR19Dg0R22hQaAvgLEALw_wcB)", target="_blank")
 
 
