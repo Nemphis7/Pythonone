@@ -582,7 +582,7 @@ def recommendation_page():
         - **Expected Annual Inflation Rate**: Your expectation of the average annual increase in prices.
         
         Click on "Calculate Investment Projection" to view the potential growth of your investments over time based on a Monte Carlo simulation. 
-        - You'll see the median projection as well as the 5th and 95th percentile ranges. 
+        - You'll see the median projection as well as the 10th and 90th percentile ranges. 
         - After the calculation, you can choose to either plan your finances yourself or seek professional advisory. 
         - This will give you a comprehensive impression of what a part of your monthly saving could turn to in the future.
     """)
@@ -613,8 +613,8 @@ def recommendation_page():
 
             # Plot median and confidence interval (second graph)
             median_projection = np.median(simulation_results, axis=0)
-            lower_bound = np.percentile(simulation_results, 5, axis=0)
-            upper_bound = np.percentile(simulation_results, 95, axis=0)
+            lower_bound = np.percentile(simulation_results, 10, axis=0)
+            upper_bound = np.percentile(simulation_results, 90, axis=0)
             plt.figure(figsize=(10, 6))
             plt.fill_between(range(years_to_invest), lower_bound, upper_bound, color='gray', alpha=0.5)
             plt.plot(median_projection, label='Median Projection')
@@ -628,9 +628,9 @@ def recommendation_page():
             final_median_projection = median_projection[-1]
             final_lower_bound = lower_bound[-1]
             final_upper_bound = upper_bound[-1]
-            st.write(f"Total amount invested over {years_to_invest} years (adjusted for inflation): ${total_invested:,.2f}")
-            st.write(f"The median projected portfolio value at the end of the investment period (considering inflation) is: ${final_median_projection:,.2f}")
-            st.write(f"The projected portfolio value range is from ${final_lower_bound:,.2f} to ${final_upper_bound:,.2f} (5th to 95th percentile)")
+            st.write(f"Total amount invested over {years_to_invest} years (adjusted for inflation): € {total_invested:,.2f}")
+            st.write(f"The median projected portfolio value at the end of the investment period (considering inflation) is: € {final_median_projection:,.2f}")
+            st.write(f"The projected portfolio value range is from € {final_lower_bound:,.2f} to € {final_upper_bound:,.2f} (10th to 90th percentile)")
 
             col1, col2 = st.columns(2)
             with col1:
