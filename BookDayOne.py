@@ -1046,16 +1046,22 @@ def main():
 
     st.title("YouFinance")
 
+    # Initialize session state variables if they don't exist
     if 'uploaded_transaction_data' not in st.session_state:
-        st.session_state.uploaded_transaction_data = load_data()
+        st.session_state.uploaded_transaction_data = None
     if 'uploaded_portfolio_data' not in st.session_state:
-        st.session_state.uploaded_portfolio_data = load_stock_portfolio()
-        
+        st.session_state.uploaded_portfolio_data = None
+    if 'dataframe' not in st.session_state:
+        st.session_state.dataframe = load_data()
+    if 'stock_df' not in st.session_state:
+        st.session_state.stock_df = load_stock_portfolio()
+
+    # Now you can safely assign them
     df = st.session_state.dataframe
     stock_df = st.session_state.stock_df
 
     if page_selection == "Account Overview":
-        account_overview(df, stock_df)
+        account_overview()
     elif page_selection == "Analysis":
         analyse(df)
     elif page_selection == "Recommendation":
