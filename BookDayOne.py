@@ -574,14 +574,14 @@ def recommendation_page():
     st.title("Investment Recommendation")
     
     st.info("""
-        **How to use the Investment Recommendation tool:**
+        **How to use the Tool and why are we doing?:**
 
         - **Enter Your Current Age**: Your current age in years.
         - **Enter Your Retirement Age**: The age at which you plan to retire.
         - **Monthly Savings**: The amount you can save each month. By default, this is set to 70% of your average monthly savings calculated from the Analysis page.
         - **Expected Annual Inflation Rate**: Your expectation of the average annual increase in prices.
         
-        Click on "Calculate Investment Projection" to view the potential growth of your investments over time based on a Monte Carlo simulation. You'll see the median projection as well as the 5th and 95th percentile ranges. After the calculation, you can choose to either plan your finances yourself or seek professional advisory.
+        Click on "Calculate Investment Projection" to view the potential growth of your investments over time based on a Monte Carlo simulation. You'll see the median projection as well as the 5th and 95th percentile ranges. After the calculation, you can choose to either plan your finances yourself or seek professional advisory. This will give you a comprehensive impression of what a part of your monthly saving could turn to in the future.
     """)
 
     default_monthly_savings = 0.0
