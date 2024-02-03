@@ -496,35 +496,28 @@ def analyse(df):
         if not current_month_summary.empty:
             # Compute the totals for income and expenses
             total_income = current_month_summary[current_month_summary['Amount'] > 0]['Amount'].sum()
-            total_expenses = current_month_summary[current_month_summary['Amount'] < 0]['Amount'].sum()
-            net_savings = total_income + total_expenses  # Assuming savings is income plus expenses since expenses are negative
+            total_expenses = -current_month_summary[current_month_summary['Amount'] < 0]['Amount'].sum()
+            net_savings = total_income - total_expenses  # Total income minus total expenses
 
-            # Create lists for source, target, and values
+            # Initialize lists for source, target, and values
             source = []
             target = []
             value = []
-            label = ['Income', 'Expenses', 'Savings']  # Initialize with known labels
+            label = ['Income']  # Initialize with Income label
 
-            # Add income flows
+            # Add flows from Income to each expense category
             for i, row in current_month_summary.iterrows():
-                if row['Amount'] > 0:
-                    source.append(0)  # Income index
-                    target.append(len(label))  # Index of new label
-                    value.append(row['Amount'])
+                if row['Amount'] < 0:  # For expenses
+                    source.append(0)  # Income is the only source
+                    target.append(len(label))  # Target is the next index for the new label
+                    value.append(-row['Amount'])  # Expenses are negative, so make positive
                     label.append(row['Category'])
 
-            # Add expense flows
-            for i, row in current_month_summary.iterrows():
-                if row['Amount'] < 0:
-                    source.append(len(label))  # Index of new label
-                    target.append(1)  # Expenses index
-                    value.append(-row['Amount'])  # Expenses are negative, make positive for flow
-                    label.append(row['Category'])
-
-            # Add savings flow
-            source.append(0)  # Income index
-            target.append(2)  # Savings index
+            # Add the savings flow
+            source.append(0)  # Income is the only source
+            target.append(len(label))  # Target is the next index for the new label, which will be 'Savings'
             value.append(net_savings)
+            label.append('Savings')
 
             # Define the Sankey diagram
             fig = go.Figure(data=[go.Sankey(
