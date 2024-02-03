@@ -21,8 +21,6 @@ def custom_format(value):
         value_str = value_str.replace(',', 'X').replace('.', ',').replace('X', '.')
         return value_str
 
-
-
 def fetch_current_price(ticker):
     try:
         stock = yf.Ticker(ticker)
@@ -79,7 +77,7 @@ def recommendation_page():
         except Exception as e:
             st.error(f"An error occurred while processing the data: {str(e)}")
 
-    if st.button("I want to do my Financial Analysis"):
+   if st.button("I want to do my Financial Analysis"):
         # Add the actions you want to take when the button is pressed
         pass
 
@@ -687,33 +685,19 @@ def display_comparison_table(ticker_a, ticker_b):
     comparison_df = pd.DataFrame(table_data, index=["P/E Ratio", "Market Cap", "Dividend Yield", "ROE", "D/E Ratio", "P/B Ratio"])
     st.table(comparison_df)
 
-def wkn_to_ticker(wkn):
-    # This function needs to convert WKN to ticker
-    # You might need an external API or service for this conversion
-    # For now, this is just a placeholder function
-    wkn_to_ticker_dict = {
-        'WKN1': 'Ticker1',
-        'WKN2': 'Ticker2',
-        # Add your WKN to ticker mappings here
-    }
-    return wkn_to_ticker_dict.get(wkn, None)
-    
+
 def Aktienkurse_app():
     st.title("Stock Price Comparison")
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        wkn_a = st.text_input("Insert WKN for Stock A:", "")
-        ticker_a = wkn_to_ticker(wkn_a) if wkn_a else None
-        
+        aktien_ticker_a = st.text_input("Insert Stock Ticker for Stock A:", "")
     with col2:
-        wkn_b = st.text_input("Insert WKN for Stock B:", "")
-        ticker_b = wkn_to_ticker(wkn_b) if wkn_b else None
-        
+        aktien_ticker_b = st.text_input("Insert Stock Ticker for Stock B:", "")
     with col3:
         period_option = st.selectbox("Select Period:", options=['5y', '3y', '1y', '6mo'], index=0)
 
-    if ticker_a and ticker_b:
+    if aktien_ticker_a and aktien_ticker_b:
         # Prepare a DataFrame for each stock with 'Ticker' and 'Amount' columns
         df_a = pd.DataFrame({'Ticker': [aktien_ticker_a], 'Amount': [1]})
         df_b = pd.DataFrame({'Ticker': [aktien_ticker_b], 'Amount': [1]})
