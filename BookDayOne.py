@@ -433,6 +433,11 @@ def plot_portfolio_history(portfolio_history):
 def analyse(df):
     st.title("Analyse")
 
+    # Define current_month_summary here so it's available in the local scope
+    current_month = datetime.now().strftime('%Y-%m')
+    current_month_period = pd.Period(current_month)
+    current_month_summary = df[df['Date'].dt.to_period('M') == current_month_period].groupby('Category')['Amount'].sum().reset_index() if df is not None else pd.DataFrame()
+
     # This button will trigger the analysis
     if st.button("Start Analysis"):
         with st.spinner('Loading...'):
@@ -444,8 +449,7 @@ def analyse(df):
                 df['Amount'] = pd.to_numeric(df['Amount'], errors='coerce')
 
                 # Exclude the current month's data for the last 6 months summary
-                current_month = pd.to_datetime('now').to_period('M')
-                df_past_six_months = df[df['Date'].dt.to_period('M') < current_month].copy()
+                df_past_six_months = df[df['Date'].dt.to_period('M') < current_month_period].copy()
                 df_past_six_months = df_past_six_months[df_past_six_months['Date'] >= df_past_six_months['Date'].max() - pd.DateOffset(months=6)]
                 
                 # Create 'Income' and 'Spent' columns
@@ -481,8 +485,6 @@ def analyse(df):
 
                 # Display the categories for the current month
                 st.markdown("### Categories for the Current Month")
-                current_month_summary = df[df['Date'].dt.to_period('M') == current_month].groupby('Category')['Amount'].sum().reset_index()
-                current_month_summary['Amount'] = current_month_summary['Amount'].apply(pd.to_numeric, errors='coerce')
                 st.dataframe(current_month_summary.style.format({"Amount": "{:.2f}"}))
 
                 st.success('Analysis complete!')
@@ -491,57 +493,58 @@ def analyse(df):
 
     # This button should be at the same level of indentation as the "Start Analysis" button
     if st.button("Generate Sankey Diagram"):
-        # Assuming 'current_month_summary' DataFrame has the correct data
-        # Compute the totals for income and expenses
-        total_income = current_month_summary[current_month_summary['Amount'] > 0]['Amount'].sum()
-        total_expenses = current_month_summary[current_month_summary['Amount'] < 0]['Amount'].sum()
-        net_savings = total_income + total_expenses  # Assuming savings is income plus expenses since expenses are negative
+        if not current_month_summary.empty:
+            # Compute the totals for income and expenses
+            total_income = current_month_summary[current_month_summary['Amount'] > 0]['Amount'].sum()
+            total_expenses = current_month_summary[current_month_summary['Amount'] < 0]['Amount'].sum()
+            net_savings = total_income + total_expenses  # Assuming savings is income plus expenses since expenses are negative
 
-        # Create lists for source, target, and values
-        source = []
-        target = []
-        value = []
-        label = ['Income', 'Expenses', 'Savings']  # Initialize with known labels
+            # Create lists for source, target, and values
+            source = []
+            target = []
+            value = []
+            label = ['Income', 'Expenses', 'Savings']  # Initialize with known labels
 
-        # Add income flows
-        for i, row in current_month_summary.iterrows():
-            if row['Amount'] > 0:
-                source.append(0)  # Income index
-                target.append(len(label))  # Index of new label
-                value.append(row['Amount'])
-                label.append(row['Category'])
+            # Add income flows
+            for i, row in current_month_summary.iterrows():
+                if row['Amount'] > 0:
+                    source.append(0)  # Income index
+                    target.append(len(label))  # Index of new label
+                    value.append(row['Amount'])
+                    label.append(row['Category'])
 
-        # Add expense flows
-        for i, row in current_month_summary.iterrows():
-            if row['Amount'] < 0:
-                source.append(len(label))  # Index of new label
-                target.append(1)  # Expenses index
-                value.append(-row['Amount'])  # Expenses are negative, make positive for flow
-                label.append(row['Category'])
+            # Add expense flows
+            for i, row in current_month_summary.iterrows():
+                if row['Amount'] < 0:
+                    source.append(len(label))  # Index of new label
+                    target.append(1)  # Expenses index
+                    value.append(-row['Amount'])  # Expenses are negative, make positive for flow
+                    label.append(row['Category'])
 
-        # Add savings flow
-        source.append(0)  # Income index
-        target.append(2)  # Savings index
-        value.append(net_savings)
+            # Add savings flow
+            source.append(0)  # Income index
+            target.append(2)  # Savings index
+            value.append(net_savings)
 
-        # Define the Sankey diagram
-        fig = go.Figure(data=[go.Sankey(
-            node=dict(
-                pad=15,
-                thickness=20,
-                line=dict(color="black", width=0.5),
-                label=label,
-                color="blue"
-            ),
-            link=dict(
-                source=source,
-                target=target,
-                value=value
-            ))])
+            # Define the Sankey diagram
+            fig = go.Figure(data=[go.Sankey(
+                node=dict(
+                    pad=15,
+                    thickness=20,
+                    line=dict(color="black", width=0.5),
+                    label=label,
+                    color="blue"
+                ),
+                link=dict(
+                    source=source,
+                    target=target,
+                    value=value
+                ))])
 
-        fig.update_layout(title_text="Income, Expenses, and Savings Flows", font_size=10)
-        st.plotly_chart(fig, use_container_width=True)
-
+            fig.update_layout(title_text="Income, Expenses, and Savings Flows", font_size=10)
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.error("No data available to generate Sankey Diagram")
 
 def adjust_for_inflation(value, years, inflation_rate):
     return value / ((1 + inflation_rate) ** years)
