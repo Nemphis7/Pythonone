@@ -34,53 +34,35 @@ def fetch_current_price(ticker):
 
 # Function to plot the historical data with Plotly
         
-def recommendation_page():
-    st.title("Investment Recommendation")
+def monte_carlo_simulation(start_balance, monthly_savings, stock_percentage, years_to_invest, inflation_rate, simulations=1000):
+    avg_return_stock = 0.07  # Average annual return rate for stocks
+    avg_return_bond = 0.03  # Average annual return rate for bonds
+    std_dev_stock = 0.18  # Standard deviation for stock returns
+    std_dev_bond = 0.06  # Standard deviation for bond returns
 
-    # User Inputs
-    current_age = st.number_input("Your Current Age", min_value=18, max_value=100, step=1)
-    retirement_age = st.number_input("Your Retirement Age", min_value=current_age + 1, max_value=100, step=1)
-    monthly_savings = st.number_input("Monthly Savings", min_value=0.0, step=1.0)
-    inflation_rate = st.number_input("Expected Annual Inflation Rate", min_value=0.0, max_value=10.0, step=0.1, value=2.0) / 100
+    # Preparing a 2D array to store simulation results
+    all_results = np.zeros((simulations, years_to_invest))
 
-    if st.button("Calculate Investment Projection"):
-        years_to_invest = retirement_age - current_age
-        stock_percentage, _ = calculate_portfolio_distribution(current_age)
+    for i in range(simulations):
+        balance = start_balance
+        for year in range(years_to_invest):
+            # Generating random returns for stocks and bonds
+            annual_stock_return = np.random.normal(avg_return_stock, std_dev_stock)
+            annual_bond_return = np.random.normal(avg_return_bond, std_dev_bond)
 
-        # Run Monte Carlo Simulation
-        simulation_results = monte_carlo_simulation(0, monthly_savings, stock_percentage, years_to_invest, inflation_rate)
+            # Calculating weighted return based on stock and bond distribution
+            weighted_return = (stock_percentage * annual_stock_return + (100 - stock_percentage) * annual_bond_return) / 100
 
-        # Plot each simulation
-        plt.figure(figsize=(10, 6))
-        for simulation in simulation_results:
-            plt.plot(range(years_to_invest), simulation, linewidth=0.5, alpha=0.3)
-        plt.title("Monte Carlo Simulation of Investment Over Time")
-        plt.xlabel("Years")
-        plt.ylabel("Portfolio Value")
-        st.pyplot(plt)
+            # Updating the balance with return and monthly savings
+            balance = balance * (1 + weighted_return) + monthly_savings * 12
 
-        try:
-            # Calculate the median projection and bounds
-            median_projection = np.median(simulation_results, axis=0)
-            lower_bound = np.percentile(simulation_results, 5, axis=0)
-            upper_bound = np.percentile(simulation_results, 95, axis=0)
+            # Adjusting for inflation
+            balance = adjust_for_inflation(balance, 1, inflation_rate)
 
-            # Plot median and confidence interval
-            plt.figure(figsize=(10, 6))
-            plt.fill_between(range(years_to_invest), lower_bound, upper_bound, color='gray', alpha=0.5)
-            plt.plot(median_projection, label='Median Projection')
-            plt.title("Investment Projection Over Time")
-            plt.xlabel("Years")
-            plt.ylabel("Portfolio Value")
-            plt.legend()
-            st.pyplot(plt)
-        except Exception as e:
-            st.error(f"An error occurred while processing the data: {str(e)}")
+            # Storing the year-end balance in the results array
+            all_results[i, year] = balance
 
-    if st.button("I want to do my Financial Analysis"):
-    # Add the actions you want to take when the button is pressed
-        pass
-
+    return all_results
 
 def get_fundamental_data(ticker):
     stock = yf.Ticker(ticker)
@@ -795,4 +777,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-
+    
