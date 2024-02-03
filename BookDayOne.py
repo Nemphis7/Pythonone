@@ -355,23 +355,25 @@ def plot_portfolio_history_plotly(portfolio_history):
 
 
 def account_overview():
+    # Upload functionality
     uploaded_portfolio_data = upload_excel_sheet("Upload Portfolio Excel Sheet", "portfolio")
     uploaded_transaction_data = upload_excel_sheet("Upload Transactions Excel Sheet", "transactions")
 
+    # Update session state
     if uploaded_portfolio_data is not None:
         st.session_state.uploaded_portfolio_data = uploaded_portfolio_data
     if uploaded_transaction_data is not None:
         st.session_state.uploaded_transaction_data = uploaded_transaction_data
 
-    # Use session state data for visualizations
-    if st.session_state.uploaded_portfolio_data is not None:
-        plot_portfolio_performance(st.session_state.uploaded_portfolio_data)
+    # Load the stock portfolio data
+    stock_df = load_stock_portfolio()
 
-    if st.session_state.uploaded_transaction_data is not None:
-        plot_financials(st.session_state.uploaded_transaction_data)
-        
-    # Call visualization functions to refresh data
-    plot_portfolio_performance()
+    # Choose a period for portfolio history (you can adjust this as needed)
+    period = "1y"  # For example, 1 year
+    total_portfolio_history = get_combined_historical_data(stock_df, period)
+
+    # Call visualization functions with the necessary data
+    plot_portfolio_performance(total_portfolio_history)
     plot_financial_overview()
 
     st.title("Financial Data Analysis")
