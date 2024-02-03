@@ -367,7 +367,14 @@ def account_overview(df, stock_df):
     st.subheader("Upload Your Transaction Data")
     uploaded_transaction_data = upload_excel_sheet("Upload Transactions Excel Sheet", "transactions")
 
+    if uploaded_transaction_data is not None:
+        st.session_state.dataframe = uploaded_transaction_data  # Update session state
 
+    # Check if new portfolio data is uploaded
+    if uploaded_portfolio_data is not None:
+        st.session_state.stock_df = uploaded_portfolio_data  # Update session state
+
+    
     current_month = datetime.now().strftime('%Y-%m')
     current_month_period = pd.Period(current_month)
 
@@ -441,11 +448,6 @@ def account_overview(df, stock_df):
     # Plot the historical data with Plotly
     plot_portfolio_history_plotly(portfolio_history)
 
-    if uploaded_transaction_data is not None:
-        df = uploaded_transaction_data
-
-    if uploaded_portfolio_data is not None:
-        stock_df = uploaded_portfolio_data
         
 def get_portfolio_historical_data(stock_df, period="1y"):
     portfolio_history = pd.DataFrame()
