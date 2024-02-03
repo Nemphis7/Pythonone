@@ -466,6 +466,7 @@ def analyse(df):
 
                 # Calculate the average total for the last six months
                 average_total = monthly_summary['Amount'].mean()
+                st.session_state['average_monthly_savings'] = average_total
 
                 # Create the total row separately without 'Date'
                 total_values = {
@@ -491,7 +492,7 @@ def analyse(df):
             else:
                 st.error("No data to analyse")
 
-    # ... previous code ...
+
 
     if st.button("Generate Sankey Diagram"):
         st.header("Sankey Diagram")
@@ -569,12 +570,20 @@ import matplotlib.pyplot as plt
 import streamlit as st
 
 def recommendation_page():
+    
     st.title("Investment Recommendation")
+
+    default_monthly_savings = 0.0
+
+    if 'average_monthly_savings' in st.session_state:
+        # Set to 70% of the average monthly savings
+        default_monthly_savings = st.session_state['average_monthly_savings'] * 0.7
+    
 
     # User Inputs
     current_age = st.number_input("Your Current Age", min_value=18, max_value=100, step=1)
     retirement_age = st.number_input("Your Retirement Age", min_value=current_age + 1, max_value=100, step=1)
-    monthly_savings = st.number_input("Monthly Savings", min_value=0.0, step=1.0)
+    monthly_savings = st.number_input("Monthly Savings", min_value=0.0, step=1.0, value=default_monthly_savings)
     inflation_rate = st.number_input("Expected Annual Inflation Rate", min_value=0.0, max_value=10.0, step=0.1, value=2.0) / 100
 
     if st.button("Calculate Investment Projection"):
