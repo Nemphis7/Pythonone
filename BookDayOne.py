@@ -447,6 +447,10 @@ def analyse(df):
                 df_past_six_months = df[df['Date'].dt.to_period('M') < current_month].copy()
                 df_past_six_months = df_past_six_months[df_past_six_months['Date'] >= df_past_six_months['Date'].max() - pd.DateOffset(months=6)]
                 
+                # Create 'Income' and 'Spent' columns
+                df_past_six_months['Income'] = df_past_six_months['Amount'].apply(lambda x: x if x > 0 else 0)
+                df_past_six_months['Spent'] = df_past_six_months['Amount'].apply(lambda x: x if x < 0 else 0)
+
                 # Group by month and calculate the sums for 'Amount', 'Income', and 'Spent'
                 monthly_summary = df_past_six_months.groupby(df_past_six_months['Date'].dt.to_period('M')).agg({'Amount': 'sum', 'Income': 'sum', 'Spent': 'sum'})
                 monthly_summary.reset_index(inplace=True)
@@ -484,8 +488,6 @@ def analyse(df):
 
             else:
                 st.error("No data to analyse")
-
-
 
 
 def adjust_for_inflation(value, years, inflation_rate):
