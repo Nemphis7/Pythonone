@@ -901,27 +901,29 @@ def broker_overview_comparison():
                 "Provides extensive research tools and financial news."
             ]
         },
-        "DEGIRO": {
-            "description": "DEGIRO is a Dutch online brokerage company that offers low-cost trading to retail investors worldwide. It's known for its affordable pricing structure and broad market access.",
-            "fees": "Low trading fees compared to competitors, with specific fees depending on the market. For example, US stock trades are €0.50 + USD 0.004 per share.",
-            "platform": "Web-based platform and mobile app available, focusing on functionality and offering tools for technical analysis.",
-            "website": "https://www.degiro.eu",
-            "key_features": [
-                "Affordable pricing structure for trading across a wide range of markets.",
-                "Offers an easy-to-use web-based platform and mobile app.",
-                "Provides access to a broad spectrum of investment products."
+      "DEGIRO": {
+    "description": "DEGIRO is a Dutch online brokerage company that offers low-cost trading to retail investors worldwide. It's known for its affordable pricing structure and broad market access.",
+    "fees": "Low trading fees compared to competitors, with specific fees depending on the market. For example, US stock trades are €0.50 + USD 0.004 per share.",
+    "platform": "Web-based platform and mobile app available, focusing on functionality and offering tools for technical analysis.",
+    "website": "https://www.degiro.eu",
+    "key_features": [
+        "Affordable pricing structure for trading across a wide range of markets.",
+        "Offers an easy-to-use web-based platform and mobile app.",
+        "Provides access to a broad spectrum of investment products."
+    ]
+},  # This comma was missing
+"JP Morgan": {
+    "description": "JP Morgan offers a robust trading platform with a wide range of investment options, tailored for both novice and experienced investors looking for comprehensive financial services.",
+    "fees": "Varies by account type and services used. Offers some commission-free options.",
+    "platform": "Advanced web and mobile trading platforms with access to extensive research and tools.",
+    "website": "https://www.jpmorgan.com",
+    "key_features": [
+        "Access to global markets and a wide range of investment products.",
+        "Robust research and analysis tools.",
+        "Personalized financial advisory services."
+    ]
+},
 
-        "JP Morgan": {
-            "description": "JP Morgan offers a robust trading platform with a wide range of investment options, tailored for both novice and experienced investors looking for comprehensive financial services.",
-            "fees": "Varies by account type and services used. Offers some commission-free options.",
-            "platform": "Advanced web and mobile trading platforms with access to extensive research and tools.",
-            "website": "https://www.jpmorgan.com",
-            "key_features": [
-                "Access to global markets and a wide range of investment products.",
-                "Robust research and analysis tools.",
-                "Personalized financial advisory services."
-            ]
-        },
         "Sparkasse": {
             "description": "Sparkasse's brokerage arm provides a user-friendly trading experience, focusing on German and European markets with competitive fees for casual and intermediate investors.",
             "fees": "Competitive trading fees, with special offers for savings plans on ETFs and stocks.",
