@@ -897,8 +897,15 @@ def get_combined_historical_data(stock_df, period="1y"):
     return portfolio_history['Total']
 
 def plot_portfolio_performance(total_portfolio_history):
-    # Plottet die Gesamtperformance des Portfolios
-    if stock_df is not None and not stock_df.empty:
+    # Ensure the data is loaded
+    stock_df = load_stock_portfolio()
+
+    # Check if the data is empty
+    if total_portfolio_history.empty:
+        st.error("No data available to plot portfolio performance.")
+        return
+
+    # Plotting code
     plt.figure(figsize=(10, 5))
     plt.plot(total_portfolio_history.index, total_portfolio_history, label='Total Portfolio Value')
     plt.title('Total Portfolio Performance Over Time')
