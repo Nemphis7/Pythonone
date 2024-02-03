@@ -878,8 +878,8 @@ def broker_overview_comparison():
             "description": "Trade Republic is a mobile-only broker that offers a simple, streamlined trading experience. It's known for its ease of use and low fees, making it a popular choice for new and casual investors.",
             "fees": "Offers commission-free trades, with only a €1 external fee for settlement of orders. No account management fees.",
             "platform": "Mobile app available on both iOS and Android, focused on simplicity and ease of use. Does not offer a desktop trading platform.",
-            "website": "hhttps://app.traderepublic.com/login",
-            "logo": "https://www.bing.com/ck/a?!&&p=6943097bd099d531JmltdHM9MTcwNjkxODQwMCZpZ3VpZD0zZDFiYmU4Yi1jNjRhLTYwMjgtMTM1OC1iMGEyYzI0YTYzYzAmaW5zaWQ9NTcwNQ&ptn=3&ver=2&hsh=3&fclid=3d1bbe8b-c64a-6028-1358-b0a2c24a63c0&u=a1L2ltYWdlcy9zZWFyY2g_cT1sb2dvIFRyYWRlIHJlcHVibGlrJkZPUk09SVFGUkJBJmlkPUQ1ODZFODhBRUYzOTQxNDZBMDFDQUIxOEJCNjkwRDYzOEZFNDk1RUI&ntb=1"  # Placeholder URL for Broker A's logo
+            "website": "https://www.traderepublic.com",
+            "logo": ""  # Placeholder URL for Broker A's logo
         },
         "Degiro": {
             "description": "Offers a wide range of investment options and advanced trading tools.",
