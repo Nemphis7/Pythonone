@@ -581,12 +581,7 @@ def recommendation_page():
         years_to_invest = retirement_age - current_age
         total_invested = monthly_savings * 12 * years_to_invest
         stock_percentage, _ = calculate_portfolio_distribution(current_age)
-
-    
-        # Run Monte Carlo Simulation
         simulation_results = monte_carlo_simulation(0, monthly_savings, stock_percentage, years_to_invest, inflation_rate)
-
-        # Plot each simulation
 
     try:
             # Calculate the median projection and bounds
