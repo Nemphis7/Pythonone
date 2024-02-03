@@ -86,7 +86,23 @@ def get_fundamental_data(ticker):
         # ... any other data you want to fetch
     }
 
-
+def upload_excel_sheet(title, key):
+    uploaded_file = st.file_uploader(title, type=["xlsx"], key=key)
+    if uploaded_file is not None:
+        try:
+            df = pd.read_excel(uploaded_file)
+            # Differentiate the upload type and update the corresponding global variable
+            if key == "portfolio":
+                global uploaded_portfolio_data
+                uploaded_portfolio_data = df
+            elif key == "transactions":
+                global uploaded_transaction_data
+                uploaded_transaction_data = df
+            return df
+        except Exception as e:
+            st.error(f"Error processing file: {e}")
+    return None
+    
 def load_data():
     if uploaded_transaction_data is not None:
         return uploaded_transaction_data
@@ -342,7 +358,12 @@ def plot_portfolio_history_plotly(portfolio_history):
 
 def account_overview(df, stock_df):
     st.title("Financial Data Analysis")
-    
+
+    st.subheader("Upload Your Portfolio Data")
+    upload_excel_sheet("Upload Portfolio Excel Sheet", "portfolio")
+
+    st.subheader("Upload Your Transaction Data")
+    upload_excel_sheet("Upload Transactions Excel Sheet", "transactions")
     # Upload functionality
     global uploaded_portfolio_data, uploaded_transaction_data
     uploaded_portfolio_data = upload_excel_sheet("Upload Portfolio Excel Sheet", "portfolio")
