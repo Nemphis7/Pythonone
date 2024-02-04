@@ -588,7 +588,7 @@ def recommendation_page():
     
 
     st.write("Please conduct your own research before opening an account with any of the listed brokers.")
-    st.title("Savings Forecast")
+    st.title("Investment Recommendation")
     
     st.info("""
         **How to use the Tool and what is it providing us?:**
@@ -884,10 +884,13 @@ def plot_portfolio_performance(total_portfolio_history):
     plt.legend()
     st.pyplot(plt)
     
- def broker_overview_comparison():
-    st.title("Overview")
+def broker_overview_comparison():
+
+    st.title("Broker Overview/Comparison")
+
     st.markdown("""
     ### Choosing the Right Broker: An Essential Step in Your Investment Journey
+    
     The choice of broker is crucial for anyone starting in wealth building or for experienced investors looking for a new partner. Each broker offers a unique set of features, fees, and platforms, catering to different investor needs. While some may prioritize low fees, others might look for extensive research tools or a wide range of available securities. Here we compare Trade Republic, ING Bank, and DEGIRO, providing key facts to help you find the broker that best fits your investment strategy.
     """)
 
@@ -923,19 +926,19 @@ def plot_portfolio_performance(total_portfolio_history):
         "Affordable pricing structure for trading across a wide range of markets.",
         "Offers an easy-to-use web-based platform and mobile app.",
         "Provides access to a broad spectrum of investment products."
-        ]
-    },  # This comma was missing
-    "JP Morgan": {
-        "description": "JP Morgan offers a robust trading platform with a wide range of investment options, tailored for both novice and experienced investors looking for comprehensive financial services.",
-        "fees": "Varies by account type and services used. Offers some commission-free options.",
-        "platform": "Advanced web and mobile trading platforms with access to extensive research and tools.",
-        "website": "https://www.jpmorgan.com",
-        "key_features": [
-            "Access to global markets and a wide range of investment products.",
-            "Robust research and analysis tools.",
-            "Personalized financial advisory services."
-        ]
-    },
+    ]
+},  # This comma was missing
+"JP Morgan": {
+    "description": "JP Morgan offers a robust trading platform with a wide range of investment options, tailored for both novice and experienced investors looking for comprehensive financial services.",
+    "fees": "Varies by account type and services used. Offers some commission-free options.",
+    "platform": "Advanced web and mobile trading platforms with access to extensive research and tools.",
+    "website": "https://www.jpmorgan.com",
+    "key_features": [
+        "Access to global markets and a wide range of investment products.",
+        "Robust research and analysis tools.",
+        "Personalized financial advisory services."
+    ]
+},
 
         "Sparkasse": {
             "description": "Sparkasse's brokerage arm provides a user-friendly trading experience, focusing on German and European markets with competitive fees for casual and intermediate investors.",
@@ -996,16 +999,21 @@ def plot_portfolio_performance(total_portfolio_history):
     for feature in broker['key_features']:
         st.markdown(f"- {feature}")
     st.markdown("""
-    ### Personalized Financial Guidance
-    After exploring your broker options, you might have specific questions or need guidance tailored to your financial situation and goals. A one-on-one meeting with a financial advisor can provide you with personalized advice, helping you make informed decisions about your investments.
-    Whether you're just starting on your investment journey or looking to refine your strategy, a financial advisor can offer insights into:
-    - Building a diversified investment portfolio
-    - Understanding market risks and opportunities
-    - Planning for long-term financial goals, such as retirement or wealth accumulation
-    - Navigating complex financial situations and tax implications
-    ### Schedule a Meeting
-    If you're ready to take the next step in your financial journey, schedule a meeting below. You'll be able to choose a date and time that works best for you to discuss your investment needs and questions.
-    """)
+### Personalized Financial Guidance
+
+After exploring your broker options, you might have specific questions or need guidance tailored to your financial situation and goals. A one-on-one meeting with a financial advisor can provide you with personalized advice, helping you make informed decisions about your investments.
+
+Whether you're just starting on your investment journey or looking to refine your strategy, a financial advisor can offer insights into:
+
+- Building a diversified investment portfolio
+- Understanding market risks and opportunities
+- Planning for long-term financial goals, such as retirement or wealth accumulation
+- Navigating complex financial situations and tax implications
+
+### Schedule a Meeting
+
+If you're ready to take the next step in your financial journey, schedule a meeting below. You'll be able to choose a date and time that works best for you to discuss your investment needs and questions.
+""")
 
     # Calendly embed link
     calendly_embed_link = 'https://calendly.com/information-you-finance'  # Replace this with your actual Calendly embed link
@@ -1018,13 +1026,14 @@ def plot_portfolio_performance(total_portfolio_history):
 
     components.html(calendly_html, height=700)
 
-   
+
+
 
 def main():
     st.sidebar.title("Menu")
 
     # Updated to include "Brokers" as a new navigation option
-    navigation_options = ["Account Overview", "Analysis", "Planning", "Wealth Advisory", "Browse","Resources"]
+    navigation_options = ["Account Overview", "Analysis", "Recommendation", "Browse", "Brokers","Resources"]
 
     page_selection = st.sidebar.radio("Choose a page", navigation_options)
 
@@ -1053,11 +1062,11 @@ def main():
         account_overview(df, stock_df)
     elif page_selection == "Analysis":
         analyse(df)
-    elif page_selection == "Planning":
+    elif page_selection == "Recommendation":
         recommendation_page()
     elif page_selection == "Browse":
         Aktienkurse_app()
-    elif page_selection == "Wealth Advisory":  # Corrected to match the navigation option
+    elif page_selection == "Brokers":  # Corrected to match the navigation option
         broker_overview_comparison()  # Correct function call
     elif page_selection == "Resources":
         resources_page()
