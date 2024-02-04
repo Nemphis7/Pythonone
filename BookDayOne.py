@@ -268,6 +268,9 @@ def display_total_portfolio_value(stock_df):
     # Debugging: Display the stock_df DataFrame
     st.write("stock_df DataFrame:", stock_df)
 
+    # Initialize formatted_total_portfolio_value
+    formatted_total_portfolio_value = "N/A"
+
     # Check if required columns exist
     if 'Amount' in stock_df.columns and 'CurrentPrice' in stock_df.columns:
         # Calculate the total portfolio value
@@ -278,15 +281,14 @@ def display_total_portfolio_value(stock_df):
 
         # Debugging: Display the total portfolio value
         st.write("Total Portfolio Value (before formatting):", total_portfolio_value)
+
+        # Format the total portfolio value
+        formatted_total_portfolio_value = f"{total_portfolio_value:,.2f} €".replace(",", "X").replace(".", ",").replace("X", ".")
     else:
         st.error("Required columns not found in stock_df")
-        total_portfolio_value = 0
 
-    # Debugging: Display the formatted total portfolio value
+    # Display the formatted total portfolio value
     st.write("Formatted Total Portfolio Value:", formatted_total_portfolio_value)
-
-    # Display using markdown
-    st.markdown(f"<div class='total-row' style='padding: 10px;'><strong>Total Portfolio Value: {formatted_total_portfolio_value}</strong></div>", unsafe_allow_html=True)
 
 # Function to plot the historical data with Plotly
 def plot_portfolio_history_plotly(portfolio_history):
