@@ -885,6 +885,15 @@ def plot_portfolio_performance(total_portfolio_history):
     st.pyplot(plt)
     
 def broker_overview_comparison():
+    def display_header(title):
+    # Create a two-column layout
+    col1, col2 = st.columns([3, 1])  # Adjust the ratio based on your preference
+
+    with col1:
+        st.title(title)
+
+    with col2:
+        st.image("path_to_your_logo.png", width=100)  # Adjust the path and width as necessary
     st.title("Broker Overview/Comparison")
 
     st.markdown("""
