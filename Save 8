@@ -722,6 +722,17 @@ def get_stock_data(ticker):
         print(f"Fehler beim Abrufen der Daten für {ticker}: {e}")
         return None
 
+def resources_page():
+    st.title("Resources")
+    st.write("Download the initial Excel sheets as formatting examples.")
+
+    # Links to your GitHub raw content
+    portfolio_excel_url = "https://raw.githubusercontent.com/Nemphis7/Pythonone/main/StockPortfolio.xlsx"
+    transaction_excel_url = "https://raw.githubusercontent.com/Nemphis7/Pythonone/main/Mappe1.xlsx"
+
+    st.markdown(f"[Download Portfolio Excel Template]({portfolio_excel_url})", unsafe_allow_html=True)
+    st.markdown(f"[Download Transaction Excel Template]({transaction_excel_url})", unsafe_allow_html=True)
+
 def plot_stock_data(ticker_a, ticker_b, period='5y'):
     """Plot the stock price percentage change over the selected period."""
     try:
