@@ -386,7 +386,9 @@ def account_overview(df, stock_df):
         </table>
         """
 
-       
+        # Display the table using markdown
+        st.markdown(html_table, unsafe_allow_html=True)
+
         with st.expander("View Last 10 Income Bookings"):
             last_10_incomes = df_sorted[df_sorted['Amount'] > 0].head(10)
             st.markdown(last_10_incomes.to_html(classes='financial-table'), unsafe_allow_html=True)
@@ -414,7 +416,7 @@ def account_overview(df, stock_df):
     
     # Allow the user to select the time period for the historical data
     period = st.selectbox("Select the time period for the portfolio performance:",
-                          options=['5 y', '3 y', '1 y', '6 mo'], index=2)
+                          options=['5y', '3y', '1y', '6mo'], index=2)
     portfolio_history = get_portfolio_historical_data(stock_df, period)
     
     # Plot the historical data with Plotly
