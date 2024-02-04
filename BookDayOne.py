@@ -888,13 +888,17 @@ def broker_overview_comparison():
 
     st.title("Broker Overview/Comparison")
 
-    col1, col2 = st.columns([3, 1])  # Adjust the ratio based on your preference
-
+    col1, col2 = st.columns(2)
     with col1:
-        st.title(title)
+                if st.button("Do the Financial Planning Yourself"):
+                    st.write("You chose to do the financial planning yourself.")
+
+                    # You can add additional actions here
 
     with col2:
-        st.image("path_to_your_logo.png", width=100)  # Adjust the path and width as necessary
+                if st.button("Get Professional Advisory"):
+                    st.write("You chose to do the financial planning yourself.")
+
 
     st.markdown("""
     ### Choosing the Right Broker: An Essential Step in Your Investment Journey
