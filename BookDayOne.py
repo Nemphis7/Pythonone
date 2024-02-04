@@ -883,13 +883,11 @@ def plot_portfolio_performance(total_portfolio_history):
     plt.ylabel('Total Value')
     plt.legend()
     st.pyplot(plt)
+    
  def broker_overview_comparison():
-
     st.title("Broker Overview/Comparison")
-
     st.markdown("""
     ### Choosing the Right Broker: An Essential Step in Your Investment Journey
-    
     The choice of broker is crucial for anyone starting in wealth building or for experienced investors looking for a new partner. Each broker offers a unique set of features, fees, and platforms, catering to different investor needs. While some may prioritize low fees, others might look for extensive research tools or a wide range of available securities. Here we compare Trade Republic, ING Bank, and DEGIRO, providing key facts to help you find the broker that best fits your investment strategy.
     """)
 
@@ -998,21 +996,16 @@ def plot_portfolio_performance(total_portfolio_history):
     for feature in broker['key_features']:
         st.markdown(f"- {feature}")
     st.markdown("""
-### Personalized Financial Guidance
-
-After exploring your broker options, you might have specific questions or need guidance tailored to your financial situation and goals. A one-on-one meeting with a financial advisor can provide you with personalized advice, helping you make informed decisions about your investments.
-
-Whether you're just starting on your investment journey or looking to refine your strategy, a financial advisor can offer insights into:
-
-- Building a diversified investment portfolio
-- Understanding market risks and opportunities
-- Planning for long-term financial goals, such as retirement or wealth accumulation
-- Navigating complex financial situations and tax implications
-
-### Schedule a Meeting
-
-If you're ready to take the next step in your financial journey, schedule a meeting below. You'll be able to choose a date and time that works best for you to discuss your investment needs and questions.
-""")
+    ### Personalized Financial Guidance
+    After exploring your broker options, you might have specific questions or need guidance tailored to your financial situation and goals. A one-on-one meeting with a financial advisor can provide you with personalized advice, helping you make informed decisions about your investments.
+    Whether you're just starting on your investment journey or looking to refine your strategy, a financial advisor can offer insights into:
+    - Building a diversified investment portfolio
+    - Understanding market risks and opportunities
+    - Planning for long-term financial goals, such as retirement or wealth accumulation
+    - Navigating complex financial situations and tax implications
+    ### Schedule a Meeting
+    If you're ready to take the next step in your financial journey, schedule a meeting below. You'll be able to choose a date and time that works best for you to discuss your investment needs and questions.
+    """)
 
     # Calendly embed link
     calendly_embed_link = 'https://calendly.com/information-you-finance'  # Replace this with your actual Calendly embed link
