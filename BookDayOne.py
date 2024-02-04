@@ -1037,7 +1037,14 @@ If you're ready to take the next step in your financial journey, schedule a meet
     components.html(calendly_html, height=700)
 
 
-
+def update_current_prices(stock_df):
+    # This function will iterate over the DataFrame and update the prices
+    for index, row in stock_df.iterrows():
+        current_price = fetch_current_price(row['Ticker'])
+        if current_price is not None:
+            stock_df.at[index, 'CurrentPrice'] = current_price
+            stock_df.at[index, 'TotalValue'] = row['Amount'] * current_price
+    return stock_df
 
 def main():
     st.sidebar.title("Menu")
@@ -1056,17 +1063,25 @@ def main():
 
         if uploaded_portfolio_file is not None:
             st.session_state.stock_df = pd.read_excel(uploaded_portfolio_file)
+            st.session_state.stock_df_updated = False  # Use this flag to indicate the data needs to be updated
 
         if uploaded_transactions_file is not None:
             st.session_state.dataframe = pd.read_excel(uploaded_transactions_file)
 
     # Load default data if not uploaded
-    if 'dataframe' not in st.session_state or 'stock_df' not in st.session_state:
-        st.session_state.dataframe = load_data() if 'dataframe' not in st.session_state else st.session_state.dataframe
-        st.session_state.stock_df = load_stock_portfolio() if 'stock_df' not in st.session_state else st.session_state.stock_df
+    if 'dataframe' not in st.session_state:
+        st.session_state.dataframe = load_data()
+    if 'stock_df' not in st.session_state:
+        st.session_state.stock_df = load_stock_portfolio()
+        st.session_state.stock_df_updated = True  # Indicate that we've just loaded and updated the data
 
     df = st.session_state.dataframe
     stock_df = st.session_state.stock_df
+
+    # Update prices if needed
+    if not st.session_state.stock_df_updated:
+        st.session_state.stock_df = update_current_prices(stock_df)
+        st.session_state.stock_df_updated = True  # Set the flag to True after updating
 
     if page_selection == "Account Overview":
         account_overview(df, stock_df)
@@ -1076,11 +1091,10 @@ def main():
         recommendation_page()
     elif page_selection == "Browse":
         Aktienkurse_app()
-    elif page_selection == "Wealth Advisory":  # Corrected to match the navigation option
-        broker_overview_comparison()  # Correct function call
+    elif page_selection == "Wealth Advisory":
+        broker_overview_comparison()
     elif page_selection == "Resources":
         resources_page()
 
 if __name__ == "__main__":
     main()
-    
