@@ -1021,6 +1021,8 @@ def main():
         Aktienkurse_app()
     elif page_selection == "Brokers":  # Corrected to match the navigation option
         broker_overview_comparison()  # Correct function call
+    elif page_selection == "Resources":
+        resources_page()
 
 if __name__ == "__main__":
     main()
