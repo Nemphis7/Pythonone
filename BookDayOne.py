@@ -885,7 +885,7 @@ def plot_portfolio_performance(total_portfolio_history):
     st.pyplot(plt)
     
  def broker_overview_comparison():
-    st.title("Broker Overview/Comparison")
+    st.title("Overview")
     st.markdown("""
     ### Choosing the Right Broker: An Essential Step in Your Investment Journey
     The choice of broker is crucial for anyone starting in wealth building or for experienced investors looking for a new partner. Each broker offers a unique set of features, fees, and platforms, catering to different investor needs. While some may prioritize low fees, others might look for extensive research tools or a wide range of available securities. Here we compare Trade Republic, ING Bank, and DEGIRO, providing key facts to help you find the broker that best fits your investment strategy.
@@ -923,19 +923,19 @@ def plot_portfolio_performance(total_portfolio_history):
         "Affordable pricing structure for trading across a wide range of markets.",
         "Offers an easy-to-use web-based platform and mobile app.",
         "Provides access to a broad spectrum of investment products."
-    ]
-},  # This comma was missing
-"JP Morgan": {
-    "description": "JP Morgan offers a robust trading platform with a wide range of investment options, tailored for both novice and experienced investors looking for comprehensive financial services.",
-    "fees": "Varies by account type and services used. Offers some commission-free options.",
-    "platform": "Advanced web and mobile trading platforms with access to extensive research and tools.",
-    "website": "https://www.jpmorgan.com",
-    "key_features": [
-        "Access to global markets and a wide range of investment products.",
-        "Robust research and analysis tools.",
-        "Personalized financial advisory services."
-    ]
-},
+        ]
+    },  # This comma was missing
+    "JP Morgan": {
+        "description": "JP Morgan offers a robust trading platform with a wide range of investment options, tailored for both novice and experienced investors looking for comprehensive financial services.",
+        "fees": "Varies by account type and services used. Offers some commission-free options.",
+        "platform": "Advanced web and mobile trading platforms with access to extensive research and tools.",
+        "website": "https://www.jpmorgan.com",
+        "key_features": [
+            "Access to global markets and a wide range of investment products.",
+            "Robust research and analysis tools.",
+            "Personalized financial advisory services."
+        ]
+    },
 
         "Sparkasse": {
             "description": "Sparkasse's brokerage arm provides a user-friendly trading experience, focusing on German and European markets with competitive fees for casual and intermediate investors.",
