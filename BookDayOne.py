@@ -344,6 +344,7 @@ def plot_portfolio_history_plotly(portfolio_history):
         )
     )
     fig.update_traces(marker=dict(size=10))
+    st.plotly_chart(fig, use_container_width=True)
 
 
 def account_overview(df, stock_df):
@@ -1084,3 +1085,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
