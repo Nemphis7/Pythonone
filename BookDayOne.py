@@ -998,7 +998,7 @@ def main():
     st.sidebar.title("Menu")
 
     # Updated to include "Brokers" as a new navigation option
-    navigation_options = ["Account Overview", "Analysis", "Recommendation", "Browse", "Brokers"]
+    navigation_options = ["Account Overview", "Analysis", "Recommendation", "Browse", "Brokers","Resources"]
 
     page_selection = st.sidebar.radio("Choose a page", navigation_options)
 
