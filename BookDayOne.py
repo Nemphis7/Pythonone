@@ -998,15 +998,27 @@ def main():
     st.sidebar.title("Menu")
 
     # Updated to include "Brokers" as a new navigation option
-    navigation_options = ["Account Overview", "Analysis", "Recommendation", "Browse", "Brokers","Resources"]
+    navigation_options = ["Account Overview", "Analysis", "Recommendation", "Browse", "Brokers"]
 
     page_selection = st.sidebar.radio("Choose a page", navigation_options)
 
     st.title("YouFinance")
 
-    if 'dataframe' not in st.session_state or page_selection == "Account Overview":
-        st.session_state.dataframe = load_data()
-        st.session_state.stock_df = load_stock_portfolio()
+    # File upload section
+    with st.sidebar:
+        uploaded_portfolio_file = st.file_uploader("Upload Portfolio Excel", type=['xlsx'])
+        uploaded_transactions_file = st.file_uploader("Upload Transactions Excel", type=['xlsx'])
+
+        if uploaded_portfolio_file is not None:
+            st.session_state.stock_df = pd.read_excel(uploaded_portfolio_file)
+
+        if uploaded_transactions_file is not None:
+            st.session_state.dataframe = pd.read_excel(uploaded_transactions_file)
+
+    # Load default data if not uploaded
+    if 'dataframe' not in st.session_state or 'stock_df' not in st.session_state:
+        st.session_state.dataframe = load_data() if 'dataframe' not in st.session_state else st.session_state.dataframe
+        st.session_state.stock_df = load_stock_portfolio() if 'stock_df' not in st.session_state else st.session_state.stock_df
 
     df = st.session_state.dataframe
     stock_df = st.session_state.stock_df
