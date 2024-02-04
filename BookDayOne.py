@@ -890,7 +890,6 @@ def broker_overview_comparison():
     col1, col2 = st.columns(2)
     with col1:
         if st.button("Do the Financial Planning Yourself"):
-                # Ensure the indentation is consistent in the following section
             st.markdown("""
             Choosing the Right Broker: An Essential Step in Your Investment Journey
     
