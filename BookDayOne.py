@@ -265,20 +265,17 @@ def display_comparison_table(ticker_a, ticker_b):
     st.markdown(custom_table_style + html_comparison_table, unsafe_allow_html=True)
 
 def display_total_portfolio_value(stock_df):
+    # Debugging: Print or display the column names
+    st.write("Column names in stock_df:", stock_df.columns)
+
     # Check if 'CurrentPrice' column exists in the DataFrame
     if 'CurrentPrice' in stock_df.columns:
+        # Apply transformation to 'CurrentPrice' if it's a string
         stock_df['CurrentPrice'] = stock_df['CurrentPrice'].apply(lambda x: float(x.replace('.', '').replace(',', '.')) if isinstance(x, str) else x)
 
     # Ensure 'Amount' column is present and is numeric
     if 'Amount' in stock_df.columns:
-        
         stock_df['Amount'] = pd.to_numeric(stock_df['Amount'], errors='coerce')
-        stock_df['Amount'] = pd.to_numeric(stock_df['Amount'], errors='coerce')
-        stock_df['CurrentPrice'] = stock_df['CurrentPrice'].apply(lambda x: float(x.replace('.', '').replace(',', '.')))
-        stock_df['TotalValue'] = stock_df['Amount'] * stock_df['CurrentPrice']
-        total_portfolio_value = stock_df['TotalValue'].sum()
-        formatted_total_portfolio_value = f"{total_portfolio_value:,.2f} €".replace(",", "X").replace(".", ",").replace("X", ".")
-
     # Display the Total Portfolio Value with the 'total-row' class for dark blue background
     st.markdown(f"<div class='total-row' style='padding: 10px;'><strong>Total Portfolio Value: {formatted_total_portfolio_value}</strong></div>", unsafe_allow_html=True)
 
