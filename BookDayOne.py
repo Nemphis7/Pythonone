@@ -407,10 +407,6 @@ def account_overview(df, stock_df):
                 # Display the HTML table with Streamlit markdown
                 st.markdown(html_stock_table, unsafe_allow_html=True)
                 st.markdown("<br>", unsafe_allow_html=True)  # Add additional space if needed
-
-    
-        # Calculate and display the total portfolio value
-        display_total_portfolio_value(stock_df)
     
 
 
@@ -425,16 +421,16 @@ def account_overview(df, stock_df):
         # Display the HTML table with Streamlit markdown
         # st.markdown(html_stock_table, unsafe_allow_html=True)
 
-    # Calculate and display the total portfolio value
-    display_total_portfolio_value(stock_df)
-    
-    # Allow the user to select the time period for the historical data
-    period = st.selectbox("Select the time period for the portfolio performance:",
-                          options=['5 y', '3 y', '1 y', '6 mo'], index=2)
-    portfolio_history = get_portfolio_historical_data(stock_df, period)
-    
-    # Plot the historical data with Plotly
-    plot_portfolio_history_plotly(portfolio_history)
+        # Calculate and display the total portfolio value
+        display_total_portfolio_value(stock_df)
+        
+        # Allow the user to select the time period for the historical data
+        period = st.selectbox("Select the time period for the portfolio performance:",
+                              options=['5 y', '3 y', '1 y', '6 mo'], index=2)
+        portfolio_history = get_portfolio_historical_data(stock_df, period)
+        
+        # Plot the historical data with Plotly
+        plot_portfolio_history_plotly(portfolio_history)
 
 
 def get_portfolio_historical_data(stock_df, period="1y"):
