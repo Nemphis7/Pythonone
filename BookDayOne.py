@@ -588,7 +588,7 @@ def recommendation_page():
     
 
     st.write("Please conduct your own research before opening an account with any of the listed brokers.")
-    st.title("Investment Recommendation")
+    st.title("Savings Forecast")
     
     st.info("""
         **How to use the Tool and what is it providing us?:**
@@ -883,8 +883,7 @@ def plot_portfolio_performance(total_portfolio_history):
     plt.ylabel('Total Value')
     plt.legend()
     st.pyplot(plt)
-    
-def broker_overview_comparison():
+ def broker_overview_comparison():
 
     st.title("Broker Overview/Comparison")
 
@@ -1026,14 +1025,13 @@ If you're ready to take the next step in your financial journey, schedule a meet
 
     components.html(calendly_html, height=700)
 
-
-
+   
 
 def main():
     st.sidebar.title("Menu")
 
     # Updated to include "Brokers" as a new navigation option
-    navigation_options = ["Account Overview", "Analysis", "Recommendation", "Browse", "Brokers","Resources"]
+    navigation_options = ["Account Overview", "Analysis", "Planning", "Wealth Advisory", "Browse","Resources"]
 
     page_selection = st.sidebar.radio("Choose a page", navigation_options)
 
@@ -1062,11 +1060,11 @@ def main():
         account_overview(df, stock_df)
     elif page_selection == "Analysis":
         analyse(df)
-    elif page_selection == "Recommendation":
+    elif page_selection == "Planning":
         recommendation_page()
     elif page_selection == "Browse":
         Aktienkurse_app()
-    elif page_selection == "Brokers":  # Corrected to match the navigation option
+    elif page_selection == "Wealth Advisory":  # Corrected to match the navigation option
         broker_overview_comparison()  # Correct function call
     elif page_selection == "Resources":
         resources_page()
