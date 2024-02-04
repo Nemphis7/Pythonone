@@ -265,14 +265,22 @@ def display_comparison_table(ticker_a, ticker_b):
     st.markdown(custom_table_style + html_comparison_table, unsafe_allow_html=True)
 
 def display_total_portfolio_value(stock_df):
-    # Debugging: Print or display the column names
-    st.write("Total Portfolio Value (before formatting):", total_portfolio_value)
+    # Debugging: Display the stock_df DataFrame
+    st.write("stock_df DataFrame:", stock_df)
 
-    # Ensure the total_portfolio_value is a float and then format it
-    if isinstance(total_portfolio_value, (int, float)):
-        formatted_total_portfolio_value = f"{total_portfolio_value:,.2f} €".replace(",", "X").replace(".", ",").replace("X", ".")
+    # Check if required columns exist
+    if 'Amount' in stock_df.columns and 'CurrentPrice' in stock_df.columns:
+        # Calculate the total portfolio value
+        stock_df['Amount'] = pd.to_numeric(stock_df['Amount'], errors='coerce')
+        stock_df['CurrentPrice'] = pd.to_numeric(stock_df['CurrentPrice'], errors='coerce')
+        stock_df['TotalValue'] = stock_df['Amount'] * stock_df['CurrentPrice']
+        total_portfolio_value = stock_df['TotalValue'].sum()
+
+        # Debugging: Display the total portfolio value
+        st.write("Total Portfolio Value (before formatting):", total_portfolio_value)
     else:
-        formatted_total_portfolio_value = "N/A"
+        st.error("Required columns not found in stock_df")
+        total_portfolio_value = 0
 
     # Debugging: Display the formatted total portfolio value
     st.write("Formatted Total Portfolio Value:", formatted_total_portfolio_value)
