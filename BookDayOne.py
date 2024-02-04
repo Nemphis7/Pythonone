@@ -1033,7 +1033,7 @@ def main():
     st.sidebar.title("Menu")
 
     # Updated to include "Brokers" as a new navigation option
-    navigation_options = ["Account Overview", "Analysis", "Recommendation", "Browse", "Brokers","Resources"]
+    navigation_options = ["Account Overview", "Analysis", "Financial Forecast", "Wealth Advisory", "Browse", "Resources"]
 
     page_selection = st.sidebar.radio("Choose a page", navigation_options)
 
@@ -1062,11 +1062,11 @@ def main():
         account_overview(df, stock_df)
     elif page_selection == "Analysis":
         analyse(df)
-    elif page_selection == "Recommendation":
+    elif page_selection == "Financial Forecast":
         recommendation_page()
     elif page_selection == "Browse":
         Aktienkurse_app()
-    elif page_selection == "Brokers":  # Corrected to match the navigation option
+    elif page_selection == "Wealth Advisory":  # Corrected to match the navigation option
         broker_overview_comparison()  # Correct function call
     elif page_selection == "Resources":
         resources_page()
