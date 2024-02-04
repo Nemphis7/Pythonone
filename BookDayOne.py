@@ -1,4 +1,4 @@
-import streamlit as st
+    import streamlit as st
 import streamlit.components.v1 as components
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -890,8 +890,133 @@ def broker_overview_comparison():
     col1, col2 = st.columns(2)
     with col1:
         if st.button("Do the Financial Planning Yourself"):
-            st.write("You chose to do the financial planning yourself.")
-            # You can add additional actions here
+                # Ensure the indentation is consistent in the following section
+            st.markdown("""
+            Choosing the Right Broker: An Essential Step in Your Investment Journey
+    
+            The choice of broker is crucial for anyone starting in wealth building or for experienced investors looking for a new partner. Each broker offers a unique set of features, fees, and platforms, catering to different investor needs. While some may prioritize low fees, others might look for extensive research tools or a wide range of available securities. Here we compare Trade Republic, ING Bank, and DEGIRO, providing key facts to help you find the broker that best fits your investment strategy.
+            """)
+
+
+            brokers_info = {
+                "Trade Republic": {
+                    "description": "Trade Republic is a mobile-only broker that offers a simple, streamlined trading experience. It's known for its ease of use and low fees, making it a popular choice for new and casual investors.",
+                    "fees": "Offers commission-free trades, with only a €1 external fee for settlement of orders. No account management fees.",
+                    "platform": "Mobile app available on both iOS and Android, focused on simplicity and ease of use. Does not offer a desktop trading platform.",
+                    "website": "https://www.traderepublic.com",
+                    "key_features": [
+                        "Wide range of ETFs and stocks available for trading.",
+                        "Offers savings plans on ETFs completely commission-free.",
+                        "Real-time prices and push notifications for executed orders."
+                    ]
+                },
+                "ING Bank": {
+                    "description": "ING Bank, through its brokerage arm ING-DiBa, offers a comprehensive online banking and brokerage experience with access to a wide range of investment products including stocks, ETFs, bonds, and more.",
+                    "fees": "Fees vary by trade volume; for example, stock trades on German exchanges cost €4.90 + 0.25% of the order volume (minimum €9.90, maximum €69.90). No custody account fees.",
+                    "platform": "Offers a web-based trading platform and a mobile app, providing a balance between functionality for experienced traders and simplicity for new users.",
+                    "website": "https://www.ing.de",
+                    "key_features": [
+                        "Access to international markets.",
+                        "Offers a broad selection of financial products beyond stocks and ETFs, including bonds, funds, and derivatives.",
+                        "Provides extensive research tools and financial news."
+                    ]
+                },
+              "DEGIRO": {
+            "description": "DEGIRO is a Dutch online brokerage company that offers low-cost trading to retail investors worldwide. It's known for its affordable pricing structure and broad market access.",
+            "fees": "Low trading fees compared to competitors, with specific fees depending on the market. For example, US stock trades are €0.50 + USD 0.004 per share.",
+            "platform": "Web-based platform and mobile app available, focusing on functionality and offering tools for technical analysis.",
+            "website": "https://www.degiro.eu",
+            "key_features": [
+                "Affordable pricing structure for trading across a wide range of markets.",
+                "Offers an easy-to-use web-based platform and mobile app.",
+                "Provides access to a broad spectrum of investment products."
+                    ]
+        },  # This comma was missing
+        "JP Morgan": {
+            "description": "JP Morgan offers a robust trading platform with a wide range of investment options, tailored for both novice and experienced investors looking for comprehensive financial services.",
+            "fees": "Varies by account type and services used. Offers some commission-free options.",
+            "platform": "Advanced web and mobile trading platforms with access to extensive research and tools.",
+            "website": "https://www.jpmorgan.com",
+            "key_features": [
+                "Access to global markets and a wide range of investment products.",
+                "Robust research and analysis tools.",
+                "Personalized financial advisory services."
+            ]
+        },
+
+                "Sparkasse": {
+                    "description": "Sparkasse's brokerage arm provides a user-friendly trading experience, focusing on German and European markets with competitive fees for casual and intermediate investors.",
+                    "fees": "Competitive trading fees, with special offers for savings plans on ETFs and stocks.",
+                    "platform": "Web-based platform and mobile app offering easy access to trade executions and account management.",
+                    "website": "https://www.sparkasse.de",
+                    "key_features": [
+                        "Easy access to European markets.",
+                        "Offers a variety of savings and investment plans.",
+                        "Reliable customer service with a strong local presence."
+                    ]
+                },
+                "VR Bank": {
+                    "description": "VR Bank provides comprehensive banking and brokerage services with a focus on cooperative values, offering personalized advice and a range of investment products for its members.",
+                    "fees": "Fees depend on services and products chosen, often offering lower fees for members.",
+                    "platform": "Combines online banking and brokerage services in a single platform, with mobile app support.",
+                    "website": "https://www.vrbank.de",
+                    "key_features": [
+                        "Member-focused banking and investment services.",
+                        "Access to a wide range of financial products, including sustainable investment options.",
+                        "Personalized advisory services."
+                    ]
+                } ,
+                "Deutsche Postbank": {
+            "description": "Part of the Deutsche Bank Group, Postbank offers online brokerage services with a focus on affordability and accessibility, catering to the needs of everyday investors.",
+            "fees": "Competitive pricing structure with low order fees and no custody account fees.",
+            "platform": "User-friendly web and mobile platforms, designed for straightforward trading and account management.",
+            "website": "https://www.postbank.de",
+            "key_features": [
+                "Affordable access to German and international markets.",
+                "Simple and transparent fee structure.",
+                "Integrates with Postbank's broader banking services."
+                    ]
+                },
+        "eToro": {
+            "description": "eToro is renowned for its social trading platform, allowing investors to copy trades of successful peers, and offering a wide range of cryptocurrencies, stocks, and other financial instruments.",
+            "fees": "Zero-commission stock trading; other fees include spread fees for crypto and varying fees for other assets.",
+            "platform": "Innovative platform that emphasizes social trading aspects, alongside traditional investment options.",
+            "website": "https://www.etoro.com",
+            "key_features": [
+                "Unique social trading features.",
+                "Wide range of cryptocurrencies alongside traditional investment options.",
+                "User-friendly interface suitable for beginners and experienced traders alike."
+                    ]
+                }
+            }
+
+
+            broker_selection = st.selectbox("Select a Broker to Learn More:", list(brokers_info.keys()))
+            broker = brokers_info[broker_selection]
+
+            st.subheader(f"{broker_selection}")
+            st.write(f"**Description**: {broker['description']}")
+            st.write(f"**Fees**: {broker['fees']}")
+            st.write(f"**Platform**: {broker['platform']}")
+            st.markdown(f"**Website**: [Visit]({broker['website']})", unsafe_allow_html=True)
+            st.write("**Key Features:**")
+            for feature in broker['key_features']:
+                st.markdown(f"- {feature}")
+            st.markdown("""
+        ### Personalized Financial Guidance
+
+        After exploring your broker options, you might have specific questions or need guidance tailored to your financial situation and goals. A one-on-one meeting with a financial advisor can provide you with personalized advice, helping you make informed decisions about your investments.
+
+        Whether you're just starting on your investment journey or looking to refine your strategy, a financial advisor can offer insights into:
+
+        - Building a diversified investment portfolio
+        - Understanding market risks and opportunities
+        - Planning for long-term financial goals, such as retirement or wealth accumulation
+        - Navigating complex financial situations and tax implications
+
+        ### Schedule a Meeting
+
+            If you're ready to take the next step in your financial journey, schedule a meeting below. You'll be able to choose a date and time that works best for you to discuss your investment needs and questions.
 
     with col2:
         if st.button("Get Professional Advisory"):
@@ -904,144 +1029,6 @@ def broker_overview_comparison():
             components.html(calendly_html, height=700)
             # Add your logic or content here if needed
 
-    # Ensure the indentation is consistent in the following section
-    st.markdown("""
-    Choosing the Right Broker: An Essential Step in Your Investment Journey
-    
-    The choice of broker is crucial for anyone starting in wealth building or for experienced investors looking for a new partner. Each broker offers a unique set of features, fees, and platforms, catering to different investor needs. While some may prioritize low fees, others might look for extensive research tools or a wide range of available securities. Here we compare Trade Republic, ING Bank, and DEGIRO, providing key facts to help you find the broker that best fits your investment strategy.
-    """)
-
-
-    brokers_info = {
-        "Trade Republic": {
-            "description": "Trade Republic is a mobile-only broker that offers a simple, streamlined trading experience. It's known for its ease of use and low fees, making it a popular choice for new and casual investors.",
-            "fees": "Offers commission-free trades, with only a €1 external fee for settlement of orders. No account management fees.",
-            "platform": "Mobile app available on both iOS and Android, focused on simplicity and ease of use. Does not offer a desktop trading platform.",
-            "website": "https://www.traderepublic.com",
-            "key_features": [
-                "Wide range of ETFs and stocks available for trading.",
-                "Offers savings plans on ETFs completely commission-free.",
-                "Real-time prices and push notifications for executed orders."
-            ]
-        },
-        "ING Bank": {
-            "description": "ING Bank, through its brokerage arm ING-DiBa, offers a comprehensive online banking and brokerage experience with access to a wide range of investment products including stocks, ETFs, bonds, and more.",
-            "fees": "Fees vary by trade volume; for example, stock trades on German exchanges cost €4.90 + 0.25% of the order volume (minimum €9.90, maximum €69.90). No custody account fees.",
-            "platform": "Offers a web-based trading platform and a mobile app, providing a balance between functionality for experienced traders and simplicity for new users.",
-            "website": "https://www.ing.de",
-            "key_features": [
-                "Access to international markets.",
-                "Offers a broad selection of financial products beyond stocks and ETFs, including bonds, funds, and derivatives.",
-                "Provides extensive research tools and financial news."
-            ]
-        },
-      "DEGIRO": {
-    "description": "DEGIRO is a Dutch online brokerage company that offers low-cost trading to retail investors worldwide. It's known for its affordable pricing structure and broad market access.",
-    "fees": "Low trading fees compared to competitors, with specific fees depending on the market. For example, US stock trades are €0.50 + USD 0.004 per share.",
-    "platform": "Web-based platform and mobile app available, focusing on functionality and offering tools for technical analysis.",
-    "website": "https://www.degiro.eu",
-    "key_features": [
-        "Affordable pricing structure for trading across a wide range of markets.",
-        "Offers an easy-to-use web-based platform and mobile app.",
-        "Provides access to a broad spectrum of investment products."
-    ]
-},  # This comma was missing
-"JP Morgan": {
-    "description": "JP Morgan offers a robust trading platform with a wide range of investment options, tailored for both novice and experienced investors looking for comprehensive financial services.",
-    "fees": "Varies by account type and services used. Offers some commission-free options.",
-    "platform": "Advanced web and mobile trading platforms with access to extensive research and tools.",
-    "website": "https://www.jpmorgan.com",
-    "key_features": [
-        "Access to global markets and a wide range of investment products.",
-        "Robust research and analysis tools.",
-        "Personalized financial advisory services."
-    ]
-},
-
-        "Sparkasse": {
-            "description": "Sparkasse's brokerage arm provides a user-friendly trading experience, focusing on German and European markets with competitive fees for casual and intermediate investors.",
-            "fees": "Competitive trading fees, with special offers for savings plans on ETFs and stocks.",
-            "platform": "Web-based platform and mobile app offering easy access to trade executions and account management.",
-            "website": "https://www.sparkasse.de",
-            "key_features": [
-                "Easy access to European markets.",
-                "Offers a variety of savings and investment plans.",
-                "Reliable customer service with a strong local presence."
-            ]
-        },
-        "VR Bank": {
-            "description": "VR Bank provides comprehensive banking and brokerage services with a focus on cooperative values, offering personalized advice and a range of investment products for its members.",
-            "fees": "Fees depend on services and products chosen, often offering lower fees for members.",
-            "platform": "Combines online banking and brokerage services in a single platform, with mobile app support.",
-            "website": "https://www.vrbank.de",
-            "key_features": [
-                "Member-focused banking and investment services.",
-                "Access to a wide range of financial products, including sustainable investment options.",
-                "Personalized advisory services."
-            ]
-        },
-        "Deutsche Postbank": {
-            "description": "Part of the Deutsche Bank Group, Postbank offers online brokerage services with a focus on affordability and accessibility, catering to the needs of everyday investors.",
-            "fees": "Competitive pricing structure with low order fees and no custody account fees.",
-            "platform": "User-friendly web and mobile platforms, designed for straightforward trading and account management.",
-            "website": "https://www.postbank.de",
-            "key_features": [
-                "Affordable access to German and international markets.",
-                "Simple and transparent fee structure.",
-                "Integrates with Postbank's broader banking services."
-            ]
-        },
-        "eToro": {
-            "description": "eToro is renowned for its social trading platform, allowing investors to copy trades of successful peers, and offering a wide range of cryptocurrencies, stocks, and other financial instruments.",
-            "fees": "Zero-commission stock trading; other fees include spread fees for crypto and varying fees for other assets.",
-            "platform": "Innovative platform that emphasizes social trading aspects, alongside traditional investment options.",
-            "website": "https://www.etoro.com",
-            "key_features": [
-                "Unique social trading features.",
-                "Wide range of cryptocurrencies alongside traditional investment options.",
-                "User-friendly interface suitable for beginners and experienced traders alike."
-            ]
-        }
-    }
-
-
-    broker_selection = st.selectbox("Select a Broker to Learn More:", list(brokers_info.keys()))
-    broker = brokers_info[broker_selection]
-
-    st.subheader(f"{broker_selection}")
-    st.write(f"**Description**: {broker['description']}")
-    st.write(f"**Fees**: {broker['fees']}")
-    st.write(f"**Platform**: {broker['platform']}")
-    st.markdown(f"**Website**: [Visit]({broker['website']})", unsafe_allow_html=True)
-    st.write("**Key Features:**")
-    for feature in broker['key_features']:
-        st.markdown(f"- {feature}")
-    st.markdown("""
-### Personalized Financial Guidance
-
-After exploring your broker options, you might have specific questions or need guidance tailored to your financial situation and goals. A one-on-one meeting with a financial advisor can provide you with personalized advice, helping you make informed decisions about your investments.
-
-Whether you're just starting on your investment journey or looking to refine your strategy, a financial advisor can offer insights into:
-
-- Building a diversified investment portfolio
-- Understanding market risks and opportunities
-- Planning for long-term financial goals, such as retirement or wealth accumulation
-- Navigating complex financial situations and tax implications
-
-### Schedule a Meeting
-
-If you're ready to take the next step in your financial journey, schedule a meeting below. You'll be able to choose a date and time that works best for you to discuss your investment needs and questions.
-""")
- # Calendly embed link
-    calendly_embed_link = 'https://calendly.com/information-you-finance'  # Replace this with your actual Calendly embed link
-
-    # HTML code to embed Calendly widget
-    calendly_html = f"""
-    <div class="calendly-inline-widget" data-url="{calendly_embed_link}" style="min-width:320px;height:630px;"></div>
-    <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js"></script>
-    """
-
-    components.html(calendly_html, height=700)
 
 def main():
     st.sidebar.title("Menu")
