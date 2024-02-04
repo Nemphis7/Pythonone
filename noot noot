@@ -588,7 +588,7 @@ def recommendation_page():
     
 
     st.write("Please conduct your own research before opening an account with any of the listed brokers.")
-    st.title("Savings Forecast")
+    st.title("Investment Recommendation")
     
     st.info("""
         **How to use the Tool and what is it providing us?:**
@@ -883,14 +883,15 @@ def plot_portfolio_performance(total_portfolio_history):
     plt.ylabel('Total Value')
     plt.legend()
     st.pyplot(plt)
- def broker_overview_comparison():
+    
+def broker_overview_comparison():
 
-    st.title("Broker Overview/Comparison")
+    st.title(" Your personal Wealth Planning Starter Pack")
 
     st.markdown("""
     ### Choosing the Right Broker: An Essential Step in Your Investment Journey
     
-    The choice of broker is crucial for anyone starting in wealth building or for experienced investors looking for a new partner. Each broker offers a unique set of features, fees, and platforms, catering to different investor needs. While some may prioritize low fees, others might look for extensive research tools or a wide range of available securities. Here we compare Trade Republic, ING Bank, and DEGIRO, providing key facts to help you find the broker that best fits your investment strategy.
+    The choice of your personal depot broker is crucial for anyone starting in wealth building or even for experienced investors looking for a new partner. Each broker offers a unique set of features, fees, and platforms, catering to different investor needs. While some may prioritize low fees, others might look for extensive research tools or a wide range of available securities. Here  you can select the different brokers and also connect to their landing page:
     """)
 
     brokers_info = {
@@ -940,8 +941,8 @@ def plot_portfolio_performance(total_portfolio_history):
 },
 
         "Sparkasse": {
-            "description": "Sparkasse's brokerage arm provides a user-friendly trading experience, focusing on German and European markets with competitive fees for casual and intermediate investors.",
-            "fees": "Competitive trading fees, with special offers for savings plans on ETFs and stocks.",
+            "description": "Sparkasse's brokerage arm provides a user-friendly trading experience, focusing on German and European markets with high fees for casual and intermediate investors.",
+            "fees": "Relative high trading fees, with special offers for savings plans on ETFs and stocks.",
             "platform": "Web-based platform and mobile app offering easy access to trade executions and account management.",
             "website": "https://www.sparkasse.de",
             "key_features": [
@@ -997,6 +998,8 @@ def plot_portfolio_performance(total_portfolio_history):
     st.write("**Key Features:**")
     for feature in broker['key_features']:
         st.markdown(f"- {feature}")
+        # Insert empty space here
+    st.markdown('<br><br><br><br><br><br>', unsafe_allow_html=True)
     st.markdown("""
 ### Personalized Financial Guidance
 
@@ -1025,13 +1028,14 @@ If you're ready to take the next step in your financial journey, schedule a meet
 
     components.html(calendly_html, height=700)
 
-   
+
+
 
 def main():
     st.sidebar.title("Menu")
 
     # Updated to include "Brokers" as a new navigation option
-    navigation_options = ["Account Overview", "Analysis", "Planning", "Wealth Advisory", "Browse","Resources"]
+    navigation_options = ["Account Overview", "Analysis", "Financial Forecast", "Wealth Advisory", "Browse", "Resources"]
 
     page_selection = st.sidebar.radio("Choose a page", navigation_options)
 
@@ -1060,7 +1064,7 @@ def main():
         account_overview(df, stock_df)
     elif page_selection == "Analysis":
         analyse(df)
-    elif page_selection == "Planning":
+    elif page_selection == "Financial Forecast":
         recommendation_page()
     elif page_selection == "Browse":
         Aktienkurse_app()
