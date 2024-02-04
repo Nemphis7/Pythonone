@@ -897,7 +897,7 @@ def broker_overview_comparison():
 
     with col2:
                 if st.button("Get Professional Advisory"):
-                    st.write("You chose to do the financial planning yourself.")
+                    st.write("test1.")
 
 
     st.markdown("""
