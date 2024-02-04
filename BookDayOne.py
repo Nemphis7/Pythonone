@@ -291,20 +291,29 @@ def display_total_portfolio_value(stock_df):
     #st.write("Formatted Total Portfolio Value:", formatted_total_portfolio_value)
 
 # Function to plot the historical data with Plotly
+# Function to plot the historical data with Plotly
 def plot_portfolio_history_plotly(portfolio_history):
-    fig = px.line(
-        portfolio_history, 
+    # Create a figure with a custom layout
+    fig = go.Figure()
+
+    # Add trace for the portfolio history
+    fig.add_trace(go.Scatter(
         x=portfolio_history.index, 
-        y="Total", 
-        title='Portfolio Performance Over Time',
-        labels={'Total': 'Total Value', 'index': 'Date'},
-        template="plotly_dark"  # Choose a template that suits your aesthetic needs
-    )
+        y=portfolio_history['Total'], 
+        mode='lines+markers',
+        name='Total Portfolio Value',
+        line=dict(color='royalblue', width=2, shape='spline'),  # Smooth line
+        marker=dict(color='lightseagreen', size=7, line=dict(width=1, color='DarkSlateGrey'))
+    ))
+
+    # Customize the layout
     fig.update_layout(
-        plot_bgcolor='rgba(0,0,0,0)',
+        title='Portfolio Performance Over Time',
+        title_x=0.5,  # Center the title
         xaxis_title='Date',
         yaxis_title='Total Value',
-        legend_title_text='Trend',
+        template='plotly_dark',  # Dark theme
+        plot_bgcolor='rgba(0,0,0,0)',  # Transparent background
         xaxis=dict(
             showline=True,
             showgrid=False,
@@ -320,18 +329,11 @@ def plot_portfolio_history_plotly(portfolio_history):
         ),
         yaxis=dict(
             showgrid=True,
+            gridcolor='grey',
             zeroline=False,
             showline=False,
             showticklabels=True,
         ),
-        autosize=True,
-        margin=dict(
-            autoexpand=True,
-            l=100,
-            r=20,
-            t=110,
-        ),
-        showlegend=True,
         legend=dict(
             x=0.01,
             y=0.99,
@@ -341,9 +343,33 @@ def plot_portfolio_history_plotly(portfolio_history):
                 size=12,
                 color='white'
             ),
+        ),
+        margin=dict(
+            autoexpand=True,
+            l=100,
+            r=20,
+            t=110,
+        ),
+    )
+
+    # Add a hover effect
+    fig.update_traces(
+        hoverinfo='text+name',
+        line_shape='spline',
+        hovertemplate='Date: %{x}<br>Total Value: %{y}',
+    )
+
+    # Add a range slider
+    fig.update_layout(
+        xaxis=dict(
+            rangeslider=dict(
+                visible=True,
+                thickness=0.05
+            ),
+            type='date'
         )
     )
-    fig.update_traces(marker=dict(size=10))
+
     st.plotly_chart(fig, use_container_width=True)
 
 
