@@ -998,6 +998,8 @@ def broker_overview_comparison():
     st.write("**Key Features:**")
     for feature in broker['key_features']:
         st.markdown(f"- {feature}")
+        # Insert empty space here
+    st.markdown('<br><br><br><br><br><br>', unsafe_allow_html=True)
     st.markdown("""
 ### Personalized Financial Guidance
 
