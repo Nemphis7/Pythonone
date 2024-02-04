@@ -588,7 +588,7 @@ def recommendation_page():
     
 
     st.write("Please conduct your own research before opening an account with any of the listed brokers.")
-    st.title("Investment Recommendation")
+    st.title("Savings Forecast")
     
     st.info("""
         **How to use the Tool and what is it providing us?:**
