@@ -649,17 +649,7 @@ def recommendation_page():
             st.write(f"The median projected portfolio value at the end of the investment period (considering inflation) is: € {final_median_projection:,.2f}")
             st.write(f"The projected portfolio value range is from € {final_lower_bound:,.2f} to € {final_upper_bound:,.2f} (10th to 90th percentile)")
             
-            col1, col2 = st.columns(2)
-            with col1:
-                if st.button("Do the Financial Planning Yourself"):
-                    st.write("You chose to do the financial planning yourself.")
-
-                    # You can add additional actions here
-
-            with col2:
-                if st.button("Get Professional Advisory"):
-                    st.write("You chose to do the financial planning yourself.")
-
+           
     
         except Exception as e:
             st.error(f"An error occurred while processing the data: {str(e)}")
