@@ -634,10 +634,10 @@ def recommendation_page():
             upper_bound = np.percentile(simulation_results, 90, axis=0)
             plt.figure(figsize=(10, 6))
             plt.fill_between(range(years_to_invest), lower_bound, upper_bound, color='gray', alpha=0.5)
-            plt.plot(median_projection, label='Median Projection')
+            plt.plot(median_projection, label='Median')
             plt.title("Investment Projection Over Time")
             plt.xlabel("Years")
-            plt.ylabel("Portfolio Value")
+            plt.ylabel("Portfolio Value in €")
             plt.legend()
             st.pyplot(plt)
 
