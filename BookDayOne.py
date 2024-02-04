@@ -886,7 +886,7 @@ def plot_portfolio_performance(total_portfolio_history):
     
 def broker_overview_comparison():
 
-    st.title(" Your personal Wealth planning starter pack")
+    st.title(" Your personal Wealth Planning Starter Pack")
 
     st.markdown("""
     ### Choosing the Right Broker: An Essential Step in Your Investment Journey
@@ -941,8 +941,8 @@ def broker_overview_comparison():
 },
 
         "Sparkasse": {
-            "description": "Sparkasse's brokerage arm provides a user-friendly trading experience, focusing on German and European markets with competitive fees for casual and intermediate investors.",
-            "fees": "Competitive trading fees, with special offers for savings plans on ETFs and stocks.",
+            "description": "Sparkasse's brokerage arm provides a user-friendly trading experience, focusing on German and European markets with high fees for casual and intermediate investors.",
+            "fees": "Relative high trading fees, with special offers for savings plans on ETFs and stocks.",
             "platform": "Web-based platform and mobile app offering easy access to trade executions and account management.",
             "website": "https://www.sparkasse.de",
             "key_features": [
