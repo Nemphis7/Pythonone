@@ -1017,9 +1017,9 @@ def broker_overview_comparison():
 
             If you're ready to take the next step in your financial journey, schedule a meeting below. You'll be able to choose a date and time that works best for you to discuss your investment needs and questions.
 
-    with col2:
+     with col2:
         if st.button("Get Professional Advisory"):
-             # Calendly embed link
+            # Calendly embed link
             calendly_embed_link = 'https://calendly.com/information-you-finance'  # Replace this with your actual Calendly embed link
             calendly_html = f"""
             <div class="calendly-inline-widget" data-url="{calendly_embed_link}" style="min-width:320px;height:630px;"></div>
