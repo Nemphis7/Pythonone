@@ -397,7 +397,19 @@ def account_overview(df, stock_df):
             last_10_expenses = df_sorted[df_sorted['Amount'] < 0].head(10)
             st.markdown(last_10_expenses.to_html(classes='financial-table'), unsafe_allow_html=True)
 
-      
+      # Using an expander to show stocks in the portfolio
+        with st.expander("View Stocks in Portfolio"):
+            if stock_df is not None:
+                # Convert the stock dataframe to HTML and use style for left alignment
+                html_stock_table = stock_df.to_html(index=False, escape=False, classes="table table-striped")
+                html_stock_table = html_stock_table.replace('<table', '<table style="text-align: left;"')
+                
+                # Display the HTML table with Streamlit markdown
+                st.markdown(html_stock_table, unsafe_allow_html=True)
+    
+        # Calculate and display the total portfolio value
+        display_total_portfolio_value(stock_df)
+    
 
 
     # Plot der Gesamtperformance am Ende der Account Overview
@@ -416,7 +428,7 @@ def account_overview(df, stock_df):
     
     # Allow the user to select the time period for the historical data
     period = st.selectbox("Select the time period for the portfolio performance:",
-                          options=['5y', '3y', '1y', '6mo'], index=2)
+                          options=['5 y', '3 y', '1 y', '6 mo'], index=2)
     portfolio_history = get_portfolio_historical_data(stock_df, period)
     
     # Plot the historical data with Plotly
