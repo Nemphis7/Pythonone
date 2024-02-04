@@ -891,7 +891,7 @@ def broker_overview_comparison():
     st.markdown("""
     ### Choosing the Right Broker: An Essential Step in Your Investment Journey
     
-    The choice of broker is crucial for anyone starting in wealth building or for experienced investors looking for a new partner. Each broker offers a unique set of features, fees, and platforms, catering to different investor needs. While some may prioritize low fees, others might look for extensive research tools or a wide range of available securities. Here we compare Trade Republic, ING Bank, and DEGIRO, providing key facts to help you find the broker that best fits your investment strategy.
+    The choice of your personal depot broker is crucial for anyone starting in wealth building or even for experienced investors looking for a new partner. Each broker offers a unique set of features, fees, and platforms, catering to different investor needs. While some may prioritize low fees, others might look for extensive research tools or a wide range of available securities. Here  you can select the different brokers and also connect to their landing page:
     """)
 
     brokers_info = {
