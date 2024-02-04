@@ -87,15 +87,19 @@ def get_fundamental_data(ticker):
     }
 
 def upload_excel_sheet(title, key):
+    if key not in st.session_state:
+        st.session_state[key] = None
+
     uploaded_file = st.file_uploader(title, type=["xlsx"], key=key)
     if uploaded_file is not None:
         try:
             df = pd.read_excel(uploaded_file)
-            st.session_state[key] = df  # Store in session state
+            st.session_state[key] = df  # Update session state
             return df
         except Exception as e:
             st.error(f"Error processing file: {e}")
-    return None
+            st.session_state[key] = None  # Reset to None in case of error
+    return st.session_state[key]
 
     
 def load_data():
