@@ -265,7 +265,14 @@ def display_comparison_table(ticker_a, ticker_b):
     st.markdown(custom_table_style + html_comparison_table, unsafe_allow_html=True)
 
 def display_total_portfolio_value(stock_df):
-    # Ensure numeric types and calculate the total value
+    # Check if 'CurrentPrice' column exists in the DataFrame
+    if 'CurrentPrice' in stock_df.columns:
+        stock_df['CurrentPrice'] = stock_df['CurrentPrice'].apply(lambda x: float(x.replace('.', '').replace(',', '.')) if isinstance(x, str) else x)
+
+    # Ensure 'Amount' column is present and is numeric
+    if 'Amount' in stock_df.columns:
+        
+    stock_df['Amount'] = pd.to_numeric(stock_df['Amount'], errors='coerce')
     stock_df['Amount'] = pd.to_numeric(stock_df['Amount'], errors='coerce')
     stock_df['CurrentPrice'] = stock_df['CurrentPrice'].apply(lambda x: float(x.replace('.', '').replace(',', '.')))
     stock_df['TotalValue'] = stock_df['Amount'] * stock_df['CurrentPrice']
