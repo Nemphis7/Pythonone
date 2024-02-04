@@ -888,6 +888,14 @@ def broker_overview_comparison():
 
     st.title("Broker Overview/Comparison")
 
+    col1, col2 = st.columns([3, 1])  # Adjust the ratio based on your preference
+
+    with col1:
+        st.title(title)
+
+    with col2:
+        st.image("path_to_your_logo.png", width=100)  # Adjust the path and width as necessary
+
     st.markdown("""
     ### Choosing the Right Broker: An Essential Step in Your Investment Journey
     
