@@ -13,8 +13,7 @@ import plotly.io as pio
 import time
 
 INFLATION_RATE = 0.02
-uploaded_portfolio_data = None
-uploaded_transaction_data = None
+
 
 def custom_format(value):
     if pd.isna(value):
@@ -86,51 +85,30 @@ def get_fundamental_data(ticker):
         # ... any other data you want to fetch
     }
 
-def upload_excel_sheet(title, key):
-    if key not in st.session_state:
-        st.session_state[key] = None
 
-    uploaded_file = st.file_uploader(title, type=["xlsx"], key=key)
-    if uploaded_file is not None:
-        try:
-            df = pd.read_excel(uploaded_file)
-            st.session_state[key] = df  # Update session state
-            return df
-        except Exception as e:
-            st.error(f"Error processing file: {e}")
-            st.session_state[key] = None  # Reset to None in case of error
-    return st.session_state[key]
-
-    
 def load_data():
-    if 'uploaded_transaction_data' in st.session_state and st.session_state.uploaded_transaction_data is not None:
-        return st.session_state.get('uploaded_transaction_data', pd.read_excel('https://raw.githubusercontent.com/Nemphis7/Pythonone/main/Mappe1.xlsx', names=['Date', 'Name', 'Amount', 'Category']))
-    else:
-        try:
-            url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/Mappe1.xlsx'
-            df = pd.read_excel(url, names=['Date', 'Name', 'Amount', 'Category'])
-            return df
-        except Exception as e:
-            st.error(f"Error reading financial data file: {e}")
-            return None
+    try:
+        url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/Mappe1.xlsx'
+        df = pd.read_excel(url, names=['Date', 'Name', 'Amount', 'Category'])
+        return df
+    except Exception as e:
+        st.error(f"Error reading financial data file: {e}")
+        return None
 
 def load_stock_portfolio():
-    if 'uploaded_portfolio_data' in st.session_state and st.session_state.uploaded_portfolio_data is not None:
-        return st.session_state.get('uploaded_portfolio_data', pd.read_excel('https://raw.githubusercontent.com/Nemphis7/Pythonone/main/StockPortfolio.xlsx', names=['Ticker', 'Amount']))
-    else:
-        try:
-            url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/StockPortfolio.xlsx'
-            stock_df = pd.read_excel(url, names=['Ticker', 'Amount'])
-            stock_df['CurrentPrice'] = stock_df['Ticker'].apply(fetch_current_price)
-            stock_df.dropna(subset=['CurrentPrice'], inplace=True)
-            stock_df = stock_df[stock_df['CurrentPrice'] != 0]
-            stock_df['TotalValue'] = stock_df['Amount'] * stock_df['CurrentPrice']
-            stock_df['CurrentPrice'] = stock_df['CurrentPrice'].round(2).apply(custom_format)
-            stock_df['TotalValue'] = stock_df['TotalValue'].round(2).apply(custom_format)
-            return stock_df
-        except Exception as e:
-            st.error(f"Error processing stock portfolio file: {e}")
-            return None
+    try:
+        url = 'https://raw.githubusercontent.com/Nemphis7/Pythonone/main/StockPortfolio.xlsx'
+        stock_df = pd.read_excel(url, names=['Ticker', 'Amount'])
+        stock_df['CurrentPrice'] = stock_df['Ticker'].apply(fetch_current_price)
+        stock_df.dropna(subset=['CurrentPrice'], inplace=True)
+        stock_df = stock_df[stock_df['CurrentPrice'] != 0]
+        stock_df['TotalValue'] = stock_df['Amount'] * stock_df['CurrentPrice']
+        stock_df['CurrentPrice'] = stock_df['CurrentPrice'].round(2).apply(custom_format)
+        stock_df['TotalValue'] = stock_df['TotalValue'].round(2).apply(custom_format)
+        return stock_df
+    except Exception as e:
+        st.error(f"Error processing stock portfolio file: {e}")
+        return None
 
 def get_combined_historical_data(stock_df, period="1y"):
     portfolio_history = pd.DataFrame()
@@ -159,7 +137,6 @@ def process_data(df):
         return None
 
 def plot_portfolio_performance(total_portfolio_history):
-    stock_df = load_stock_portfolio()
     if total_portfolio_history.empty:
         st.error("No data available to plot portfolio performance.")
         return
@@ -173,7 +150,6 @@ def plot_portfolio_performance(total_portfolio_history):
     st.pyplot(plt)
 
 def plot_portfolio_history(stock_df):
-    stock_df = load_stock_portfolio()
     end = datetime.now()
     start = end - pd.DateOffset(years=3)
     portfolio_history = pd.DataFrame()
@@ -191,7 +167,6 @@ def plot_portfolio_history(stock_df):
     st.pyplot(plt)
 
 def plot_financials(financial_df):
-    df = load_data()
     plt.figure(figsize=(10, 6))
     financial_df['AdjustedAmount'] = financial_df.apply(lambda x: -x['Amount'] if x['Category'] == 'Expense' else x['Amount'], axis=1)
     for category in financial_df['Category'].unique():
@@ -358,30 +333,8 @@ def plot_portfolio_history_plotly(portfolio_history):
     st.plotly_chart(fig, use_container_width=True)
 
 
-def account_overview():
-    # Upload functionality
-    uploaded_portfolio_data = upload_excel_sheet("Upload Portfolio Excel Sheet", "portfolio")
-    uploaded_transaction_data = upload_excel_sheet("Upload Transactions Excel Sheet", "transactions")
-
-    # Update session state
-    if uploaded_portfolio_data is not None:
-        st.session_state.uploaded_portfolio_data = uploaded_portfolio_data
-    if uploaded_transaction_data is not None:
-        st.session_state.uploaded_transaction_data = uploaded_transaction_data
-
-    # Load the stock portfolio data
-    stock_df = load_stock_portfolio()
-    financial_df = load_data()  # Assuming this function returns the financial data DataFrame
-
-    # Choose a period for portfolio history
-    period = "1y"  # For example, 1 year
-    total_portfolio_history = get_combined_historical_data(stock_df, period)
-
-    # Call visualization functions with the necessary data
-    #plot_portfolio_performance(total_portfolio_history)
-
+def account_overview(df, stock_df):
     st.title("Financial Data Analysis")
-    
     current_month = datetime.now().strftime('%Y-%m')
     current_month_period = pd.Period(current_month)
 
@@ -398,13 +351,16 @@ def account_overview():
     # Apply the style at the beginning so it affects all tables
     st.markdown(table_style, unsafe_allow_html=True)
 
-    if financial_df is not None:
-        financial_df_sorted = financial_df.sort_values(by='Date', ascending=False)
-        current_month_data = financial_df[financial_df['Date'].dt.to_period('M') == current_month_period]
+    if df is not None:
+        df_sorted = df.sort_values(by='Date', ascending=False)
+        current_month_data = df[df['Date'].dt.to_period('M') == current_month_period]
         current_month_expenses = current_month_data[current_month_data['Amount'] < 0]['Amount'].sum()
         current_month_income = current_month_data[current_month_data['Amount'] > 0]['Amount'].sum()
 
-        account_balance = current_month_income + current_month_expenses
+        total_income = current_month_data[current_month_data['Amount'] > 0]['Amount'].sum()
+        total_expenses = current_month_data[current_month_data['Amount'] < 0]['Amount'].sum()
+
+        account_balance = total_income + total_expenses
 
         # Creating an HTML table with styling for the financial summary
         html_table = f"""
@@ -420,14 +376,17 @@ def account_overview():
         st.markdown(html_table, unsafe_allow_html=True)
 
         with st.expander("View Last 10 Income Bookings"):
-            last_10_incomes = financial_df_sorted[financial_df_sorted['Amount'] > 0].head(10)
+            last_10_incomes = df_sorted[df_sorted['Amount'] > 0].head(10)
             st.markdown(last_10_incomes.to_html(classes='financial-table'), unsafe_allow_html=True)
         
         with st.expander("View Last 10 Expense Bookings"):
-            last_10_expenses = financial_df_sorted[financial_df_sorted['Amount'] < 0].head(10)
+            last_10_expenses = df_sorted[df_sorted['Amount'] < 0].head(10)
             st.markdown(last_10_expenses.to_html(classes='financial-table'), unsafe_allow_html=True)
 
-    # Plot the overall portfolio performance at the end of the Account Overview
+      
+
+
+    # Plot der Gesamtperformance am Ende der Account Overview
     if stock_df is not None:
         st.subheader("Stocks in Portfolio:")
 
@@ -449,7 +408,7 @@ def account_overview():
     # Plot the historical data with Plotly
     plot_portfolio_history_plotly(portfolio_history)
 
-        
+
 def get_portfolio_historical_data(stock_df, period="1y"):
     portfolio_history = pd.DataFrame()
     for index, row in stock_df.iterrows():
@@ -607,6 +566,10 @@ def calculate_portfolio_distribution(current_age):
     return stock_percentage, None  # The second value is a placeholder
 
 
+import numpy as np
+import matplotlib.pyplot as plt
+import streamlit as st
+
 def recommendation_page():
     
 
@@ -759,6 +722,17 @@ def get_stock_data(ticker):
         print(f"Fehler beim Abrufen der Daten für {ticker}: {e}")
         return None
 
+def resources_page():
+    st.title("Resources")
+    st.write("Download the initial Excel sheets as formatting examples.")
+
+    # Links to your GitHub raw content
+    portfolio_excel_url = "https://raw.githubusercontent.com/Nemphis7/Pythonone/main/StockPortfolio.xlsx"
+    transaction_excel_url = "https://raw.githubusercontent.com/Nemphis7/Pythonone/main/Mappe1.xlsx"
+
+    st.markdown(f"[Download Portfolio Excel Template]({portfolio_excel_url})", unsafe_allow_html=True)
+    st.markdown(f"[Download Transaction Excel Template]({transaction_excel_url})", unsafe_allow_html=True)
+
 def plot_stock_data(ticker_a, ticker_b, period='5y'):
     """Plot the stock price percentage change over the selected period."""
     try:
@@ -897,15 +871,7 @@ def get_combined_historical_data(stock_df, period="1y"):
     return portfolio_history['Total']
 
 def plot_portfolio_performance(total_portfolio_history):
-    # Ensure the data is loaded
-    stock_df = load_stock_portfolio()
-
-    # Check if the data is empty
-    if total_portfolio_history.empty:
-        st.error("No data available to plot portfolio performance.")
-        return
-
-    # Plotting code
+    # Plottet die Gesamtperformance des Portfolios
     plt.figure(figsize=(10, 5))
     plt.plot(total_portfolio_history.index, total_portfolio_history, label='Total Portfolio Value')
     plt.title('Total Portfolio Performance Over Time')
@@ -1027,52 +993,36 @@ def broker_overview_comparison():
     st.write("**Key Features:**")
     for feature in broker['key_features']:
         st.markdown(f"- {feature}")
-        
-def resources_page():
-    st.title("Resources")
-    st.write("Download the initial Excel sheets as formatting examples.")
-
-    # Links to your GitHub raw content
-    portfolio_excel_url = "https://raw.githubusercontent.com/Nemphis7/Pythonone/main/StockPortfolio.xlsx"
-    transaction_excel_url = "https://raw.githubusercontent.com/Nemphis7/Pythonone/main/Mappe1.xlsx"
-
-    st.markdown(f"[Download Portfolio Excel Template]({portfolio_excel_url})", unsafe_allow_html=True)
-    st.markdown(f"[Download Transaction Excel Template]({transaction_excel_url})", unsafe_allow_html=True)
 
 def main():
     st.sidebar.title("Menu")
-    navigation_options = ["Account Overview", "Analysis", "Recommendation", "Browse", "Brokers", "Resources"]
+
+    # Updated to include "Brokers" as a new navigation option
+    navigation_options = ["Account Overview", "Analysis", "Recommendation", "Browse", "Brokers"]
+
     page_selection = st.sidebar.radio("Choose a page", navigation_options)
 
     st.title("YouFinance")
 
-    # Initialize session state variables if they don't exist
-    if 'uploaded_transaction_data' not in st.session_state:
-        st.session_state.uploaded_transaction_data = None
-    if 'uploaded_portfolio_data' not in st.session_state:
-        st.session_state.uploaded_portfolio_data = None
-    if 'dataframe' not in st.session_state:
+    if 'dataframe' not in st.session_state or page_selection == "Account Overview":
         st.session_state.dataframe = load_data()
-    if 'stock_df' not in st.session_state:
         st.session_state.stock_df = load_stock_portfolio()
 
-    # Now you can safely assign them
     df = st.session_state.dataframe
     stock_df = st.session_state.stock_df
 
     if page_selection == "Account Overview":
-        account_overview()
+        account_overview(df, stock_df)
     elif page_selection == "Analysis":
         analyse(df)
     elif page_selection == "Recommendation":
         recommendation_page()
     elif page_selection == "Browse":
         Aktienkurse_app()
-    elif page_selection == "Brokers":
-        broker_overview_comparison()
+    elif page_selection == "Brokers":  # Corrected to match the navigation option
+        broker_overview_comparison()  # Correct function call
     elif page_selection == "Resources":
         resources_page()
 
 if __name__ == "__main__":
     main()
-
