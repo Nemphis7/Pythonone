@@ -409,7 +409,7 @@ def account_overview(df, stock_df):
         html_stock_table = html_stock_table.replace('<table', '<table style="text-align: left;"')
         
         # Display the HTML table with Streamlit markdown
-        st.markdown(html_stock_table, unsafe_allow_html=True)
+        # st.markdown(html_stock_table, unsafe_allow_html=True)
 
     # Calculate and display the total portfolio value
     display_total_portfolio_value(stock_df)
