@@ -371,7 +371,7 @@ def account_overview():
 
     # Choose a period for portfolio history
     period = "1y"  # For example, 1 year
-    total_portfolio_history = get_combined_historical_data(stock_df, period)
+    #total_portfolio_history = get_combined_historical_data(stock_df, period)
 
     # Call visualization functions with the necessary data
     #plot_portfolio_performance(total_portfolio_history)
