@@ -411,7 +411,7 @@ def account_overview(df, stock_df):
 
    # Plot der Gesamtperformance am Ende der Account Overview
     if stock_df is not None:
-        st.subheader("Stocks in Portfolio:")
+        #st.subheader("Stocks in Portfolio:")
 
         # Convert the stock dataframe to HTML and use style for left alignment
         html_stock_table = stock_df.to_html(index=False, escape=False, classes="table table-striped")
