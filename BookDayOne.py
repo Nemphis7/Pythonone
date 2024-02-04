@@ -1007,7 +1007,33 @@ def broker_overview_comparison():
     st.write("**Key Features:**")
     for feature in broker['key_features']:
         st.markdown(f"- {feature}")
+st.markdown("""
+### Personalized Financial Guidance
 
+After exploring your broker options, you might have specific questions or need guidance tailored to your financial situation and goals. A one-on-one meeting with a financial advisor can provide you with personalized advice, helping you make informed decisions about your investments.
+
+Whether you're just starting on your investment journey or looking to refine your strategy, a financial advisor can offer insights into:
+
+- Building a diversified investment portfolio
+- Understanding market risks and opportunities
+- Planning for long-term financial goals, such as retirement or wealth accumulation
+- Navigating complex financial situations and tax implications
+
+### Schedule a Meeting
+
+If you're ready to take the next step in your financial journey, schedule a meeting below. You'll be able to choose a date and time that works best for you to discuss your investment needs and questions.
+""")
+
+# Calendly embed link
+calendly_embed_link = 'https://calendly.com/information-you-finance'  # Replace this with your actual Calendly embed link
+
+# HTML code to embed Calendly widget
+calendly_html = f"""
+<div class="calendly-inline-widget" data-url="{calendly_embed_link}" style="min-width:320px;height:630px;"></div>
+<script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js"></script>
+"""
+
+components.html(calendly_html, height=700)
 def main():
     st.sidebar.title("Menu")
 
