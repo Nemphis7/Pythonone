@@ -266,19 +266,19 @@ def display_comparison_table(ticker_a, ticker_b):
 
 def display_total_portfolio_value(stock_df):
     # Debugging: Print or display the column names
-    st.write("Column names in stock_df:", stock_df.columns)
+    st.write("Total Portfolio Value (before formatting):", total_portfolio_value)
 
-    # Check if 'CurrentPrice' column exists in the DataFrame
-    if 'CurrentPrice' in stock_df.columns:
-        # Apply transformation to 'CurrentPrice' if it's a string
-        stock_df['CurrentPrice'] = stock_df['CurrentPrice'].apply(lambda x: float(x.replace('.', '').replace(',', '.')) if isinstance(x, str) else x)
+    # Ensure the total_portfolio_value is a float and then format it
+    if isinstance(total_portfolio_value, (int, float)):
+        formatted_total_portfolio_value = f"{total_portfolio_value:,.2f} €".replace(",", "X").replace(".", ",").replace("X", ".")
+    else:
+        formatted_total_portfolio_value = "N/A"
 
-    # Ensure 'Amount' column is present and is numeric
-    if 'Amount' in stock_df.columns:
-        stock_df['Amount'] = pd.to_numeric(stock_df['Amount'], errors='coerce')
-    # Display the Total Portfolio Value with the 'total-row' class for dark blue background
+    # Debugging: Display the formatted total portfolio value
+    st.write("Formatted Total Portfolio Value:", formatted_total_portfolio_value)
+
+    # Display using markdown
     st.markdown(f"<div class='total-row' style='padding: 10px;'><strong>Total Portfolio Value: {formatted_total_portfolio_value}</strong></div>", unsafe_allow_html=True)
-
 
 # Function to plot the historical data with Plotly
 def plot_portfolio_history_plotly(portfolio_history):
