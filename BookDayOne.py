@@ -886,7 +886,7 @@ def plot_portfolio_performance(total_portfolio_history):
     
 def broker_overview_comparison():
 
-    st.title("Broker Overview/Comparison")
+    st.title(" Your personal Wealth planning starter pack")
 
     st.markdown("""
     ### Choosing the Right Broker: An Essential Step in Your Investment Journey
