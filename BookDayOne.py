@@ -895,7 +895,13 @@ def broker_overview_comparison():
 
     with col2:
         if st.button("Get Professional Advisory"):
-            st.write("You chose to do the financial planning yourself.")
+             # Calendly embed link
+            calendly_embed_link = 'https://calendly.com/information-you-finance'  # Replace this with your actual Calendly embed link
+            calendly_html = f"""
+            <div class="calendly-inline-widget" data-url="{calendly_embed_link}" style="min-width:320px;height:630px;"></div>
+            <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js"></script>
+            """
+            components.html(calendly_html, height=700)
             # Add your logic or content here if needed
 
     # Ensure the indentation is consistent in the following section
