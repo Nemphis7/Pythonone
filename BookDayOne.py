@@ -897,15 +897,7 @@ def broker_overview_comparison():
 
     with col2:
                 if st.button("Get Professional Advisory"):
-                    # Calendly embed link
-                    calendly_embed_link = 'https://calendly.com/information-you-finance'  # Replace this with your actual Calendly embed link
-
-                    # HTML code to embed Calendly widget
-                    calendly_html = f"""
-                    <div class="calendly-inline-widget" data-url="{calendly_embed_link}" style="min-width:320px;height:630px;"></div>
-                    <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js"></script>
-                    """components.html(calendly_html, height=700)
-
+                   
 
     st.markdown("""
     ### Choosing the Right Broker: An Essential Step in Your Investment Journey
