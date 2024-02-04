@@ -1007,7 +1007,7 @@ def broker_overview_comparison():
     st.write("**Key Features:**")
     for feature in broker['key_features']:
         st.markdown(f"- {feature}")
-st.markdown("""
+    st.markdown("""
 ### Personalized Financial Guidance
 
 After exploring your broker options, you might have specific questions or need guidance tailored to your financial situation and goals. A one-on-one meeting with a financial advisor can provide you with personalized advice, helping you make informed decisions about your investments.
