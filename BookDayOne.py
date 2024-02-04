@@ -1036,54 +1036,50 @@ If you're ready to take the next step in your financial journey, schedule a meet
 
     components.html(calendly_html, height=700)
 
+# ... [other code] ...
 
 def update_current_prices(stock_df):
-    # This function will iterate over the DataFrame and update the prices
+    # Iterate over the DataFrame and update the prices
     for index, row in stock_df.iterrows():
+        # Fetch the current price of the stock
         current_price = fetch_current_price(row['Ticker'])
-        if current_price is not None:
-            stock_df.at[index, 'CurrentPrice'] = current_price
-            stock_df.at[index, 'TotalValue'] = row['Amount'] * current_price
+        if current_price:
+            # Update the 'CurrentPrice' and 'TotalValue' columns
+            stock_df.loc[index, 'CurrentPrice'] = current_price
+            stock_df.loc[index, 'TotalValue'] = current_price * row['Amount']
+    # Return the updated DataFrame
     return stock_df
 
 def main():
     st.sidebar.title("Menu")
-
-    # Updated to include "Brokers" as a new navigation option
     navigation_options = ["Account Overview", "Analysis", "Financial Forecast", "Wealth Advisory", "Browse", "Resources"]
-
     page_selection = st.sidebar.radio("Choose a page", navigation_options)
-
     st.title("YouFinance")
 
-    # File upload section
     with st.sidebar:
         uploaded_portfolio_file = st.file_uploader("Upload Portfolio Excel", type=['xlsx'])
         uploaded_transactions_file = st.file_uploader("Upload Transactions Excel", type=['xlsx'])
 
         if uploaded_portfolio_file is not None:
             st.session_state.stock_df = pd.read_excel(uploaded_portfolio_file)
-            st.session_state.stock_df_updated = False  # Use this flag to indicate the data needs to be updated
+            st.session_state['stock_df_needs_update'] = True
 
         if uploaded_transactions_file is not None:
             st.session_state.dataframe = pd.read_excel(uploaded_transactions_file)
 
-    # Load default data if not uploaded
+    if 'stock_df' not in st.session_state or st.session_state['stock_df_needs_update']:
+        st.session_state.stock_df = load_stock_portfolio()
+        st.session_state['stock_df_needs_update'] = False
+
     if 'dataframe' not in st.session_state:
         st.session_state.dataframe = load_data()
-    if 'stock_df' not in st.session_state:
-        st.session_state.stock_df = load_stock_portfolio()
-        st.session_state.stock_df_updated = True  # Indicate that we've just loaded and updated the data
 
     df = st.session_state.dataframe
     stock_df = st.session_state.stock_df
 
-    # Update prices if needed
-    if not st.session_state.stock_df_updated:
-        st.session_state.stock_df = update_current_prices(stock_df)
-        st.session_state.stock_df_updated = True  # Set the flag to True after updating
-
+    # Always update prices when viewing the Account Overview page
     if page_selection == "Account Overview":
+        stock_df = update_current_prices(stock_df)
         account_overview(df, stock_df)
     elif page_selection == "Analysis":
         analyse(df)
