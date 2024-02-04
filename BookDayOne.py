@@ -885,25 +885,25 @@ def plot_portfolio_performance(total_portfolio_history):
     st.pyplot(plt)
     
 def broker_overview_comparison():
-
     st.title("Broker Overview/Comparison")
 
     col1, col2 = st.columns(2)
     with col1:
-                if st.button("Do the Financial Planning Yourself"):
-                    st.write("You chose to do the financial planning yourself.")
-
-                    # You can add additional actions here
+        if st.button("Do the Financial Planning Yourself"):
+            st.write("You chose to do the financial planning yourself.")
+            # You can add additional actions here
 
     with col2:
-                if st.button("Get Professional Advisory"):
-                   
+        if st.button("Get Professional Advisory"):
+            # Add your logic or content here if needed
 
+    # Ensure the indentation is consistent in the following section
     st.markdown("""
     Choosing the Right Broker: An Essential Step in Your Investment Journey
     
     The choice of broker is crucial for anyone starting in wealth building or for experienced investors looking for a new partner. Each broker offers a unique set of features, fees, and platforms, catering to different investor needs. While some may prioritize low fees, others might look for extensive research tools or a wide range of available securities. Here we compare Trade Republic, ING Bank, and DEGIRO, providing key facts to help you find the broker that best fits your investment strategy.
     """)
+
 
     brokers_info = {
         "Trade Republic": {
