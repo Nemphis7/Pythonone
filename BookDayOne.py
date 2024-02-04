@@ -898,11 +898,11 @@ def broker_overview_comparison():
             # Add your logic or content here if needed
 
     # Ensure the indentation is consistent in the following section
-    st.markdown("""
-    Choosing the Right Broker: An Essential Step in Your Investment Journey
+        st.markdown("""
+        Choosing the Right Broker: An Essential Step in Your Investment Journey
     
-    The choice of broker is crucial for anyone starting in wealth building or for experienced investors looking for a new partner. Each broker offers a unique set of features, fees, and platforms, catering to different investor needs. While some may prioritize low fees, others might look for extensive research tools or a wide range of available securities. Here we compare Trade Republic, ING Bank, and DEGIRO, providing key facts to help you find the broker that best fits your investment strategy.
-    """)
+        The choice of broker is crucial for anyone starting in wealth building or for experienced investors looking for a new partner. Each broker offers a unique set of features, fees, and platforms, catering to different investor needs. While some may prioritize low fees, others might look for extensive research tools or a wide range of available securities. Here we compare Trade Republic, ING Bank, and DEGIRO, providing key facts to help you find the broker that best fits your investment strategy.
+        """)
 
 
     brokers_info = {
