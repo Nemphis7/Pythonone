@@ -400,12 +400,14 @@ def account_overview(df, stock_df):
       # Using an expander to show stocks in the portfolio
         with st.expander("View Stocks in Portfolio"):
             if stock_df is not None:
-                # Convert the stock dataframe to HTML and use style for left alignment
+                # Convert the stock dataframe to HTML and use style for left alignment and bottom margin
                 html_stock_table = stock_df.to_html(index=False, escape=False, classes="table table-striped")
-                html_stock_table = html_stock_table.replace('<table', '<table style="text-align: left;"')
+                html_stock_table = html_stock_table.replace('<table', '<table style="text-align: left; margin-bottom: 20px;"')  # Add margin at the bottom
                 
                 # Display the HTML table with Streamlit markdown
                 st.markdown(html_stock_table, unsafe_allow_html=True)
+                st.markdown("<br>", unsafe_allow_html=True)  # Add additional space if needed
+
     
         # Calculate and display the total portfolio value
         display_total_portfolio_value(stock_df)
