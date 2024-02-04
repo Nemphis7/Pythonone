@@ -1057,8 +1057,7 @@ def main():
         st.session_state.dataframe = load_data() if 'dataframe' not in st.session_state else st.session_state.dataframe
         st.session_state.stock_df = load_stock_portfolio() if 'stock_df' not in st.session_state else st.session_state.stock_df
 
-    df = st.session_state.dataframe
-    stock_df = st.session_state.stock_df
+    
 
     if page_selection == "Account Overview":
         account_overview(df, stock_df)
