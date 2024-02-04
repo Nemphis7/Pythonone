@@ -266,7 +266,7 @@ def display_comparison_table(ticker_a, ticker_b):
 
 def display_total_portfolio_value(stock_df):
     # Debugging: Display the stock_df DataFrame
-    st.write("stock_df DataFrame:", stock_df)
+    #st.write("stock_df DataFrame:", stock_df)
 
     # Initialize formatted_total_portfolio_value
     formatted_total_portfolio_value = "N/A"
@@ -280,7 +280,7 @@ def display_total_portfolio_value(stock_df):
         total_portfolio_value = stock_df['TotalValue'].sum()
 
         # Debugging: Display the total portfolio value
-        st.write("Total Portfolio Value (before formatting):", total_portfolio_value)
+        #st.write("Total Portfolio Value (before formatting):", total_portfolio_value)
 
         # Format the total portfolio value
         formatted_total_portfolio_value = f"{total_portfolio_value:,.2f} €".replace(",", "X").replace(".", ",").replace("X", ".")
@@ -288,7 +288,7 @@ def display_total_portfolio_value(stock_df):
         st.error("Required columns not found in stock_df")
 
     # Display the formatted total portfolio value
-    st.write("Formatted Total Portfolio Value:", formatted_total_portfolio_value)
+    #st.write("Formatted Total Portfolio Value:", formatted_total_portfolio_value)
 
 # Function to plot the historical data with Plotly
 def plot_portfolio_history_plotly(portfolio_history):
