@@ -553,8 +553,7 @@ def analyse(df):
                             thickness=20,
                             line=dict(color="black", width=0.5),
                             label=label,
-                            color=["#4CAF50", "#F44336", "#2196F3", "#FFC107", "#9C27B0", "#00BCD4", "#E91E63"],
-                            font=dict(size=14, color='black'),  # This should be 'font' instead of 'textfont'
+                            color=["#4CAF50", "#F44336", "#2196F3", "#FFC107", "#9C27B0", "#00BCD4", "#E91E63"]
                         ),
                         link=dict(
                             source=source,
@@ -563,6 +562,7 @@ def analyse(df):
                             color="rgba(76, 175, 80, 0.5)"
                         )
                     )])
+
                     
                     fig.update_layout(
                         title_text="Financial Overview: Income, Expenses, and Savings Flows",
