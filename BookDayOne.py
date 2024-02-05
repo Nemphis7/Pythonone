@@ -550,21 +550,21 @@ def analyse(df):
                 label.append('Savings')
     
                  fig = go.Figure(data=[go.Sankey(
-                node=dict(
-                    pad=15,
-                    thickness=20,
-                    line=dict(color="black", width=0.5),
-                    label=label,
-                    color=["#4CAF50", "#F44336", "#2196F3", "#FFC107", "#9C27B0", "#00BCD4", "#E91E63"],
-                    textfont=dict(size=14, color='black'),  # Set the font size and color here
-                ),
-                link=dict(
-                    source=source,
-                    target=target,
-                    value=value,
-                    color="rgba(76, 175, 80, 0.5)"
-                )
-            )])
+                    node=dict(
+                        pad=15,
+                        thickness=20,
+                        line=dict(color="black", width=0.5),
+                        label=label,
+                        color=["#4CAF50", "#F44336", "#2196F3", "#FFC107", "#9C27B0", "#00BCD4", "#E91E63"],
+                        textfont=dict(size=14, color='black'),  # Set the font size and color here
+                    ),
+                    link=dict(
+                        source=source,
+                        target=target,
+                        value=value,
+                        color="rgba(76, 175, 80, 0.5)"
+                    )
+                )])
     
                 fig.update_layout(
                     title_text="Financial Overview: Income, Expenses, and Savings Flows",
