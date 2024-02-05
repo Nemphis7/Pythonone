@@ -554,7 +554,7 @@ def analyse(df):
                             line=dict(color="black", width=0.5),
                             label=label,
                             color=["#4CAF50", "#F44336", "#2196F3", "#FFC107", "#9C27B0", "#00BCD4", "#E91E63"],
-                            textfont=dict(size=14, color='black'),  # Set the font size and color here
+                            font=dict(size=14, color='black'),  # This should be 'font' instead of 'textfont'
                         ),
                         link=dict(
                             source=source,
@@ -563,7 +563,7 @@ def analyse(df):
                             color="rgba(76, 175, 80, 0.5)"
                         )
                     )])
-        
+                    
                     fig.update_layout(
                         title_text="Financial Overview: Income, Expenses, and Savings Flows",
                         font=dict(size=12, color='black'),
@@ -573,6 +573,7 @@ def analyse(df):
                         height=600
                     )
                     st.plotly_chart(fig, use_container_width=True)
+
                 else:
                     st.error("No data available to generate Sankey Diagram")
     
