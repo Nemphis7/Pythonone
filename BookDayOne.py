@@ -515,9 +515,7 @@ def analyse(df):
             else:
                 st.error("No data to analyse")
 
-
-
-        if st.button("Generate Sankey Diagram"):
+    if st.button("Generate Sankey Diagram"):
             with st.spinner('Loading...'):
                 time.sleep(1)  # Simulate a long-running operation
         
@@ -578,6 +576,10 @@ def analyse(df):
                 else:
                     st.error("No data available to generate Sankey Diagram")
     
+
+
+
+        
                 
 
 def adjust_for_inflation(value, years, inflation_rate):
