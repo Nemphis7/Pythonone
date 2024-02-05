@@ -517,7 +517,7 @@ def analyse(df):
 
 
 
-    if st.button("Generate Sankey Diagram"):
+        if st.button("Generate Sankey Diagram"):
         with st.spinner('Loading...'):
             time.sleep(1)  # Simulate a long-running operation
     
@@ -549,7 +549,7 @@ def analyse(df):
                 value.append(net_savings)
                 label.append('Savings')
     
-                 fig = go.Figure(data=[go.Sankey(
+                fig = go.Figure(data=[go.Sankey(
                     node=dict(
                         pad=15,
                         thickness=20,
@@ -577,6 +577,7 @@ def analyse(df):
                 st.plotly_chart(fig, use_container_width=True)
             else:
                 st.error("No data available to generate Sankey Diagram")
+
             
 
 def adjust_for_inflation(value, years, inflation_rate):
