@@ -518,67 +518,67 @@ def analyse(df):
 
 
         if st.button("Generate Sankey Diagram"):
-        with st.spinner('Loading...'):
-            time.sleep(1)  # Simulate a long-running operation
-    
-            st.header("Sankey Diagram")
-            st.write("""
-                A Sankey diagram is a type of flow diagram, in which the width of the arrows is proportional to the flow rate. 
-                In financial analysis, it is used to depict the flow of income and shows how the initial income is allocated 
-                to different expenses and savings.
-            """)
-            if not current_month_summary.empty:
-                total_income = current_month_summary[current_month_summary['Amount'] > 0]['Amount'].sum()
-                total_expenses = -current_month_summary[current_month_summary['Amount'] < 0]['Amount'].sum()
-                net_savings = total_income - total_expenses
-    
-                source = []
-                target = []
-                value = []
-                label = ['Income']
-    
-                for i, row in current_month_summary.iterrows():
-                    if row['Amount'] < 0:
-                        source.append(0)
-                        target.append(len(label))
-                        value.append(-row['Amount'])
-                        label.append(row['Category'])
-    
-                source.append(0)
-                target.append(len(label))
-                value.append(net_savings)
-                label.append('Savings')
-    
-                fig = go.Figure(data=[go.Sankey(
-                    node=dict(
-                        pad=15,
-                        thickness=20,
-                        line=dict(color="black", width=0.5),
-                        label=label,
-                        color=["#4CAF50", "#F44336", "#2196F3", "#FFC107", "#9C27B0", "#00BCD4", "#E91E63"],
-                        textfont=dict(size=14, color='black'),  # Set the font size and color here
-                    ),
-                    link=dict(
-                        source=source,
-                        target=target,
-                        value=value,
-                        color="rgba(76, 175, 80, 0.5)"
+            with st.spinner('Loading...'):
+                time.sleep(1)  # Simulate a long-running operation
+        
+                st.header("Sankey Diagram")
+                st.write("""
+                    A Sankey diagram is a type of flow diagram, in which the width of the arrows is proportional to the flow rate. 
+                    In financial analysis, it is used to depict the flow of income and shows how the initial income is allocated 
+                    to different expenses and savings.
+                """)
+                if not current_month_summary.empty:
+                    total_income = current_month_summary[current_month_summary['Amount'] > 0]['Amount'].sum()
+                    total_expenses = -current_month_summary[current_month_summary['Amount'] < 0]['Amount'].sum()
+                    net_savings = total_income - total_expenses
+        
+                    source = []
+                    target = []
+                    value = []
+                    label = ['Income']
+        
+                    for i, row in current_month_summary.iterrows():
+                        if row['Amount'] < 0:
+                            source.append(0)
+                            target.append(len(label))
+                            value.append(-row['Amount'])
+                            label.append(row['Category'])
+        
+                    source.append(0)
+                    target.append(len(label))
+                    value.append(net_savings)
+                    label.append('Savings')
+        
+                    fig = go.Figure(data=[go.Sankey(
+                        node=dict(
+                            pad=15,
+                            thickness=20,
+                            line=dict(color="black", width=0.5),
+                            label=label,
+                            color=["#4CAF50", "#F44336", "#2196F3", "#FFC107", "#9C27B0", "#00BCD4", "#E91E63"],
+                            textfont=dict(size=14, color='black'),  # Set the font size and color here
+                        ),
+                        link=dict(
+                            source=source,
+                            target=target,
+                            value=value,
+                            color="rgba(76, 175, 80, 0.5)"
+                        )
+                    )])
+        
+                    fig.update_layout(
+                        title_text="Financial Overview: Income, Expenses, and Savings Flows",
+                        font=dict(size=12, color='black'),
+                        paper_bgcolor='white',
+                        plot_bgcolor='white',
+                        width=1000,
+                        height=600
                     )
-                )])
+                    st.plotly_chart(fig, use_container_width=True)
+                else:
+                    st.error("No data available to generate Sankey Diagram")
     
-                fig.update_layout(
-                    title_text="Financial Overview: Income, Expenses, and Savings Flows",
-                    font=dict(size=12, color='black'),
-                    paper_bgcolor='white',
-                    plot_bgcolor='white',
-                    width=1000,
-                    height=600
-                )
-                st.plotly_chart(fig, use_container_width=True)
-            else:
-                st.error("No data available to generate Sankey Diagram")
-
-            
+                
 
 def adjust_for_inflation(value, years, inflation_rate):
     return value / ((1 + inflation_rate) ** years)
